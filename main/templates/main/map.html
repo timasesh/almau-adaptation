@@ -1,0 +1,247 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Контакты и карта - Adaptation AlmaU{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-container">
+                <img src="{% static 'images/logo.png' %}" alt="AlmaU" class="logo">
+            </div>
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <i class="fas fa-angle-double-left"></i>
+            </button>
+        </div>
+
+        <nav class="sidebar-nav">
+            <ul class="nav-list">
+                <li class="nav-item">
+                    <a href="{% url 'main:dashboard' %}" class="nav-link"><i class="fas fa-home"></i> <span
+                            class="nav-text">Главная</span></a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'main:about' %}" class="nav-link"><i class="fas fa-university"></i> <span
+                            class="nav-text">Об университете</span></a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'main:documents' %}" class="nav-link"><i class="fas fa-file-alt"></i> <span
+                            class="nav-text">Документация</span></a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'main:processes_instructions' %}" class="nav-link"><i class="fas fa-cogs"></i> <span
+                            class="nav-text">Процессы и инструкции</span></a>
+                </li>
+                <li class="nav-item active">
+                    <a href="{% url 'main:map' %}" class="nav-link active-nav-link"><i
+                            class="fas fa-map-marker-alt"></i> <span class="nav-text">Контакты и карта</span></a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link"><i class="fas fa-comments"></i> <span class="nav-text">Обратная
+                            связь</span></a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link"><i class="fas fa-question-circle"></i> <span class="nav-text">Часто
+                            задаваемые вопросы</span></a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="user-menu">
+                <button class="settings-btn"><i class="fas fa-cog"></i> <span class="nav-text">Настройки</span></button>
+                <a href="{% url 'main:logout' %}" class="logout-btn"><i class="fas fa-sign-out-alt"></i> <span
+                        class="nav-text">Выход</span></a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main content -->
+    <div class="main-content" id="mainContent">
+        <!-- Top right logo -->
+        <span class="user-badge fixed-almau-logo">AlmaUni</span>
+
+        <h1 class="page-title">Контакты и Карта</h1>
+
+        <div class="grid-container">
+            <!-- Left block: Map + Contact Info -->
+            <div class="left-block">
+                <div class="map-embed">
+                    <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2908.1522025829113!2d76.8907047096891!3d43.20629688110313!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38836895257e39cb%3A0x28bb8b25d8c43156!2z0JDQu9C80LDRgtGLINCc0LXQvdC10LTQttC80LXQvdGCINCj0L3QuNCy0LXRgNGB0LjRgtC10YI!5e0!3m2!1sru!2skz!4v1753963064704!5m2!1sru!2skz"
+                        width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div>
+
+                <div class="contact-box">
+                    <h2>Наш Адрес:</h2>
+                    <p>улица Розыбакиева 227, Алматы 050060</p>
+
+                    <h2>Контактный номер:</h2>
+                    <p>+77273133040</p>
+                </div>
+            </div>
+
+            <!-- Right block: Campus Info + Image -->
+            <div class="right-block">
+                <div class="campus-box">
+                    <h2>Кампус</h2>
+                    <p>На территории кампуса AlmaU располагаются:</p>
+                    <ul>
+                        <li>Множество аудиторий</li>
+                        <li>Спорт Комплекс</li>
+                        <li>2 кофейни</li>
+                        <li>Библиотека</li>
+                        <li>Коворкинг</li>
+                        <li>Атриум</li>
+                        <li>Парковка</li>
+                        <li>Спортивная площадка</li>
+                    </ul>
+                </div>
+                <div class="campus-image">
+                    <img src="{% static 'images/almau.png' %}" alt="Кампус AlmaU" class="campus-img">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .almauni-label {
+        position: absolute;
+        top: 20px;
+        right: 30px;
+        font-size: 18px;
+        font-weight: bold;
+        color: white;
+        background-color: #003366;
+        padding: 8px 15px;
+        border-radius: 20px;
+    }
+
+    .page-title {
+        text-align: left;
+        margin: 30px 30px 10px;
+        font-size: 26px;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .grid-container {
+        display: flex;
+        flex-wrap: wrap;
+        padding: 30px;
+        gap: 30px;
+    }
+
+    .left-block,
+    .right-block {
+        flex: 1 1 45%;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .map-embed iframe {
+        width: 100%;
+        height: 300px;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .contact-box,
+    .campus-box {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .campus-image img {
+        width: 100%;
+        height: 300px;
+        object-fit: cover;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+        color: #003366;
+        margin-bottom: 10px;
+        font-size: 18px;
+    }
+
+    ul {
+        padding-left: 20px;
+    }
+
+    ul li {
+        margin-bottom: 5px;
+    }
+
+    @media (max-width: 768px) {
+        .grid-container {
+            flex-direction: column;
+        }
+
+        .left-block,
+        .right-block {
+            flex: 1 1 100%;
+        }
+
+        .almauni-label {
+            position: relative;
+            top: auto;
+            right: auto;
+            margin: 10px auto;
+            display: block;
+            width: fit-content;
+        }
+    }
+
+    .fixed-almau-logo {
+        position: fixed !important;
+        top: 32px !important;
+        right: 30px !important;
+        /* Фиксированная позиция справа сверху */
+        z-index: 1000 !important;
+        background: #1976D2 !important;
+        color: white !important;
+        padding: 8px 16px !important;
+        border-radius: 20px !important;
+        font-weight: bold !important;
+        font-size: 14px !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+        white-space: nowrap !important;
+    }
+
+    .sidebar {
+        width: 250px;
+        /* фиксированная ширина */
+        min-width: 250px;
+        max-width: 250px;
+        transition: all 0.3s ease;
+        overflow-x: hidden;
+    }
+
+    .sidebar-nav .nav-link {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        padding-left: 0px;
+        /* Уменьши отступ слева */
+
+    }
+
+    .sidebar .nav-text {
+        display: inline-block;
+        max-width: 180px;
+        /* ограничение по ширине текста */
+        overflow: hidden;
+        text-overflow: ellipsis;
+        vertical-align: middle;
+    }
+</style>
+{% endblock %}

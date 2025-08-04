@@ -1,0 +1,169 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Главная - Adaptation AlmaU{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-container">
+                <img src="{% static 'images/logo.png' %}" alt="AlmaU" class="logo">
+            </div>
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <i class="fas fa-angle-double-left"></i>
+            </button>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <ul class="nav-list">
+                <li class="nav-item active">
+                    <a href="{% url 'main:dashboard' %}" class="nav-link active-nav-link" onclick="return handleActiveNavClick(event, this);">
+                        <i class="fas fa-home"></i>
+                        <span class="nav-text">Главная</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'main:about' %}" class="nav-link">
+                        <i class="fas fa-university"></i>
+                        <span class="nav-text">Об университете</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'main:documents' %}" class="nav-link">
+                        <i class="fas fa-file-alt"></i>
+                        <span class="nav-text">Документация</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'main:processes_instructions' %}" class="nav-link">
+                        <i class="fas fa-cogs"></i>
+                        <span class="nav-text">Процессы и инструкции</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'main:map' %}" class="nav-link">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span class="nav-text">Контакты и карта</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-comments"></i>
+                        <span class="nav-text">Обратная связь</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-question-circle"></i>
+                        <span class="nav-text">Часто задаваемые вопросы</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <div class="user-menu">
+                <button class="settings-btn">
+                    <i class="fas fa-cog"></i>
+                    <span class="nav-text">Настройки</span>
+                </button>
+                <a href="{% url 'main:logout' %}" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span class="nav-text">Выход</span>
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main content -->
+    <div class="main-content" id="mainContent">
+        <!-- Фиксированный логотип (не в потоке документа) -->
+        <span class="user-badge fixed-almau-logo">AlmaUni</span>
+        
+        <div class="content-header">
+            <div class="greeting">
+                <h1>Добрый день, {{ user_name }}!</h1>
+            </div>
+        </div>
+        
+        <div class="dashboard-grid">
+            <a href="{% url 'main:about' %}" class="dashboard-link">
+                <img src="{% static 'images/об_университете.png' %}" alt="Об университете" class="dashboard-img">
+            </a>
+
+            <a href="{% url 'main:documents' %}" class="dashboard-link">
+                <img src="{% static 'images/документация.png' %}" alt="Документация" class="dashboard-img">
+            </a>
+
+            <a href="{% url 'main:processes_instructions' %}" class="dashboard-link">
+                <img src="{% static 'images/процессы_и_инструкции.png' %}" alt="Процессы и инструкции" class="dashboard-img">
+            </a>
+
+            <a href="{% url 'main:map' %}" class="dashboard-link">
+                <img src="{% static 'images/контакты_и_карта.png' %}" alt="Контакты и карта" class="dashboard-img">
+            </a>
+
+            <a href="#" class="dashboard-link">
+                <img src="{% static 'images/обратная_связь.png' %}" alt="Обратная связь" class="dashboard-img">
+            </a>
+
+            <a href="#" class="dashboard-link">
+                <img src="{% static 'images/часто_задаваемые_вопросы.png' %}" alt="Часто задаваемые вопросы" class="dashboard-img">
+            </a>
+        </div>
+
+    </div>
+    
+    <!-- Background decorative elements -->
+</div>
+
+<style>
+/* Фиксированный логотип AlmaUni */
+.fixed-almau-logo {
+    position: fixed !important;
+    top: 32px !important;
+    right: 30px !important; /* Фиксированная позиция справа сверху */
+    z-index: 1000 !important;
+    background: #1976D2 !important;
+    color: white !important;
+    padding: 8px 16px !important;
+    border-radius: 20px !important;
+    font-weight: bold !important;
+    font-size: 14px !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+    white-space: nowrap !important;
+}
+
+/* На мобильных устройствах */
+@media (max-width: 768px) {
+    .fixed-almau-logo {
+        right: 20px !important;
+        top: 15px !important;
+    }
+}
+.sidebar {
+    width: 250px; /* фиксированная ширина */
+    min-width: 250px;
+    max-width: 250px;
+    transition: all 0.3s ease;
+    overflow-x: hidden;
+}
+
+.sidebar-nav .nav-link {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sidebar .nav-text {
+    display: inline-block;
+    max-width: 180px; /* ограничение по ширине текста */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: middle;
+}
+
+</style>
+{% endblock %}

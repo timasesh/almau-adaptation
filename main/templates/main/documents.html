@@ -1,0 +1,585 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Документация - Adaptation AlmaU{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-container">
+                <img src="{% static 'images/logo.png' %}" alt="AlmaU" class="logo">
+            </div>
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <i class="fas fa-angle-double-left"></i>
+            </button>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <ul class="nav-list">
+                <li class="nav-item">
+                    <a href="{% url 'main:dashboard' %}" class="nav-link">
+                        <i class="fas fa-home"></i>
+                        <span class="nav-text">Главная</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'main:about' %}" class="nav-link">
+                        <i class="fas fa-university"></i>
+                        <span class="nav-text">Об университете</span>
+                    </a>
+                </li>
+                <li class="nav-item active">
+                    <a href="{% url 'main:documents' %}" class="nav-link">
+                        <i class="fas fa-file-alt"></i>
+                        <span class="nav-text">Документация</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'main:processes_instructions' %}" class="nav-link">
+                        <i class="fas fa-cogs"></i>
+                        <span class="nav-text">Процессы и инструкции</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'main:map' %}" class="nav-link">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span class="nav-text">Контакты и карта</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-comments"></i>
+                        <span class="nav-text">Обратная связь</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-question-circle"></i>
+                        <span class="nav-text">Часто задаваемые вопросы</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <div class="user-menu">
+                <button class="settings-btn">
+                    <i class="fas fa-cog"></i>
+                    <span class="nav-text">Настройки</span>
+                </button>
+                <a href="{% url 'main:logout' %}" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span class="nav-text">Выход</span>
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main content -->
+    <div class="main-content" id="mainContent">
+        <!-- Фиксированный логотип (не в потоке документа) -->
+        <span class="user-badge fixed-almau-logo">AlmaUni</span>
+        
+        <div class="content-header">
+            <div class="greeting">
+                <h1>Документация</h1>
+            </div>
+        </div>
+        
+        <div class="documents-content">
+            <!-- Поиск -->
+            <div class="search-section">
+                <form method="GET" class="search-form" id="searchForm">
+                    <div class="search-input-wrapper">
+                        <input type="text" 
+                               name="search" 
+                               id="searchInput"
+                               value="{{ search_query }}" 
+                               placeholder="Начать поиск" 
+                               class="search-input">
+                        <button type="submit" class="search-btn">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                    {% if current_category %}
+                        <input type="hidden" name="category" value="{{ current_category }}" id="categoryInput">
+                    {% endif %}
+                </form>
+            </div>
+            
+            <!-- Фильтры по категориям -->
+            <div class="category-filters">
+                <div class="filter-tabs">
+                    <a href="{% url 'main:documents' %}{% if search_query %}?search={{ search_query }}{% endif %}" 
+                       class="filter-tab {% if not current_category %}active{% endif %}">
+                        <i class="fas fa-times"></i>
+                    </a>
+                    {% for category in categories %}
+                        <a href="{% url 'main:documents' %}?category={{ category.name }}{% if search_query %}&search={{ search_query }}{% endif %}" 
+                           class="filter-tab {% if current_category == category.name %}active{% endif %}">
+                            {{ category.name }}
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <!-- Список документов -->
+            <div class="documents-list" id="documentsList">
+                {% include 'main/documents_list_partial.html' %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Исправляем позиционирование логотипа AlmaUni справа сверху */
+.content-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    position: relative;
+}
+
+.user-info {
+    position: relative;
+    flex-shrink: 0; /* Не сжимать */
+}
+
+.fixed-almau-logo {
+    position: fixed !important;
+    top: 32px !important;
+    right: 30px !important; /* Фиксированная позиция справа сверху */
+    z-index: 1000 !important;
+    background: #1976D2 !important;
+    color: white !important;
+    padding: 8px 16px !important;
+    border-radius: 20px !important;
+    font-weight: bold !important;
+    font-size: 14px !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+    white-space: nowrap !important;
+}
+.sidebar {
+    width: 250px; /* фиксированная ширина */
+    min-width: 250px;
+    max-width: 250px;
+    transition: all 0.3s ease;
+    overflow-x: hidden;
+}
+
+.sidebar-nav .nav-link {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sidebar .nav-text {
+    display: inline-block;
+    max-width: 180px; /* ограничение по ширине текста */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: middle;
+}
+
+
+/* На мобильных устройствах */
+@media (max-width: 768px) {
+    .fixed-almau-logo {
+        right: 20px !important;
+        top: 15px !important;
+    }
+}
+
+.documents-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Поиск */
+.search-section {
+    margin-bottom: 30px;
+}
+
+.search-form {
+    max-width: 600px;
+}
+
+.search-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-input {
+    width: 100%;
+    padding: 15px 20px;
+    padding-right: 60px;
+    border: 2px solid #e0e0e0;
+    border-radius: 30px;
+    font-size: 16px;
+    background: #f8f9fa;
+    transition: all 0.3s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #1976D2;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
+}
+
+.search-btn {
+    position: absolute;
+    right: 10px;
+    background: #1976D2;
+    border: none;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s ease;
+}
+
+.search-btn:hover {
+    background: #1565C0;
+}
+
+/* Фильтры */
+.category-filters {
+    margin-bottom: 40px;
+    position: relative;
+}
+
+.filter-tabs {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 10px 140px 10px 0;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Скрытие скроллбара для WebKit браузеров */
+.filter-tabs::-webkit-scrollbar {
+    display: none;
+}
+
+.filter-tab {
+    padding: 12px 24px;
+    text-decoration: none;
+    color: #000;
+    background: #f8f9fa;
+    border: 2px solid #e0e0e0;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    white-space: nowrap;
+    font-size: 16px;
+    flex-shrink: 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    scroll-snap-align: start;
+}
+
+.filter-tab:hover {
+    color: #1976D2;
+    border-color: #1976D2;
+    background: #e3f2fd;
+}
+
+.filter-tab.active {
+    color: white;
+    background: #1976D2;
+    border-color: #1976D2;
+}
+
+.filter-tab i {
+    font-size: 12px;
+}
+
+/* Список документов */
+.documents-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 900px;
+    transition: opacity 0.3s ease;
+}
+
+.document-card {
+    background: white;
+    border-radius: 15px;
+    padding: 20px 25px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    transition: none;
+    border: none;
+}
+
+.document-card:hover {
+    /* Убираем hover эффекты */
+}
+
+.document-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.document-title {
+    font-size: 18px;
+    font-weight: 400;
+    color: #000;
+    margin-bottom: 8px;
+    line-height: 1.2;
+}
+
+.document-category {
+    font-size: 14px;
+    color: #000;
+    margin: 0;
+    font-weight: 400;
+}
+
+.document-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+    text-align: right;
+}
+
+.document-date {
+    font-size: 16px;
+    color: #000;
+    font-weight: 400;
+    margin: 0;
+}
+
+.download-btn {
+    background: none;
+    border: none;
+    color: #1976D2;
+    font-size: 14px;
+    font-weight: 400;
+    text-decoration: underline;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    padding: 0;
+    margin: 0;
+}
+
+.download-btn:hover {
+    color: #0d47a1;
+}
+
+.download-btn i {
+    font-size: 14px;
+}
+
+/* Пустое состояние */
+.no-documents {
+    text-align: center;
+    padding: 60px 20px;
+    color: #666;
+}
+
+.no-documents i {
+    font-size: 48px;
+    color: #ccc;
+    margin-bottom: 20px;
+}
+
+.no-documents h3 {
+    font-size: 24px;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.no-documents p {
+    font-size: 16px;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .documents-content {
+        padding: 15px;
+    }
+    
+    .documents-list {
+        max-width: 100%;
+    }
+    
+    .document-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+        padding: 16px 20px;
+    }
+    
+    .document-meta {
+        width: 100%;
+        align-items: flex-start;
+        text-align: left;
+        gap: 10px;
+    }
+    
+    .filter-tabs {
+        gap: 10px;
+        padding: 8px 0;
+    }
+    
+    .filter-tab {
+        padding: 10px 16px;
+        font-size: 15px;
+    }
+    
+    .search-input {
+        padding: 12px 18px;
+        padding-right: 55px;
+        font-size: 15px;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // AJAX поиск без перезагрузки страницы
+    const searchInput = document.getElementById('searchInput');
+    const documentsList = document.getElementById('documentsList');
+    let searchTimeout; // Выносим наружу для доступа из обработчика вкладок
+    
+    // Функция для выполнения поиска - выносим наружу для доступа из обработчика вкладок
+    function performSearch() {
+        if (!searchInput || !documentsList) return;
+        
+        const searchValue = searchInput.value.trim();
+        const currentCategory = document.getElementById('categoryInput') ? 
+            document.getElementById('categoryInput').value : '';
+        
+        // Строим URL для API запроса
+        let apiUrl = new URL('/api/documents/search/', window.location.origin);
+        
+        if (searchValue) {
+            apiUrl.searchParams.set('search', searchValue);
+        }
+        
+        if (currentCategory) {
+            apiUrl.searchParams.set('category', currentCategory);
+        }
+        
+        // Показываем индикатор загрузки
+        documentsList.style.opacity = '0.6';
+        
+        // Выполняем AJAX запрос
+        fetch(apiUrl.toString())
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Обновляем список документов без перезагрузки страницы
+                    documentsList.innerHTML = data.html;
+                    documentsList.style.opacity = '1';
+                    
+                    // Обновляем URL для возможности делиться ссылками
+                    const pageUrl = new URL(window.location.href);
+                    pageUrl.search = '';
+                    
+                    if (searchValue) {
+                        pageUrl.searchParams.set('search', searchValue);
+                    }
+                    
+                    if (currentCategory) {
+                        pageUrl.searchParams.set('category', currentCategory);
+                    }
+                    
+                    // Обновляем URL без перезагрузки страницы
+                    history.pushState(null, '', pageUrl.toString());
+                }
+            })
+            .catch(error => {
+                console.error('Ошибка поиска:', error);
+                documentsList.style.opacity = '1';
+            });
+    }
+    
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            
+            // Добавляем небольшую задержку чтобы не слать запрос на каждую букву
+            searchTimeout = setTimeout(performSearch, 300); // Уменьшил задержку до 300ms
+        });
+        
+        // Убираем стандартную отправку формы при Enter
+        document.getElementById('searchForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            clearTimeout(searchTimeout);
+            performSearch(); // Выполняем поиск сразу при нажатии Enter
+        });
+    }
+    
+    // Обработка кликов по фильтрам категорий
+    const filterTabs = document.querySelectorAll('.filter-tab');
+    
+    filterTabs.forEach(tab => {
+        tab.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Извлекаем категорию из URL ссылки
+            const url = new URL(this.href);
+            const category = url.searchParams.get('category');
+            const search = url.searchParams.get('search');
+            
+            // Обновляем скрытое поле с категорией
+            let categoryInput = document.getElementById('categoryInput');
+            if (category) {
+                if (!categoryInput) {
+                    categoryInput = document.createElement('input');
+                    categoryInput.type = 'hidden';
+                    categoryInput.name = 'category';
+                    categoryInput.id = 'categoryInput';
+                    document.getElementById('searchForm').appendChild(categoryInput);
+                }
+                categoryInput.value = category;
+            } else {
+                if (categoryInput) {
+                    categoryInput.remove();
+                }
+            }
+            
+            // Если есть поисковый запрос, сохраняем его
+            if (search && searchInput) {
+                searchInput.value = search;
+            }
+            
+            // Выполняем поиск
+            clearTimeout(searchTimeout);
+            performSearch();
+            
+            // Обновляем активный класс у вкладок
+            filterTabs.forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+});
+</script>
+{% endblock %}

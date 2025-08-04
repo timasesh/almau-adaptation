@@ -1,0 +1,322 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Об Университете - Adaptation AlmaU{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-container">
+                <img src="{% static 'images/logo.png' %}" alt="AlmaU" class="logo">
+            </div>
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <i class="fas fa-angle-double-left"></i>
+            </button>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <ul class="nav-list">
+                <li class="nav-item">
+                    <a href="{% url 'main:dashboard' %}" class="nav-link">
+                        <i class="fas fa-home"></i>
+                        <span class="nav-text">Главная</span>
+                    </a>
+                </li>
+                <li class="nav-item active">
+                    <a href="{% url 'main:about' %}" class="nav-link active-nav-link" onclick="return handleActiveNavClick(event, this);">
+                        <i class="fas fa-university"></i>
+                        <span class="nav-text">Об университете</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'main:documents' %}" class="nav-link">
+                        <i class="fas fa-file-alt"></i>
+                        <span class="nav-text">Документация</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'main:processes_instructions' %}" class="nav-link">
+                        <i class="fas fa-cogs"></i>
+                        <span class="nav-text">Процессы и инструкции</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'main:map' %}" class="nav-link">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span class="nav-text">Контакты и карта</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-comments"></i>
+                        <span class="nav-text">Обратная связь</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-question-circle"></i>
+                        <span class="nav-text">Часто задаваемые вопросы</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <div class="user-menu">
+                <button class="settings-btn">
+                    <i class="fas fa-cog"></i>
+                    <span class="nav-text">Настройки</span>
+                </button>
+                <a href="{% url 'main:logout' %}" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span class="nav-text">Выход</span>
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main content -->
+    <div class="main-content" id="mainContent">
+        <!-- Фиксированный логотип (не в потоке документа) -->
+        <span class="user-badge fixed-almau-logo">AlmaUni</span>
+        
+        <div class="content-header">
+            <div class="greeting">
+                <h1>Об Университете</h1>
+            </div>
+        </div>
+        
+        <div class="about-content">
+            <!-- История -->
+            <div class="history-section">
+                <h2>История</h2>
+                <div class="history-content">
+                    <div class="history-text">
+                        <p>Алматинский университет менеджмента (AlmaU) был основан в 1988 году как частное высшее учебное заведение. За более чем 35 лет своего существования университет стал одним из ведущих вузов Казахстана в области бизнес-образования и управления. AlmaU первым в Центральной Азии получил международную аккредитацию EFMD и входит в топ-1000 мировых университетов по рейтингу QS World University Rankings. Университет выпустил более 30,000 студентов, многие из которых стали успешными предпринимателями, государственными деятелями и руководителями крупных компаний.</p>
+                    </div>
+                    <div class="history-image">
+                        <img src="{% static 'images/almau.png' %}" alt="Здание AlmaU">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Миссия и Ценности -->
+            <div class="mission-values">
+                <div class="mission-card">
+                    <div class="circle-icon mission-icon">
+                        <i class="fas fa-mountain"></i>
+                    </div>
+                    <h3>Миссия</h3>
+                    <p>Мы улучшаем мир посредством образования, исследований и предпринимательства.</p>
+                </div>
+                
+                <div class="values-card">
+                    <div class="circle-icon values-icon">
+                        <i class="fas fa-gem"></i>
+                    </div>
+                    <h3>Ценности</h3>
+                    <p>Лидерство, Предпринимательство, Честность, Устойчивое развитие, Ответственность</p>
+                </div>
+            </div>
+            
+            <!-- Руководство -->
+            <div class="leadership-section">
+                <h2>Руководство Университета</h2>
+                <div class="leadership-cards">
+                    <div class="leader-card">
+                        <div class="leader-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <h3>Имя Ректора</h3>
+                    </div>
+                    
+                    <div class="leader-card">
+                        <div class="leader-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <h3>Имя Проректора</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Фиксированный логотип AlmaUni */
+.fixed-almau-logo {
+    position: fixed !important;
+    top: 32px !important;
+    right: 30px !important; /* Фиксированная позиция справа сверху */
+    z-index: 1000 !important;
+    background: #1976D2 !important;
+    color: white !important;
+    padding: 8px 16px !important;
+    border-radius: 20px !important;
+    font-weight: bold !important;
+    font-size: 14px !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+    white-space: nowrap !important;
+}
+
+/* На мобильных устройствах */
+@media (max-width: 768px) {
+    .fixed-almau-logo {
+        right: 20px !important;
+        top: 15px !important;
+    }
+}
+
+.about-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* История */
+.history-section {
+    margin-bottom: 60px;
+}
+
+.history-section h2 {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 30px;
+    color: #333;
+}
+
+.history-content {
+    display: flex;
+    gap: 40px;
+    align-items: flex-start;
+}
+
+.history-text {
+    flex: 1;
+}
+
+.history-text p {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #000000;
+    text-align: justify;
+}
+
+.history-image {
+    flex: 0 0 400px;
+}
+
+.history-image img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Миссия и Ценности */
+.mission-values {
+    display: flex;
+    gap: 60px;
+    margin-bottom: 80px;
+    justify-content: center;
+}
+
+.mission-card, .values-card {
+    text-align: center;
+    max-width: 400px;
+}
+
+.circle-icon {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: #1976D2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    color: white;
+    font-size: 40px;
+}
+
+.mission-card h3, .values-card h3 {
+    font-size: 32px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #000000;
+}
+
+.mission-card p, .values-card p {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #000000;
+    text-align: center;
+}
+
+/* Руководство */
+.leadership-section {
+    text-align: center;
+}
+
+.leadership-section h2 {
+    font-size: 32px;
+    font-weight: 600;
+    margin-bottom: 50px;
+    color: #333;
+}
+
+.leadership-cards {
+    display: flex;
+    gap: 100px;
+    justify-content: center;
+}
+
+.leader-card {
+    text-align: center;
+}
+
+.leader-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 4px solid #1976D2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    color: #1976D2;
+    font-size: 50px;
+    background: white;
+}
+
+.leader-card h3 {
+    font-size: 24px;
+    font-weight: 600;
+    color: #000000;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .history-content {
+        flex-direction: column;
+    }
+    
+    .history-image {
+        flex: none;
+    }
+    
+    .mission-values {
+        flex-direction: column;
+        gap: 40px;
+    }
+    
+    .leadership-cards {
+        flex-direction: column;
+        gap: 40px;
+    }
+}
+</style>
+{% endblock %}

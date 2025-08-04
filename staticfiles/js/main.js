@@ -1,0 +1,162 @@
+// Main JavaScript functionality for AlmaU Adaptation app
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Sidebar toggle functionality
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const sidebar = document.getElementById('sidebar');
+    const mainContent = document.getElementById('mainContent');
+    
+    if (sidebarToggle && sidebar) {
+        sidebarToggle.addEventListener('click', function() {
+            sidebar.classList.toggle('collapsed');
+            
+            // Save sidebar state to localStorage
+            const isCollapsed = sidebar.classList.contains('collapsed');
+            localStorage.setItem('sidebarCollapsed', isCollapsed);
+        });
+        
+        // Restore sidebar state from localStorage
+        const savedState = localStorage.getItem('sidebarCollapsed');
+        if (savedState === 'true') {
+            sidebar.classList.add('collapsed');
+        }
+    }
+    
+    // Navigation click handlers using event delegation
+    document.addEventListener('click', function(e) {
+        // Check if clicked element is a nav link in sidebar
+        const clickedLink = e.target.closest('.sidebar .nav-link');
+        if (!clickedLink) return;
+        
+        // Find sidebar and check if it exists
+        const currentSidebar = document.getElementById('sidebar');
+        if (!currentSidebar) return;
+        
+        // Check if this is an active nav item
+        const navItem = clickedLink.closest('.nav-item');
+        const isActive = navItem && navItem.classList.contains('active');
+        const isCollapsed = currentSidebar.classList.contains('collapsed');
+        
+        // If active tab clicked and sidebar is collapsed, open sidebar instead of navigating
+        if (isActive && isCollapsed) {
+            // Prevent navigation
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            
+            // Open sidebar
+            currentSidebar.classList.remove('collapsed');
+            localStorage.setItem('sidebarCollapsed', 'false');
+            
+            // Visual feedback
+            clickedLink.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                clickedLink.style.transform = '';
+            }, 150);
+            
+            return false;
+        }
+    }, true); // Use capture phase to intercept early
+    
+    // Dashboard card click handlers
+    const dashboardCards = document.querySelectorAll('.dashboard-card');
+    dashboardCards.forEach(card => {
+        card.addEventListener('click', function() {
+            // Add click animation
+            this.style.transform = 'scale(0.98)';
+            setTimeout(() => {
+                this.style.transform = '';
+            }, 150);
+            
+            // Here you can add navigation logic for each card
+            const cardTitle = this.querySelector('h3').textContent;
+            console.log('Clicked on:', cardTitle);
+        });
+    });
+    
+    // Form validation for login
+    const loginForm = document.querySelector('.login-form-fields');
+    if (loginForm) {
+        loginForm.addEventListener('submit', function(e) {
+            const email = this.querySelector('input[name="login"]');
+            const password = this.querySelector('input[name="password"]');
+            
+            if (!email.value.trim() || !password.value.trim()) {
+                e.preventDefault();
+                showMessage('Пожалуйста, заполните все поля', 'error');
+            }
+        });
+    }
+    
+    // Auto-hide messages after 5 seconds
+    const messages = document.querySelectorAll('.message');
+    messages.forEach(message => {
+        setTimeout(() => {
+            message.style.opacity = '0';
+            setTimeout(() => {
+                message.remove();
+            }, 300);
+        }, 5000);
+    });
+});
+
+// Global function for inline onclick handlers
+function handleActiveNavClick(event, element) {
+    const currentSidebar = document.getElementById('sidebar');
+    if (!currentSidebar) return true;
+    
+    const navItem = element.closest('.nav-item');
+    const isActive = navItem && navItem.classList.contains('active');
+    const isCollapsed = currentSidebar.classList.contains('collapsed');
+    
+    if (isActive && isCollapsed) {
+        event.preventDefault();
+        currentSidebar.classList.remove('collapsed');
+        localStorage.setItem('sidebarCollapsed', 'false');
+        
+        element.style.transform = 'scale(0.95)';
+        setTimeout(() => {
+            element.style.transform = '';
+        }, 150);
+        
+        return false;
+    }
+    return true;
+}
+
+// Utility function to show messages
+function showMessage(text, type = 'info') {
+    const messagesContainer = document.querySelector('.messages') || createMessagesContainer();
+    
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `message ${type}`;
+    messageDiv.textContent = text;
+    
+    messagesContainer.appendChild(messageDiv);
+    
+    // Auto-hide after 5 seconds
+    setTimeout(() => {
+        messageDiv.style.opacity = '0';
+        setTimeout(() => {
+            messageDiv.remove();
+        }, 300);
+    }, 5000);
+}
+
+function createMessagesContainer() {
+    const container = document.createElement('div');
+    container.className = 'messages';
+    document.body.appendChild(container);
+    return container;
+}
+
+// Responsive sidebar handling
+function handleResize() {
+    const sidebar = document.getElementById('sidebar');
+    if (window.innerWidth <= 768 && sidebar) {
+        sidebar.classList.add('collapsed');
+    }
+}
+
+window.addEventListener('resize', handleResize);
+handleResize(); // Call on load

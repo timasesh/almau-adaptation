@@ -1,0 +1,50 @@
+<!-- Процессы -->
+{% if current_tab == 'all' or current_tab == 'processes' or not current_tab %}
+    {% for process in filtered_processes %}
+        <div class="document-card expandable-card">
+            <div class="document-info">
+                <h3 class="document-title">{{ process.title }}</h3>
+            </div>
+            <div class="document-meta">
+                <button class="expand-btn">
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+            </div>
+            <div class="document-content" style="display: none;">
+                <p>{{ process.description }}</p>
+            </div>
+        </div>
+    {% endfor %}
+{% endif %}
+
+<!-- Инструкции -->
+{% if current_tab == 'all' or current_tab == 'instructions' or not current_tab %}
+    {% for instruction in filtered_instructions %}
+        <div class="document-card expandable-card">
+            <div class="document-info">
+                <h3 class="document-title">{{ instruction.title }}</h3>
+            </div>
+            <div class="document-meta">
+                <button class="expand-btn">
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+            </div>
+            <div class="document-content" style="display: none;">
+                <p>{{ instruction.description }}</p>
+            </div>
+        </div>
+    {% endfor %}
+{% endif %}
+
+<!-- Сообщение, если ничего не найдено -->
+{% if filtered_processes|length == 0 and filtered_instructions|length == 0 %}
+    <div class="no-documents">
+        <i class="fas fa-cogs"></i>
+        <h3>Ничего не найдено</h3>
+        <p>{% if search_query or current_tab %}
+            Попробуйте изменить критерии поиска или выбрать другую вкладку.
+        {% else %}
+            В данный момент процессы и инструкции отсутствуют.
+        {% endif %}</p>
+    </div>
+{% endif %}
