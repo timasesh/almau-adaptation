@@ -85,6 +85,13 @@ msgstr "Nothing found"
 msgid "Попробуйте изменить критерии поиска или выбрать другую категорию."
 msgstr "Try changing your search criteria or selecting a different category."
 
+# Пустые состояния (общие)
+msgid "Документы не найдены"
+msgstr "No documents found"
+
+msgid "В данный момент документы отсутствуют"
+msgstr "There are currently no documents"
+
 # FAQ
 msgid "Задайте свой вопрос"
 msgstr "Ask your question"
@@ -247,15 +254,6 @@ msgstr "Lessons"
 msgid "Изучайте материалы в удобном формате"
 msgstr "Study materials in a convenient format"
 
-msgid "Начинающий"
-msgstr "Beginner"
-
-msgid "Средний"
-msgstr "Intermediate"
-
-msgid "Продвинутый"
-msgstr "Advanced"
-
 msgid "Завершен"
 msgstr "Completed"
 
@@ -279,9 +277,6 @@ msgstr "Download original PDF"
 
 msgid "Уроки не найдены"
 msgstr "No lessons found"
-
-msgid "Попробуйте изменить критерии поиска или выбрать другой уровень сложности."
-msgstr "Try changing the search criteria or selecting a different difficulty level."
 
 msgid "Скрыть"
 msgstr "Hide"
