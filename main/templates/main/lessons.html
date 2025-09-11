@@ -56,9 +56,7 @@
                             <i class="fas fa-search"></i>
                         </button>
                     </div>
-                    {% if difficulty_filter and difficulty_filter != 'all' %}
-                        <input type="hidden" name="difficulty" value="{{ difficulty_filter }}" id="difficultyInput">
-                    {% endif %}
+                    
                     {% if category_filter %}
                         <input type="hidden" name="category" value="{{ category_filter }}" id="categoryInput">
                     {% endif %}
@@ -68,6 +66,10 @@
             <!-- Фильтры по категориям -->
             <div class="category-filters">
                 <div class="filter-tabs">
+                    <a href="{% url 'main:lessons' %}{% if search_query %}?search={{ search_query }}{% endif %}"
+                       class="filter-tab {% if not category_filter %}active{% endif %}">
+                        <i class="fas fa-times"></i>
+                    </a>
                     {% for category in categories %}
                         <a href="{% url 'main:lessons' %}?category={{ category.id }}{% if search_query %}&search={{ search_query }}{% endif %}" 
                            class="filter-tab {% if category_filter|stringformat:'s' == category.id|stringformat:'s' %}active{% endif %}">
@@ -77,27 +79,7 @@
                 </div>
             </div>
             
-            <!-- Фильтры по уровню сложности -->
-            <div class="difficulty-filters">
-                <div class="filter-tabs">
-                    <a href="{% url 'main:lessons' %}{% if search_query %}?search={{ search_query }}{% endif %}{% if category_filter %}&category={{ category_filter }}{% endif %}" 
-                       class="filter-tab {% if difficulty_filter == 'all' or not difficulty_filter %}active{% endif %}">
-                        <i class="fas fa-times"></i>
-                    </a>
-                    <a href="{% url 'main:lessons' %}?difficulty=beginner{% if search_query %}&search={{ search_query }}{% endif %}{% if category_filter %}&category={{ category_filter }}{% endif %}" 
-                       class="filter-tab {% if difficulty_filter == 'beginner' %}active{% endif %}">
-                        {% trans "Начинающий" %}
-                    </a>
-                    <a href="{% url 'main:lessons' %}?difficulty=intermediate{% if search_query %}&search={{ search_query }}{% endif %}{% if category_filter %}&category={{ category_filter }}{% endif %}" 
-                       class="filter-tab {% if difficulty_filter == 'intermediate' %}active{% endif %}">
-                        {% trans "Средний" %}
-                    </a>
-                    <a href="{% url 'main:lessons' %}?difficulty=advanced{% if search_query %}&search={{ search_query }}{% endif %}{% if category_filter %}&category={{ category_filter }}{% endif %}" 
-                       class="filter-tab {% if difficulty_filter == 'advanced' %}active{% endif %}">
-                        {% trans "Продвинутый" %}
-                    </a>
-                </div>
-            </div>
+            
             
             <!-- Список уроков -->
             <div class="lessons-list" id="lessonsList">
@@ -117,18 +99,7 @@
                                     <div class="lesson-title">
                                         <h3>{% if current_language == 'en' and lesson.title_en %}{{ lesson.title_en }}{% elif current_language == 'kk' and lesson.title_kk %}{{ lesson.title_kk }}{% else %}{{ lesson.title }}{% endif %}</h3>
                                     </div>
-                                    <div class="lesson-meta">
-                                        <span class="lesson-difficulty {{ lesson.difficulty_level }}">
-                                            {% if lesson.difficulty_level == 'beginner' %}
-                                                {% trans "Начинающий" %}
-                                            {% elif lesson.difficulty_level == 'intermediate' %}
-                                                {% trans "Средний" %}
-                                            {% elif lesson.difficulty_level == 'advanced' %}
-                                                {% trans "Продвинутый" %}
-                                            {% endif %}
-                                        </span>
-                                        <!-- Длительность рассчитывается автоматически -->
-                                    </div>
+                                    <div class="lesson-meta"></div>
 
                                 </div>
                                 

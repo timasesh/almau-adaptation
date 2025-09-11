@@ -222,7 +222,7 @@ def lessons_view(request):
     
     # Получаем параметры поиска и фильтрации
     search_query = request.GET.get('search', '')
-    difficulty_filter = request.GET.get('difficulty', 'all')
+    difficulty_filter = 'all'
     category_filter = request.GET.get('category', '')
     
     # Фильтруем по категории
@@ -230,8 +230,7 @@ def lessons_view(request):
         lessons = [l for l in lessons if l.category and str(l.category.id) == category_filter]
     
     # Фильтруем по уровню сложности
-    if difficulty_filter != 'all':
-        lessons = [l for l in lessons if l.difficulty_level == difficulty_filter]
+    # Уровни сложности отключены
     
     if search_query:
         # Поиск без учета регистра для латиницы и кириллицы

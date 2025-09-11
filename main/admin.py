@@ -425,8 +425,8 @@ class LessonSlideAdmin(admin.ModelAdmin):
 @admin.register(Lesson)
 class LessonAdmin(admin.ModelAdmin):
     """Админка для уроков"""
-    list_display = ('title', 'category', 'difficulty_level', 'duration', 'has_video', 'has_pdf', 'has_slides', 'is_active', 'created_at')
-    list_filter = ('category', 'difficulty_level', 'is_active', 'created_at')
+    list_display = ('title', 'category', 'duration', 'has_video', 'has_pdf', 'has_slides', 'is_active', 'created_at')
+    list_filter = ('category', 'is_active', 'created_at')
     search_fields = ('title', 'description', 'category__name')
     list_editable = ('is_active',)
     ordering = ('-created_at',)
@@ -434,7 +434,7 @@ class LessonAdmin(admin.ModelAdmin):
 
     fieldsets = (
         ('Основная информация', {
-            'fields': ('title', 'title_en', 'title_kk', 'description', 'description_en', 'description_kk', 'category', 'difficulty_level', 'duration')
+            'fields': ('title', 'title_en', 'title_kk', 'description', 'description_en', 'description_kk', 'category', 'duration')
         }),
         ('Медиа файлы', {
             'fields': ('video', 'pdf_file'),
@@ -530,7 +530,7 @@ class LessonAdmin(admin.ModelAdmin):
 class LessonCompletionAdmin(admin.ModelAdmin):
     """Админка для завершений уроков"""
     list_display = ('lesson', 'user', 'completed_at')
-    list_filter = ('completed_at', 'lesson__difficulty_level')
+    list_filter = ('completed_at',)
     search_fields = ('lesson__title', 'user__username', 'user__first_name', 'user__last_name')
     readonly_fields = ('completed_at',)
     ordering = ('-completed_at',)

@@ -570,18 +570,7 @@ class Lesson(models.Model):
         help_text="PDF файл будет автоматически конвертирован в слайды"
     )
 
-    # Дополнительные поля (длительность убрана - рассчитывается автоматически)
-    
-    difficulty_level = models.CharField(
-        max_length=20,
-        choices=[
-            ('beginner', 'Начинающий'),
-            ('intermediate', 'Средний'),
-            ('advanced', 'Продвинутый')
-        ],
-        default='beginner',
-        verbose_name="Уровень сложности"
-    )
+    # Дополнительные поля (длительность рассчитывается автоматически)
 
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
