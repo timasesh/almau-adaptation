@@ -1773,8 +1773,9 @@ def admin_lessons_view(request):
     if not request.user.is_staff:
         return redirect('main:admin_login')
     
-    # Получаем все уроки
+    # Получаем все уроки и категории
     lessons = Lesson.objects.filter(is_active=True).order_by('-created_at')
+    lesson_categories = LessonCategory.objects.filter(is_active=True).order_by('order_index', 'name')
     
     if request.method == 'POST':
         action = request.POST.get('action')
@@ -1788,6 +1789,7 @@ def admin_lessons_view(request):
             description_kk = request.POST.get('description_kk', '')
             video = request.FILES.get('video')
             pdf_file = request.FILES.get('pdf_file')
+            category_id = request.POST.get('category')
             
             # Проверяем, не существует ли уже урок с таким названием
             if Lesson.objects.filter(title=title).exists():
@@ -1804,6 +1806,12 @@ def admin_lessons_view(request):
                     video=video,
                     pdf_file=pdf_file
                 )
+                if category_id:
+                    try:
+                        lesson.category = LessonCategory.objects.get(id=category_id)
+                        lesson.save(update_fields=['category'])
+                    except LessonCategory.DoesNotExist:
+                        pass
                 messages.success(request, f'Урок "{title}" успешно добавлен!')
         
         elif action == 'edit_lesson':
@@ -1816,6 +1824,12 @@ def admin_lessons_view(request):
                 lesson.description = request.POST.get('description', lesson.description)
                 lesson.description_en = request.POST.get('description_en', lesson.description_en)
                 lesson.description_kk = request.POST.get('description_kk', lesson.description_kk)
+                category_id = request.POST.get('category')
+                if category_id:
+                    try:
+                        lesson.category = LessonCategory.objects.get(id=category_id)
+                    except LessonCategory.DoesNotExist:
+                        pass
                 
                 if 'video' in request.FILES:
                     lesson.video = request.FILES['video']
@@ -1916,6 +1930,7 @@ def admin_lessons_view(request):
     context = {
         'current_page': 'admin_lessons',
         'lessons': lessons,
+        'lesson_categories': lesson_categories,
         'test_lessons_deleted': request.session.get('test_lessons_deleted', False),
     }
     return render(request, 'main/admin/lessons.html', context)
@@ -1936,6 +1951,7 @@ def get_lesson_data(request, lesson_id):
             'description': lesson.description,
             'description_en': lesson.description_en or '',
             'description_kk': lesson.description_kk or '',
+            'category_id': lesson.category.id if lesson.category else None,
             'duration': lesson.duration,  # Теперь это свойство
             'has_video': bool(lesson.video),
             'has_pdf': bool(lesson.pdf_file),

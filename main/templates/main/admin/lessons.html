@@ -49,6 +49,14 @@
 
             <div class="form-row">
                 <div class="form-group">
+                    <label for="category">Категория:</label>
+                    <select id="category" name="category" required>
+                        {% for c in lesson_categories %}
+                            <option value="{{ c.id }}">{{ c.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
                      <label>Длительность:</label>
                      <div style="padding: 10px; background: #f8f9fa; border-radius: 6px; border: 1px solid #e9ecef;">
                          <small style="color: #666;">Длительность будет рассчитана автоматически:</small><br>
@@ -169,6 +177,14 @@
             </div>
 
             <div class="form-row">
+                <div class="form-group">
+                    <label for="edit_category">Категория:</label>
+                    <select id="edit_category" name="category" required>
+                        {% for c in lesson_categories %}
+                            <option value="{{ c.id }}">{{ c.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
                 <div class="form-group">
                     <label>Длительность:</label>
                     <div style="padding: 10px; background: #f8f9fa; border-radius: 6px; border: 1px solid #e9ecef;">
@@ -679,290 +695,31 @@
 
 <script>
 function editLesson(lessonId) {
-    // Показываем индикатор загрузки
     const modal = document.getElementById('editModal');
     const modalContent = modal.querySelector('.modal-content');
-    modalContent.innerHTML = '<div style="text-align: center; padding: 40px;"><i class="fas fa-spinner fa-spin" style="font-size: 24px; color: #1976d2;"></i><p style="margin-top: 15px;">Загрузка данных урока...</p></div>';
     modal.style.display = 'block';
-    
-    // Загружаем данные урока через AJAX
+    modalContent.scrollTop = 0;
+
     fetch(`/admin-panel/lessons/${lessonId}/data/`, {
         method: 'GET',
-        headers: {
-            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
-            'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
     })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Ошибка загрузки данных');
-            }
-            return response.json();
-        })
-        .then(data => {
-            // Обрабатываем пустые значения
-            const safeData = {
-                id: data.id || '',
-                title: data.title || '',
-                title_en: data.title_en || '',
-                title_kk: data.title_kk || '',
-                description: data.description || '',
-                description_en: data.description_en || '',
-                description_kk: data.description_kk || '',
-                difficulty_level: data.difficulty_level || 'beginner',
-                duration: data.duration || 0,
-                has_video: data.has_video || false,
-                has_pdf: data.has_pdf || false,
-                video_url: data.video_url || '',
-                pdf_url: data.pdf_url || ''
-            };
-            
-            // Восстанавливаем содержимое модального окна с данными
-            modalContent.innerHTML = `
-                <span class="close">&times;</span>
-                <h3>Редактировать урок</h3>
-                <form method="POST" enctype="multipart/form-data" class="lesson-form">
-                    {% csrf_token %}
-                    <input type="hidden" name="action" value="edit_lesson">
-                    <input type="hidden" name="lesson_id" id="edit_lesson_id" value="${safeData.id}">
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="edit_title">Название урока (русский):</label>
-                            <input type="text" id="edit_title" name="title" value="${safeData.title}" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="edit_title_en">Название урока (английский):</label>
-                            <input type="text" id="edit_title_en" name="title_en" value="${safeData.title_en}">
-                        </div>
-                        <div class="form-group">
-                            <label for="edit_title_kk">Название урока (казахский):</label>
-                            <input type="text" id="edit_title_kk" name="title_kk" value="${safeData.title_kk}">
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="edit_description">Описание (русский):</label>
-                            <textarea id="edit_description" name="description" rows="3" required>${safeData.description}</textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="edit_description_en">Описание (английский):</label>
-                            <textarea id="edit_description_en" name="description_en" rows="3">${safeData.description_en}</textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="edit_description_kk">Описание (казахский):</label>
-                            <textarea id="edit_description_kk" name="description_kk" rows="3">${safeData.description_kk}</textarea>
-                        </div>
-                    </div>
-
-                                         <div class="form-row">
-                         <div class="form-group">
-                             <label>Длительность:</label>
-                             <div style="padding: 10px; background: #f8f9fa; border-radius: 6px; border: 1px solid #e9ecef;">
-                                 <small style="color: #666;">Текущая длительность: ${safeData.duration || 'Не рассчитана'} мин</small><br>
-                                 <small style="color: #666;">Длительность будет пересчитана автоматически при сохранении</small>
-                             </div>
-                         </div>
-                     </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="edit_video">Видео файл (опционально):</label>
-                            <input type="file" id="edit_video" name="video" accept="video/*">
-                            <small>Оставьте пустым, чтобы не изменять</small>
-                            ${safeData.has_video ? `
-                                <div style="margin-top: 10px; padding: 10px; background: #f8f9fa; border-radius: 6px; border: 1px solid #e9ecef;">
-                                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-                                                                                 <span style="color: #666; font-size: 12px;">📹 Текущий файл: ${safeData.video_url ? safeData.video_url.split('/').pop() : 'Видео загружено'}</span>
-                                         <button type="button" class="btn btn-sm btn-primary" onclick="previewVideo('${safeData.video_url}')" style="padding: 4px 8px; font-size: 11px;">Просмотр</button>
-                                    </div>
-                                    <video id="preview-video" controls style="width: 100%; max-width: 300px; display: none; border-radius: 4px;">
-                                        <source src="${safeData.video_url}" type="video/mp4">
-                                        Ваш браузер не поддерживает видео.
-                                    </video>
-                                </div>
-                            ` : ''}
-                        </div>
-                        <div class="form-group">
-                            <label for="edit_pdf_file">PDF файл (опционально):</label>
-                            <input type="file" id="edit_pdf_file" name="pdf_file" accept=".pdf">
-                            <small>Оставьте пустым, чтобы не изменять</small>
-                            ${safeData.has_pdf ? `
-                                <div style="margin-top: 10px; padding: 10px; background: #f8f9fa; border-radius: 6px; border: 1px solid #e9ecef;">
-                                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-                                                                                 <span style="color: #666; font-size: 12px;">📄 Текущий файл: ${safeData.pdf_url ? safeData.pdf_url.split('/').pop() : 'PDF загружен'}</span>
-                                         <button type="button" class="btn btn-sm btn-primary" onclick="previewPDF('${safeData.pdf_url}')" style="padding: 4px 8px; font-size: 11px;">Просмотр</button>
-                                        <a href="${safeData.pdf_url}" target="_blank" class="btn btn-sm btn-secondary" style="padding: 4px 8px; font-size: 11px; text-decoration: none;">📥 Скачать</a>
-                                    </div>
-                                    <div id="pdf-preview" style="display: none; width: 100%; height: 400px; border: 1px solid #ddd; border-radius: 4px;"></div>
-                                </div>
-                            ` : ''}
-                        </div>
-                    </div>
-
-                    <div class="form-actions">
-                        <button type="submit" class="btn btn-primary">Сохранить изменения</button>
-                        <button type="button" class="btn btn-secondary" onclick="closeModal()">Отмена</button>
-                    </div>
-                </form>
-            `;
-            
-            // Добавляем обработчики событий для нового содержимого
-            addModalEventListeners();
-        })
-        .catch(error => {
-            console.error('Ошибка загрузки данных урока:', error);
-            modalContent.innerHTML = `
-                <span class="close">&times;</span>
-                <h3>Ошибка загрузки</h3>
-                <p style="color: #f44336;">Не удалось загрузить данные урока (ID: ${lessonId}).</p>
-                <p style="color: #666; font-size: 14px;">Ошибка: ${error.message}</p>
-                <div class="form-actions">
-                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Закрыть</button>
-                    <button type="button" class="btn btn-primary" onclick="editLesson(${lessonId})">Повторить</button>
-                </div>
-            `;
-            addModalEventListeners();
-        });
-}
-
-function addModalEventListeners() {
-    // Закрытие модального окна при клике вне его
-    const modal = document.getElementById('editModal');
-    const closeBtn = modal.querySelector('.close');
-    
-    if (closeBtn) {
-        closeBtn.onclick = function() {
-            closeModal();
+    .then(r => r.json())
+    .then(data => {
+        document.getElementById('edit_lesson_id').value = data.id;
+        document.getElementById('edit_title').value = data.title || '';
+        document.getElementById('edit_title_en').value = data.title_en || '';
+        document.getElementById('edit_title_kk').value = data.title_kk || '';
+        document.getElementById('edit_description').value = data.description || '';
+        document.getElementById('edit_description_en').value = data.description_en || '';
+        document.getElementById('edit_description_kk').value = data.description_kk || '';
+        if (data.category_id) {
+            const sel = document.getElementById('edit_category');
+            if (sel) sel.value = String(data.category_id);
         }
-    }
-    
-    // Закрытие модального окна при клике вне его
-    window.onclick = function(event) {
-        if (event.target === modal) {
-            closeModal();
-        }
-    }
+    })
+    .catch(() => {});
 }
-
-function closeModal() {
-    document.getElementById('editModal').style.display = 'none';
-}
-
-// Функция для просмотра видео
-function previewVideo(videoUrl) {
-    const videoElement = document.getElementById('preview-video');
-    if (videoElement) {
-        if (videoElement.style.display === 'none') {
-            videoElement.style.display = 'block';
-            videoElement.src = videoUrl;
-        } else {
-            videoElement.style.display = 'none';
-            videoElement.pause();
-        }
-    }
-}
-
-// Функция для просмотра PDF
-function previewPDF(pdfUrl) {
-    const pdfPreview = document.getElementById('pdf-preview');
-    if (pdfPreview) {
-        if (pdfPreview.style.display === 'none') {
-            pdfPreview.style.display = 'block';
-            // Создаем iframe для просмотра PDF
-            pdfPreview.innerHTML = `
-                <iframe src="${pdfUrl}" 
-                        style="width: 100%; height: 100%; border: none; border-radius: 4px;" 
-                        title="PDF Preview">
-                </iframe>
-            `;
-        } else {
-            pdfPreview.style.display = 'none';
-            pdfPreview.innerHTML = '';
-        }
-    }
-}
-
-// Функция для просмотра видео в списке уроков
-function previewVideoInList(videoUrl, lessonTitle) {
-    // Создаем модальное окно для просмотра видео
-    const modal = document.createElement('div');
-    modal.className = 'modal';
-    modal.style.display = 'block';
-    modal.innerHTML = `
-        <div class="modal-content" style="max-width: 800px; max-height: 600px;">
-            <span class="close" onclick="this.parentElement.parentElement.remove()">&times;</span>
-            <h3>Просмотр видео: ${lessonTitle}</h3>
-            <video controls style="width: 100%; max-height: 400px; border-radius: 4px;">
-                <source src="${videoUrl}" type="video/mp4">
-                Ваш браузер не поддерживает видео.
-            </video>
-        </div>
-    `;
-    document.body.appendChild(modal);
-    
-    // Закрытие по клику вне модального окна
-    modal.onclick = function(event) {
-        if (event.target === modal) {
-            modal.remove();
-        }
-    };
-}
-
-// Функция для просмотра PDF в списке уроков
-function previewPDFInList(pdfUrl, lessonTitle) {
-    // Создаем модальное окно для просмотра PDF
-    const modal = document.createElement('div');
-    modal.className = 'modal';
-    modal.style.display = 'block';
-    modal.innerHTML = `
-        <div class="modal-content" style="max-width: 90%; max-height: 90%;">
-            <span class="close" onclick="this.parentElement.parentElement.remove()">&times;</span>
-            <h3>Просмотр PDF: ${lessonTitle}</h3>
-            <iframe src="${pdfUrl}" 
-                    style="width: 100%; height: 500px; border: none; border-radius: 4px;" 
-                    title="PDF Preview">
-            </iframe>
-        </div>
-    `;
-    document.body.appendChild(modal);
-    
-    // Закрытие по клику вне модального окна
-    modal.onclick = function(event) {
-        if (event.target === modal) {
-            modal.remove();
-        }
-    };
-}
-
-// Инициализация обработчиков событий при загрузке страницы
-document.addEventListener('DOMContentLoaded', function() {
-    addModalEventListeners();
-    
-    // Предотвращение двойной отправки форм
-    const forms = document.querySelectorAll('form');
-    forms.forEach(form => {
-        form.addEventListener('submit', function(e) {
-            const submitButton = form.querySelector('button[type="submit"]');
-            if (submitButton) {
-                submitButton.disabled = true;
-                submitButton.textContent = 'Отправка...';
-                
-                // Восстанавливаем кнопку через 5 секунд на случай ошибки
-                setTimeout(() => {
-                    submitButton.disabled = false;
-                    submitButton.textContent = submitButton.getAttribute('data-original-text') || 'Отправить';
-                }, 5000);
-            }
-        });
-    });
-    
-    // Сохраняем оригинальный текст кнопок
-    const submitButtons = document.querySelectorAll('button[type="submit"]');
-    submitButtons.forEach(button => {
-        button.setAttribute('data-original-text', button.textContent);
-    });
-});
+function closeModal(){ document.getElementById('editModal').style.display='none'; }
 </script>
 {% endblock %}
