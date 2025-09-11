@@ -1786,7 +1786,6 @@ def admin_lessons_view(request):
             description = request.POST.get('description', '')
             description_en = request.POST.get('description_en', '')
             description_kk = request.POST.get('description_kk', '')
-            difficulty_level = request.POST.get('difficulty_level', 'beginner')
             video = request.FILES.get('video')
             pdf_file = request.FILES.get('pdf_file')
             
@@ -1802,7 +1801,6 @@ def admin_lessons_view(request):
                     description=description,
                     description_en=description_en,
                     description_kk=description_kk,
-                    difficulty_level=difficulty_level,
                     video=video,
                     pdf_file=pdf_file
                 )
@@ -1818,7 +1816,6 @@ def admin_lessons_view(request):
                 lesson.description = request.POST.get('description', lesson.description)
                 lesson.description_en = request.POST.get('description_en', lesson.description_en)
                 lesson.description_kk = request.POST.get('description_kk', lesson.description_kk)
-                lesson.difficulty_level = request.POST.get('difficulty_level', lesson.difficulty_level)
                 
                 if 'video' in request.FILES:
                     lesson.video = request.FILES['video']
@@ -1893,17 +1890,14 @@ def admin_lessons_view(request):
                 Lesson(
                     title="Введение в адаптацию",
                     description="Базовый урок по адаптации к университетской жизни",
-                    difficulty_level='beginner'
                 ),
                 Lesson(
                     title="Работа с документами",
                     description="Как правильно оформлять и подавать документы",
-                    difficulty_level='intermediate'
                 ),
                 Lesson(
                     title="Продвинутые техники обучения",
                     description="Эффективные методы изучения материала",
-                    difficulty_level='advanced'
                 )
             ]
             
@@ -1942,7 +1936,6 @@ def get_lesson_data(request, lesson_id):
             'description': lesson.description,
             'description_en': lesson.description_en or '',
             'description_kk': lesson.description_kk or '',
-            'difficulty_level': lesson.difficulty_level,
             'duration': lesson.duration,  # Теперь это свойство
             'has_video': bool(lesson.video),
             'has_pdf': bool(lesson.pdf_file),
