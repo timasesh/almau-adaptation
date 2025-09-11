@@ -33,20 +33,20 @@
         
         <div class="content-header">
             <div class="greeting">
-                <h1>{% trans "Обратная связь" %}</h1>
+                <h1>{% t "Обратная связь" %}</h1>
             </div>
         </div>
         
         <div class="feedback-content">
             <div class="feedback-description">
-                <p>{% trans "Если у вас есть предложения, замечания по работе сайта или вопросы — отправьте их через форму ниже. Все обращения направляются в HR отдел университета. Мы ответим как можно быстрее." %}</p>
+                <p>{% t "Если у вас есть предложения, замечания по работе сайта или вопросы — отправьте их через форму ниже. Все обращения направляются в HR отдел университета. Мы ответим как можно быстрее." %}</p>
                 
                 <!-- Кнопка IT поддержки -->
                 {% if contact_info.it_support_enabled and contact_info.it_support_url %}
                     <div class="it-support-section">
-                        <p>{% trans "По техническим вопросам (проблемы с компьютером, программным обеспечением, доступом к системам) обращайтесь в IT поддержку:" %}</p>
+                        <p>{% t "По техническим вопросам (проблемы с компьютером, программным обеспечением, доступом к системам) обращайтесь в IT поддержку:" %}</p>
                         <a href="{{ contact_info.it_support_url }}" target="_blank" class="it-support-btn">
-                            <i class="fas fa-headset me-2"></i>{% trans "IT Поддержка" %}
+                            <i class="fas fa-headset me-2"></i>{% t "IT Поддержка" %}
                         </a>
                     </div>
                 {% endif %}
@@ -66,7 +66,7 @@
                 
                 <!-- 1. Тип обращения -->
                 <div class="form-group">
-                    <label class="form-label">{% trans "1. Тип обращения" %} <span class="required">*</span></label>
+                    <label class="form-label">{% t "1. Тип обращения" %} <span class="required">*</span></label>
                     <div class="radio-group">
                         {% for value, label in type_choices %}
                             <label class="radio-option">
@@ -79,13 +79,13 @@
 
                 <!-- 2. Тема обращения -->
                 <div class="form-group">
-                    <label class="form-label" for="subject">{% trans "2. Тема обращения" %} <span class="required">*</span></label>
+                    <label class="form-label" for="subject">{% t "2. Тема обращения" %} <span class="required">*</span></label>
                     <div class="input-wrapper">
                         <input type="text" 
                                id="subject" 
                                name="subject" 
                                class="form-input" 
-                               placeholder="{% trans 'Введите тему своего обращения' %}"
+                               placeholder="{% t 'Введите тему своего обращения' %}"
                                required>
                         <i class="fas fa-edit input-icon"></i>
                     </div>
@@ -93,12 +93,12 @@
 
                 <!-- 3. Сообщение -->
                 <div class="form-group">
-                    <label class="form-label" for="message">{% trans "3. Сообщение" %} <span class="required">*</span></label>
+                    <label class="form-label" for="message">{% t "3. Сообщение" %} <span class="required">*</span></label>
                     <div class="textarea-wrapper">
                         <textarea id="message" 
                                   name="message" 
                                   class="form-textarea" 
-                                  placeholder="{% trans 'Опишите ваше обращение как можно подробнее...' %}"
+                                  placeholder="{% t 'Опишите ваше обращение как можно подробнее...' %}"
                                   rows="6"
                                   required></textarea>
                         <i class="fas fa-edit textarea-icon"></i>
@@ -107,7 +107,7 @@
 
                 <!-- 4. Прикрепить файл -->
                 <div class="form-group">
-                    <label class="form-label">{% trans "4. Прикрепите файл" %}</label>
+                    <label class="form-label">{% t "4. Прикрепите файл" %}</label>
                     <div class="file-upload-wrapper">
                         <input type="file" 
                                id="file" 
@@ -116,7 +116,7 @@
                                accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png">
                         <label for="file" class="file-upload-btn">
                             <i class="fas fa-upload"></i>
-                            {% trans "Загрузить файл" %}
+                            {% t "Загрузить файл" %}
                         </label>
                         <span class="file-name" id="fileName"></span>
                     </div>
@@ -124,7 +124,7 @@
 
                 <!-- 5. Ваши контакты -->
                 <div class="form-group">
-                    <label class="form-label">{% trans "5. Ваши контакты" %}</label>
+                    <label class="form-label">{% t "5. Ваши контакты" %}</label>
                     <div class="contacts-row">
                         <div class="contact-input">
                             <div class="input-wrapper">
@@ -132,7 +132,7 @@
                                        id="email" 
                                        name="email" 
                                        class="form-input" 
-                                       placeholder="{% trans 'Почта' %}"
+                                       placeholder="{% t 'Почта' %}"
                                        value="{{ user_email }}"
                                        required>
                                 <i class="fas fa-envelope input-icon"></i>
@@ -145,7 +145,7 @@
                                        id="phone" 
                                        name="phone" 
                                        class="form-input" 
-                                       placeholder="{% trans 'Номер телефона' %}">
+                                       placeholder="{% t 'Номер телефона' %}">
                                 <i class="fas fa-phone input-icon"></i>
                             </div>
                         </div>
@@ -156,7 +156,7 @@
                 <div class="form-actions">
                     <button type="submit" class="submit-btn">
                         <i class="fas fa-paper-plane"></i>
-                        {% trans "Отправить" %}
+                        {% t "Отправить" %}
                     </button>
                 </div>
             </form>
