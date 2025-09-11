@@ -1,0 +1,248 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход в Админ Панель - AlmaU</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/admin.css' %}">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html, body {
+            height: 100%;
+            margin: 0;
+            background: linear-gradient(135deg, #8bc5ff, #2f97ff);
+            /* устраняем возможный визуальный шов из-за различий фона у html/body */
+            background-attachment: fixed;
+            overflow-x: hidden;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .admin-login-container {
+            width: 100%;
+            max-width: 520px;
+            padding: 10px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .admin-login-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 4px 32px 0 rgba(44, 62, 80, 0.12);
+            backdrop-filter: blur(10px);
+        }
+        
+        .admin-login-header {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+        
+        .logo-container {
+            margin-bottom: 10px;
+        }
+        
+        .login-logo {
+            max-width: 200px;
+            height: auto;
+        }
+        
+        .admin-login-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 4px;
+        }
+        
+        .admin-login-subtitle {
+            font-size: 14px;
+            color: #6c7a89;
+            margin-bottom: 16px;
+        }
+        
+        .form-group {
+            margin-bottom: 16px;
+        }
+        
+        .admin-form-input {
+            width: 100%;
+            padding: 14px 20px;
+            border: 2px solid #e0e6ed;
+            border-radius: 15px;
+            font-size: 15px;
+            transition: all 0.4s;
+            background: rgba(255, 255, 255, 0.95);
+            color: #2c3e50;
+        }
+        
+        .admin-form-input:focus {
+            outline: none;
+            border-color: #00d4ff;
+            background: rgba(255, 255, 255, 1);
+            box-shadow: 0 0 0 4px rgba(0, 212, 255, 0.1);
+        }
+        
+        .admin-login-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #00d4ff, #0099cc);
+            color: white;
+            padding: 16px;
+            border: none;
+            border-radius: 15px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.4s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+        }
+        
+        .admin-login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 212, 255, 0.4);
+        }
+        
+        .admin-messages {
+            margin-top: 20px;
+        }
+        
+        .admin-message {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+        
+        .admin-message-error {
+            background: #fee;
+            color: #c33;
+            border: 1px solid #fcc;
+        }
+        
+        .admin-message-success {
+            background: #efe;
+            color: #3c3;
+            border: 1px solid #cfc;
+        }
+        
+        .admin-login-footer {
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        .admin-login-footer p {
+            color: #6c7a89;
+            margin-bottom: 12px;
+        }
+        
+        .back-to-site {
+            color: #00d4ff;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .back-to-site:hover {
+            text-decoration: underline;
+        }
+        
+        .page-logo-container {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 9999;
+        }
+        
+        .logo {
+            max-width: 120px;
+            height: auto;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-login-container">
+        <!-- Логотип в углу -->
+        <div class="page-logo-container">
+            <img src="{% static 'images/logo.png' %}" alt="AlmaU" class="logo">
+        </div>
+
+        <div class="admin-login-card">
+            <div class="admin-login-header">
+                <div class="logo-container">
+                    <img src="{% static 'images/adaptation_almau.png' %}" alt="AlmaU" class="login-logo">
+                </div>
+                <h1 class="admin-login-title">Панель Администратора</h1>
+                <p class="admin-login-subtitle">Авторизация для администраторов системы</p>
+            </div>
+
+            <form method="POST" class="admin-login-form">
+                {% csrf_token %}
+                <div class="form-group">
+                    <input type="text" 
+                           name="username" 
+                           class="admin-form-input" 
+                           placeholder="Имя пользователя"
+                           required>
+                </div>
+                
+                <div class="form-group">
+                    <input type="password" 
+                           name="password" 
+                           class="admin-form-input" 
+                           placeholder="Пароль"
+                           required>
+                </div>
+                
+                <button type="submit" class="admin-login-btn">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Войти в админ панель
+                </button>
+            </form>
+
+            <!-- Сообщения об ошибках -->
+            {% if messages %}
+                <div class="admin-messages">
+                    {% for message in messages %}
+                        <div class="admin-message admin-message-{{ message.tags }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            
+            <div class="admin-login-footer">
+                <p>
+                    <i class="fas fa-shield-alt"></i>
+                    Только для авторизованных администраторов
+                </p>
+                <a href="{% url 'main:login' %}" class="back-to-site">
+                    <i class="fas fa-arrow-left"></i>
+                    Вернуться на сайт
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

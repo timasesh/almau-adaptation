@@ -1,0 +1,361 @@
+{% extends 'main/admin/base.html' %}
+{% load static i18n %}
+
+{% block title %}Об университете - Админ-панель | ALMAU Adaptation{% endblock %}
+{% block heading %}Управление страницей "Об университете"{% endblock %}
+
+{% block extra_css %}
+<style>
+    .form-section {
+        background: white;
+        border-radius: 10px;
+        padding: 25px;
+        margin-bottom: 25px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        border: 1px solid #e9ecef;
+    }
+    
+    .form-section h3 {
+        color: #2c3e50;
+        border-bottom: 2px solid #3498db;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+    }
+    
+    .language-tabs {
+        border-bottom: 1px solid #dee2e6;
+        margin-bottom: 20px;
+    }
+    
+    .language-tabs .nav-link {
+        border: none;
+        color: #6c757d;
+        font-weight: 500;
+    }
+    
+    .language-tabs .nav-link.active {
+        color: #3498db;
+        border-bottom: 2px solid #3498db;
+        background: none;
+    }
+    
+    .form-group {
+        margin-bottom: 20px;
+    }
+    
+    .form-label {
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 8px;
+    }
+    
+    .form-control, .form-select {
+        border: 1px solid #ced4da;
+        border-radius: 8px;
+        padding: 12px 15px;
+        transition: all 0.3s ease;
+    }
+    
+    .form-control:focus, .form-select:focus {
+        border-color: #3498db;
+        box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+    }
+    
+    /* Стили для простых текстовых полей */
+    .simple-textarea {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-size: 14px;
+        line-height: 1.6;
+        resize: vertical;
+        min-height: 200px;
+        max-height: 400px;
+        white-space: pre-wrap;
+    }
+    
+    .simple-textarea:focus {
+        border-color: #3498db;
+        box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+    }
+    
+    .btn-primary {
+        background: #3498db;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-primary:hover {
+        background: #2980b9;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+    }
+    
+    .image-preview {
+        max-width: 200px;
+        max-height: 150px;
+        border-radius: 8px;
+        border: 2px solid #e9ecef;
+    }
+    
+    .current-image {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 8px;
+        border: 1px solid #dee2e6;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- История университета -->
+    <div class="col-12">
+        <div class="form-section">
+            <h3><i class="fas fa-history me-2"></i>История университета</h3>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="hidden" name="history" value="1">
+                
+                <!-- Языковые вкладки -->
+                <ul class="nav nav-tabs language-tabs" id="historyTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="history-ru-tab" data-bs-toggle="tab" data-bs-target="#history-ru" type="button" role="tab">
+                            <i class="fas fa-flag me-1"></i>Русский
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="history-en-tab" data-bs-toggle="tab" data-bs-target="#history-en" type="button" role="tab">
+                            <i class="fas fa-flag me-1"></i>English
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="history-kk-tab" data-bs-toggle="tab" data-bs-target="#history-kk" type="button" role="tab">
+                            <i class="fas fa-flag me-1"></i>Қазақша
+                        </button>
+                    </li>
+                </ul>
+                
+                <!-- Содержимое вкладок -->
+                <div class="tab-content" id="historyTabContent">
+                    <!-- Русский -->
+                    <div class="tab-pane fade show active" id="history-ru" role="tabpanel">
+                        <div class="form-group">
+                            <label class="form-label">Текст истории (Русский)</label>
+                            <textarea class="form-control simple-textarea" name="history_text" rows="10" placeholder="Введите текст истории университета на русском языке">{{ history_obj.text|default:'' }}</textarea>
+                            <small class="form-text text-muted">Простой текст без форматирования. Переносы строк сохраняются.</small>
+                        </div>
+                    </div>
+                    
+                    <!-- English -->
+                    <div class="tab-pane fade" id="history-en" role="tabpanel">
+                        <div class="form-group">
+                            <label class="form-label">Текст истории (English)</label>
+                            <textarea class="form-control simple-textarea" name="history_text_en" rows="10" placeholder="Enter university history text in English">{{ history_obj.text_en|default:'' }}</textarea>
+                            <small class="form-text text-muted">Plain text without formatting. Line breaks are preserved.</small>
+                        </div>
+                    </div>
+                    
+                    <!-- Қазақша -->
+                    <div class="tab-pane fade" id="history-kk" role="tabpanel">
+                        <div class="form-group">
+                            <label class="form-label">Текст истории (Қазақша)</label>
+                            <textarea class="form-control simple-textarea" name="history_text_kk" rows="10" placeholder="Университет тарихының мәтінін қазақ тілінде енгізіңіз">{{ history_obj.text_kk|default:'' }}</textarea>
+                            <small class="form-text text-muted">Пішімсіз қарапайым мәтін. Жол бөлімдері сақталады.</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Изображение -->
+                <div class="form-group">
+                    <label class="form-label">Изображение истории</label>
+                    {% if history_obj.image %}
+                        <div class="current-image mb-3">
+                            <p class="mb-2"><strong>Текущее изображение:</strong></p>
+                            <img src="{{ history_obj.image.url }}" alt="История университета" class="image-preview">
+                        </div>
+                    {% endif %}
+                    <input type="file" class="form-control" name="history_image" accept="image/*">
+                    <small class="form-text text-muted">Поддерживаемые форматы: JPG, PNG, GIF. Рекомендуемый размер: 800x600px</small>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save me-2"></i>Сохранить историю
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Миссия университета -->
+    <div class="col-12">
+        <div class="form-section">
+            <h3><i class="fas fa-mountain me-2"></i>Миссия университета</h3>
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="mission" value="1">
+                
+                <!-- Языковые вкладки -->
+                <ul class="nav nav-tabs language-tabs" id="missionTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="mission-ru-tab" data-bs-toggle="tab" data-bs-target="#mission-ru" type="button" role="tab">
+                            <i class="fas fa-flag me-1"></i>Русский
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="mission-en-tab" data-bs-toggle="tab" data-bs-target="#mission-en" type="button" role="tab">
+                            <i class="fas fa-flag me-1"></i>English
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="mission-kk-tab" data-bs-toggle="tab" data-bs-target="#mission-kk" type="button" role="tab">
+                            <i class="fas fa-flag me-1"></i>Қазақша
+                        </button>
+                    </li>
+                </ul>
+                
+                <!-- Содержимое вкладок -->
+                <div class="tab-content" id="missionTabContent">
+                    <!-- Русский -->
+                    <div class="tab-pane fade show active" id="mission-ru" role="tabpanel">
+                        <div class="form-group">
+                            <label class="form-label">Текст миссии (Русский)</label>
+                            <textarea class="form-control" name="mission_text" rows="4" placeholder="Введите миссию университета на русском языке" maxlength="500">{{ mission_obj.text|default:'' }}</textarea>
+                            <small class="form-text text-muted">Максимум 500 символов</small>
+                        </div>
+                    </div>
+                    
+                    <!-- English -->
+                    <div class="tab-pane fade" id="mission-en" role="tabpanel">
+                        <div class="form-group">
+                            <label class="form-label">Текст миссии (English)</label>
+                            <textarea class="form-control" name="mission_text_en" rows="4" placeholder="Enter university mission in English" maxlength="500">{{ mission_obj.text_en|default:'' }}</textarea>
+                            <small class="form-text text-muted">Maximum 500 characters</small>
+                        </div>
+                    </div>
+                    
+                    <!-- Қазақша -->
+                    <div class="tab-pane fade" id="mission-kk" role="tabpanel">
+                        <div class="form-group">
+                            <label class="form-label">Текст миссии (Қазақша)</label>
+                            <textarea class="form-control" name="mission_text_kk" rows="4" placeholder="Университет миссиясын қазақ тілінде енгізіңіз" maxlength="500">{{ mission_obj.text_kk|default:'' }}</textarea>
+                            <small class="form-text text-muted">Максимум 500 таңба</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save me-2"></i>Сохранить миссию
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Ценности университета -->
+    <div class="col-12">
+        <div class="form-section">
+            <h3><i class="fas fa-gem me-2"></i>Ценности университета</h3>
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="values" value="1">
+                
+                <!-- Языковые вкладки -->
+                <ul class="nav nav-tabs language-tabs" id="valuesTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="values-ru-tab" data-bs-toggle="tab" data-bs-target="#values-ru" type="button" role="tab">
+                            <i class="fas fa-flag me-1"></i>Русский
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="values-en-tab" data-bs-toggle="tab" data-bs-target="#values-en" type="button" role="tab">
+                            <i class="fas fa-flag me-1"></i>English
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="values-kk-tab" data-bs-toggle="tab" data-bs-target="#values-kk" type="button" role="tab">
+                            <i class="fas fa-flag me-1"></i>Қазақша
+                        </button>
+                    </li>
+                </ul>
+                
+                <!-- Содержимое вкладок -->
+                <div class="tab-content" id="valuesTabContent">
+                    <!-- Русский -->
+                    <div class="tab-pane fade show active" id="values-ru" role="tabpanel">
+                        <div class="form-group">
+                            <label class="form-label">Текст ценностей (Русский)</label>
+                            <textarea class="form-control" name="values_text" rows="4" placeholder="Введите ценности университета на русском языке" maxlength="500">{{ values_obj.text|default:'' }}</textarea>
+                            <small class="form-text text-muted">Максимум 500 символов</small>
+                        </div>
+                    </div>
+                    
+                    <!-- English -->
+                    <div class="tab-pane fade" id="values-en" role="tabpanel">
+                        <div class="form-group">
+                            <label class="form-label">Текст ценностей (English)</label>
+                            <textarea class="form-control" name="values_text_en" rows="4" placeholder="Enter university values in English" maxlength="500">{{ values_obj.text_en|default:'' }}</textarea>
+                            <small class="form-text text-muted">Maximum 500 characters</small>
+                        </div>
+                    </div>
+                    
+                    <!-- Қазақша -->
+                    <div class="tab-pane fade" id="values-kk" role="tabpanel">
+                        <div class="form-group">
+                            <label class="form-label">Текст ценностей (Қазақша)</label>
+                            <textarea class="form-control" name="values_text_kk" rows="4" placeholder="Университет құндылықтарын қазақ тілінде енгізіңіз" maxlength="500">{{ values_obj.text_kk|default:'' }}</textarea>
+                            <small class="form-text text-muted">Максимум 500 таңба</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save me-2"></i>Сохранить ценности
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Ссылка на управление руководством -->
+    <div class="col-12">
+        <div class="form-section">
+            <h3><i class="fas fa-user-tie me-2"></i>Управление руководством университета</h3>
+            <p class="text-muted mb-3">Для управления руководителями университета перейдите в отдельный раздел.</p>
+            <a href="{% url 'main:admin_leaders' %}" class="btn btn-primary">
+                <i class="fas fa-users me-1"></i>Управление руководством
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Модальные окна удалены - управление руководителями перенесено в отдельный раздел -->
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    $(document).ready(function() {
+        // Автоматическое переключение вкладок при отправке формы
+        $('form').on('submit', function() {
+            const activeTab = $(this).find('.nav-link.active').attr('id');
+            localStorage.setItem('activeTab', activeTab);
+        });
+        
+        // Восстановление активной вкладки
+        const savedTab = localStorage.getItem('activeTab');
+        if (savedTab) {
+            $('#' + savedTab).tab('show');
+            localStorage.removeItem('activeTab');
+        }
+        
+        // Автоматическое изменение размера текстовых полей
+        $('textarea.simple-textarea').each(function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+        
+        $('textarea.simple-textarea').on('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+    });
+</script>
+{% endblock %}

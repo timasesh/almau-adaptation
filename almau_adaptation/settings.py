@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-&2lc)agzzmh11&t^6*%!cga7g2kj-ek((@6%()904rm&)m3$b7
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'testserver']
 
 
 # Application definition
@@ -38,6 +38,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'main',
 
+    # ckeditor
+    'ckeditor',
+    'ckeditor_uploader',
+
     # allauth apps
     'allauth',
     'allauth.account',
@@ -49,6 +53,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -70,6 +75,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'main.context_processors.language_context',
             ],
         },
     },
@@ -113,9 +119,20 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'ru'
 
+LANGUAGES = [
+    ('ru', 'Русский'),
+    ('en', 'English'),
+    ('kk', 'Қазақша'),
+]
+
+LOCALE_PATHS = [
+    BASE_DIR / 'locale',
+]
+
 TIME_ZONE = 'Asia/Almaty'
 
 USE_I18N = True
+USE_L10N = True
 
 USE_TZ = True
 
@@ -191,4 +208,30 @@ SOCIALACCOUNT_PROVIDERS = {
             'key': ''
         }
     }
+}
+
+# Настройки безопасности для iframe
+X_FRAME_OPTIONS = 'SAMEORIGIN'
+
+# CKEditor settings
+CKEDITOR_UPLOAD_PATH = "uploads/"
+CKEDITOR_IMAGE_BACKEND = "pillow"
+
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'Custom',
+        'toolbar_Custom': [
+            ['Bold', 'Italic', 'Underline'],
+            ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
+            ['Link', 'Unlink'],
+            ['RemoveFormat', 'Source']
+        ],
+        'height': 300,
+        'width': '100%',
+    },
+    'full': {
+        'toolbar': 'Full',
+        'height': 400,
+        'width': '100%',
+    },
 }

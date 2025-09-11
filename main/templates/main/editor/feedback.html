@@ -1,0 +1,473 @@
+{% load static i18n %}
+<!DOCTYPE html>
+<html lang="{{ request.LANGUAGE_CODE|default:'ru' }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Обратная связь | Редактор ALMAU</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: #f8fafc;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .navbar-brand {
+            font-weight: 600;
+            color: white !important;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px 15px 0 0 !important;
+            border: none;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 10px;
+            padding: 10px 20px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'main:editor_dashboard' %}">
+                <img src="{% static 'images/logo-white.png' %}" alt="ALMAU Logo" height="60" class="me-2">
+            </a>
+            <div class="navbar-nav ms-auto">
+                <span class="navbar-text me-3">
+                    <i class="fas fa-user-circle me-1"></i>{{ editor.full_name }}
+                </span>
+                <a class="nav-link" href="{% url 'main:editor_logout' %}">
+                    <i class="fas fa-sign-out-alt me-1"></i>Выйти
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="mb-3">
+            <a href="{% url 'main:editor_dashboard' %}?tab=feedback" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-1"></i> Вернуться назад
+            </a>
+        </div>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    <i class="fas fa-{% if message.tags == 'error' %}exclamation-triangle{% elif message.tags == 'success' %}check-circle{% else %}info-circle{% endif %} me-2"></i>
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+<div class="row">
+    <div class="col-12">
+        <!-- Feedback List -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-comments me-2"></i>Обратная связь</h5>
+            </div>
+            <div class="card-body">
+                {% if feedbacks %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Пользователь</th>
+                                    <th>Тип</th>
+                                    <th>Получатель</th>
+                                    <th>Тема</th>
+                                    <th>Сообщение</th>
+                                    <th>Дата</th>
+                                    <th>Статус</th>
+                                    <th>Действия</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for feedback in feedbacks %}
+                                    <tr>
+                                        <td>{{ feedback.id }}</td>
+                                        <td>
+                                            <div class="user-name">{{ feedback.user.get_full_name|default:feedback.user.username }}</div>
+                                            {% if feedback.email %}
+                                                <div class="user-email">{{ feedback.email }}</div>
+                                            {% endif %}
+                                            {% if feedback.phone %}
+                                                <div class="user-phone">{{ feedback.phone }}</div>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if feedback.feedback_type == 'suggestion' %}
+                                                <span class="badge bg-success">Предложение</span>
+                                            {% elif feedback.feedback_type == 'question' %}
+                                                <span class="badge bg-info">Вопрос</span>
+                                            {% else %}
+                                                <span class="badge bg-secondary">{{ feedback.get_feedback_type_display }}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if feedback.recipient == 'hr' %}
+                                                <span class="badge bg-primary">HR</span>
+                                            {% elif feedback.recipient == 'it' %}
+                                                <span class="badge bg-info">IT</span>
+                                            {% else %}
+                                                <span class="badge bg-secondary">{{ feedback.get_recipient_display }}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <div class="subject-title">{{ feedback.subject }}</div>
+                                        </td>
+                                        <td>
+                                            <div class="subject-preview">
+                                                {{ feedback.message|truncatechars:100 }}
+                                            </div>
+                                            {% if feedback.file %}
+                                                <div class="mt-1">
+                                                    <a href="{{ feedback.file.url }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                                        <i class="fas fa-file-download"></i> Файл
+                                                    </a>
+                                                </div>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <div>{{ feedback.created_at|date:"d.m.Y" }}</div>
+                                            <div class="text-muted small">{{ feedback.created_at|date:"H:i" }}</div>
+                                        </td>
+                                        <td>
+                                            {% if feedback.status == 'new' %}
+                                                <span class="badge bg-primary">Новое</span>
+                                            {% elif feedback.status == 'in_progress' %}
+                                                <span class="badge bg-warning">В работе</span>
+                                            {% elif feedback.status == 'resolved' %}
+                                                <span class="badge bg-success">Решено</span>
+                                            {% elif feedback.status == 'closed' %}
+                                                <span class="badge bg-secondary">Закрыто</span>
+                                            {% else %}
+                                                <span class="badge bg-secondary">{{ feedback.get_status_display }}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <div class="action-buttons">
+                                                <!-- Quick Actions -->
+                                                {% if feedback.status == 'new' %}
+                                                    <form method="post" style="display: inline;">
+                                                        {% csrf_token %}
+                                                        <input type="hidden" name="feedback_id" value="{{ feedback.id }}">
+                                                        <input type="hidden" name="status" value="in_progress">
+                                                        <button type="submit" class="btn btn-sm btn-warning" title="Взять в работу">
+                                                            <i class="fas fa-play"></i>
+                                                        </button>
+                                                    </form>
+                                                {% endif %}
+                                                
+                                                {% if feedback.status == 'in_progress' %}
+                                                    <form method="post" style="display: inline;">
+                                                        {% csrf_token %}
+                                                        <input type="hidden" name="feedback_id" value="{{ feedback.id }}">
+                                                        <input type="hidden" name="status" value="resolved">
+                                                        <button type="submit" class="btn btn-sm btn-success" title="Решено">
+                                                            <i class="fas fa-check"></i>
+                                                        </button>
+                                                    </form>
+                                                {% endif %}
+                                                
+                                                {% if feedback.status == 'resolved' %}
+                                                    <form method="post" style="display: inline;">
+                                                        {% csrf_token %}
+                                                        <input type="hidden" name="feedback_id" value="{{ feedback.id }}">
+                                                        <input type="hidden" name="status" value="closed">
+                                                        <button type="submit" class="btn btn-sm btn-secondary" title="Закрыть">
+                                                            <i class="fas fa-times"></i>
+                                                        </button>
+                                                    </form>
+                                                {% endif %}
+                                                
+                                                <!-- View Button -->
+                                                <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#feedbackModal{{ feedback.id }}" title="Просмотр">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                
+                                                <!-- Status Dropdown -->
+                                                <div class="dropdown d-inline">
+                                                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                                        <i class="fas fa-cog"></i>
+                                                    </button>
+                                                    <ul class="dropdown-menu">
+                                                        {% if feedback.status != 'new' %}
+                                                            <li>
+                                                                <form method="post" class="dropdown-item-form">
+                                                                    {% csrf_token %}
+                                                                    <input type="hidden" name="feedback_id" value="{{ feedback.id }}">
+                                                                    <input type="hidden" name="status" value="new">
+                                                                    <button type="submit" class="dropdown-item">
+                                                                        <i class="fas fa-arrow-left me-2"></i>Новое
+                                                                    </button>
+                                                                </form>
+                                                            </li>
+                                                        {% endif %}
+                                                        {% if feedback.status != 'in_progress' %}
+                                                            <li>
+                                                                <form method="post" class="dropdown-item-form">
+                                                                    {% csrf_token %}
+                                                                    <input type="hidden" name="feedback_id" value="{{ feedback.id }}">
+                                                                    <input type="hidden" name="status" value="in_progress">
+                                                                    <button type="submit" class="dropdown-item">
+                                                                        <i class="fas fa-play me-2"></i>В работе
+                                                                    </button>
+                                                                </form>
+                                                            </li>
+                                                        {% endif %}
+                                                        {% if feedback.status != 'resolved' %}
+                                                            <li>
+                                                                <form method="post" class="dropdown-item-form">
+                                                                    {% csrf_token %}
+                                                                    <input type="hidden" name="feedback_id" value="{{ feedback.id }}">
+                                                                    <input type="hidden" name="status" value="resolved">
+                                                                    <button type="submit" class="dropdown-item">
+                                                                        <i class="fas fa-check me-2"></i>Решено
+                                                                    </button>
+                                                                </form>
+                                                            </li>
+                                                        {% endif %}
+                                                        {% if feedback.status != 'closed' %}
+                                                            <li>
+                                                                <form method="post" class="dropdown-item-form">
+                                                                    {% csrf_token %}
+                                                                    <input type="hidden" name="feedback_id" value="{{ feedback.id }}">
+                                                                    <input type="hidden" name="status" value="closed">
+                                                                    <button type="submit" class="dropdown-item">
+                                                                        <i class="fas fa-times me-2"></i>Закрыто
+                                                                    </button>
+                                                                </form>
+                                                            </li>
+                                                        {% endif %}
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-comments fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">Обращений пока нет</h5>
+                        <p class="text-muted">Когда пользователи отправят обращения, они появятся здесь</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Feedback Modals -->
+{% for feedback in feedbacks %}
+    <div class="modal fade" id="feedbackModal{{ feedback.id }}" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-comment-alt me-2"></i>Обращение #{{ feedback.id }}
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong>Пользователь:</strong><br>
+                            {{ feedback.user.get_full_name|default:feedback.user.username }}
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Дата:</strong><br>
+                            {{ feedback.created_at|date:"d.m.Y H:i" }}
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong>Email:</strong><br>
+                            {{ feedback.email|default:"Не указан" }}
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Телефон:</strong><br>
+                            {{ feedback.phone|default:"Не указан" }}
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong>Тип:</strong><br>
+                            {{ feedback.get_feedback_type_display }}
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Получатель:</strong><br>
+                            {{ feedback.get_recipient_display }}
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <strong>Тема:</strong><br>
+                        {{ feedback.subject }}
+                    </div>
+                    <div class="mb-3">
+                        <strong>Сообщение:</strong><br>
+                        <div class="border p-3 rounded" style="background-color: #f8f9fa;">
+                            {{ feedback.message|linebreaks }}
+                        </div>
+                    </div>
+                    {% if feedback.file %}
+                        <div class="mb-3">
+                            <strong>Прикрепленный файл:</strong><br>
+                            <a href="{{ feedback.file.url }}" target="_blank" class="btn btn-outline-primary">
+                                <i class="fas fa-download me-2"></i>Скачать файл
+                            </a>
+                        </div>
+                    {% endif %}
+                    <div class="mb-3">
+                        <strong>Статус:</strong><br>
+                        {% if feedback.status == 'new' %}
+                            <span class="badge bg-primary fs-6">Новое</span>
+                        {% elif feedback.status == 'in_progress' %}
+                            <span class="badge bg-warning fs-6">В работе</span>
+                        {% elif feedback.status == 'resolved' %}
+                            <span class="badge bg-success fs-6">Решено</span>
+                        {% elif feedback.status == 'closed' %}
+                            <span class="badge bg-secondary fs-6">Закрыто</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endfor %}
+
+<style>
+/* Mobile responsive styles for feedback page */
+@media (max-width: 768px) {
+    .card-body {
+        padding: 15px;
+    }
+    
+    .table-responsive {
+        font-size: 12px;
+    }
+    
+    .table th,
+    .table td {
+        padding: 8px 4px;
+        vertical-align: middle;
+    }
+    
+    /* Hide less important columns on mobile */
+    .table th:nth-child(4),
+    .table td:nth-child(4),
+    .table th:nth-child(7),
+    .table td:nth-child(7) {
+        display: none;
+    }
+    
+    /* Make user info more readable */
+    .user-name {
+        font-size: 14px;
+        font-weight: 600;
+        word-break: break-word;
+    }
+    
+    .user-email,
+    .user-phone {
+        font-size: 11px;
+        color: #666;
+    }
+    
+    /* Make feedback subject more readable */
+    .subject-title {
+        font-size: 13px;
+        font-weight: 600;
+        word-break: break-word;
+    }
+    
+    .subject-preview {
+        font-size: 11px;
+        color: #666;
+    }
+    
+    /* Make action buttons touch-friendly */
+    .action-buttons {
+        display: flex;
+        gap: 5px;
+        flex-wrap: wrap;
+    }
+    
+    .action-buttons .btn {
+        padding: 6px 10px;
+        font-size: 12px;
+        min-width: 35px;
+    }
+    
+    /* Adjust badges */
+    .badge {
+        font-size: 10px;
+        padding: 4px 6px;
+    }
+}
+
+.dropdown-item-form {
+    margin: 0;
+    padding: 0;
+}
+
+.dropdown-item-form .dropdown-item {
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+    padding: 0.25rem 1rem;
+}
+
+.dropdown-item-form .dropdown-item:hover {
+    background-color: #f8f9fa;
+}
+</style>
+
+    </div> <!-- container -->
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Auto-hide alerts after 5 seconds
+        setTimeout(function() {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            });
+        }, 5000);
+    </script>
+</body>
+</html>

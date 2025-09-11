@@ -1,81 +1,30 @@
 {% extends 'main/base.html' %}
 {% load static %}
+{% load i18n %}
+{% load translation_tags %}
 
 {% block title %}Об Университете - Adaptation AlmaU{% endblock %}
 
 {% block content %}
 <div class="dashboard-container">
-    <!-- Sidebar -->
-    <div class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <div class="logo-container">
-                <img src="{% static 'images/logo.png' %}" alt="AlmaU" class="logo">
-            </div>
-            <button class="sidebar-toggle" id="sidebarToggle">
-                <i class="fas fa-angle-double-left"></i>
-            </button>
-        </div>
-        
-        <nav class="sidebar-nav">
-            <ul class="nav-list">
-                <li class="nav-item">
-                    <a href="{% url 'main:dashboard' %}" class="nav-link">
-                        <i class="fas fa-home"></i>
-                        <span class="nav-text">Главная</span>
-                    </a>
-                </li>
-                <li class="nav-item active">
-                    <a href="{% url 'main:about' %}" class="nav-link active-nav-link" onclick="return handleActiveNavClick(event, this);">
-                        <i class="fas fa-university"></i>
-                        <span class="nav-text">Об университете</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{% url 'main:documents' %}" class="nav-link">
-                        <i class="fas fa-file-alt"></i>
-                        <span class="nav-text">Документация</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{% url 'main:processes_instructions' %}" class="nav-link">
-                        <i class="fas fa-cogs"></i>
-                        <span class="nav-text">Процессы и инструкции</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{% url 'main:map' %}" class="nav-link">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <span class="nav-text">Контакты и карта</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="fas fa-comments"></i>
-                        <span class="nav-text">Обратная связь</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="fas fa-question-circle"></i>
-                        <span class="nav-text">Часто задаваемые вопросы</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
-        
-        <div class="sidebar-footer">
-            <div class="user-menu">
-                <button class="settings-btn">
-                    <i class="fas fa-cog"></i>
-                    <span class="nav-text">Настройки</span>
-                </button>
-                <a href="{% url 'main:logout' %}" class="logout-btn">
-                    <i class="fas fa-sign-out-alt"></i>
-                    <span class="nav-text">Выход</span>
-                </a>
-            </div>
-        </div>
-    </div>
+    <script>
+    // Немедленное применение темы
+    (function() {
+        const savedTheme = localStorage.getItem('selectedTheme') || 'light';
+        if (savedTheme === 'dark') {
+            document.documentElement.classList.add('theme-dark');
+            document.body.classList.add('theme-dark');
+            document.documentElement.style.backgroundColor = '#1a1a1a';
+            document.body.style.backgroundColor = '#1a1a1a';
+        } else {
+            document.documentElement.classList.add('theme-light');
+            document.body.classList.add('theme-light');
+            document.documentElement.style.backgroundColor = '#ffffff';
+            document.body.style.backgroundColor = '#ffffff';
+        }
+    })();
+    </script>
+    {% include 'main/sidebar.html' %}
     
     <!-- Main content -->
     <div class="main-content" id="mainContent">
@@ -84,17 +33,22 @@
         
         <div class="content-header">
             <div class="greeting">
-                <h1>Об Университете</h1>
+                <h1>{% trans "Об университете" %}</h1>
             </div>
         </div>
         
         <div class="about-content">
+            {% load static %}
             <!-- История -->
             <div class="history-section">
-                <h2>История</h2>
+                <h2>{% trans "История" %}</h2>
                 <div class="history-content">
                     <div class="history-text">
-                        <p>Алматинский университет менеджмента (AlmaU) был основан в 1988 году как частное высшее учебное заведение. За более чем 35 лет своего существования университет стал одним из ведущих вузов Казахстана в области бизнес-образования и управления. AlmaU первым в Центральной Азии получил международную аккредитацию EFMD и входит в топ-1000 мировых университетов по рейтингу QS World University Rankings. Университет выпустил более 30,000 студентов, многие из которых стали успешными предпринимателями, государственными деятелями и руководителями крупных компаний.</p>
+                        {% if history_text %}
+                            <p class="history-paragraph">{{ history_text|linebreaks }}</p>
+                        {% else %}
+                            <p>{% trans "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum" %}</p>
+                        {% endif %}
                     </div>
                     <div class="history-image">
                         <img src="{% static 'images/almau.png' %}" alt="Здание AlmaU">
@@ -106,38 +60,64 @@
             <div class="mission-values">
                 <div class="mission-card">
                     <div class="circle-icon mission-icon">
-                        <i class="fas fa-mountain"></i>
+                        <img src="{% static 'images/миссия.png' %}" alt="Миссия" class="custom-icon light-theme-icon">
+                        <img src="{% static 'images/миссия-t.png' %}" alt="Миссия" class="custom-icon dark-theme-icon">
                     </div>
-                    <h3>Миссия</h3>
-                    <p>Мы улучшаем мир посредством образования, исследований и предпринимательства.</p>
+                    <h3>{% trans "Миссия" %}</h3>
+                    {% if mission_text %}
+                        <p>{{ mission_text }}</p>
+                    {% else %}
+                        <p>{% trans "Миссия университета - подготовка высококвалифицированных специалистов для инновационной экономики Казахстана" %}</p>
+                    {% endif %}
                 </div>
                 
                 <div class="values-card">
                     <div class="circle-icon values-icon">
-                        <i class="fas fa-gem"></i>
+                        <img src="{% static 'images/ценности.png' %}" alt="Ценности" class="custom-icon light-theme-icon">
+                        <img src="{% static 'images/ценности-t.png' %}" alt="Ценности" class="custom-icon dark-theme-icon">
                     </div>
-                    <h3>Ценности</h3>
-                    <p>Лидерство, Предпринимательство, Честность, Устойчивое развитие, Ответственность</p>
+                    <h3>{% trans "Ценности" %}</h3>
+                    {% if values_text %}
+                        <p>{{ values_text }}</p>
+                    {% else %}
+                        <p>{% trans "Наши ценности: качество образования, инновации, международное сотрудничество и развитие личности" %}</p>
+                    {% endif %}
                 </div>
             </div>
             
             <!-- Руководство -->
             <div class="leadership-section">
-                <h2>Руководство Университета</h2>
+                <h2>{% trans "Руководство Университета" %}</h2>
                 <div class="leadership-cards">
-                    <div class="leader-card">
-                        <div class="leader-avatar">
-                            <i class="fas fa-user"></i>
+                    {% if leaders %}
+                        {% for leader in leaders %}
+                            <div class="leader-card">
+                                <div class="leader-avatar">
+                                    {% if leader.photo %}
+                                        <img src="{{ leader.photo.url }}" alt="{{ leader.full_name }}" class="leader-photo">
+                                    {% else %}
+                                        <i class="fas fa-user"></i>
+                                    {% endif %}
+                                </div>
+                                <h3>{{ leader.get_role_display }}</h3>
+                                <p class="leader-name">{{ leader.full_name }}</p>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="leader-card">
+                            <div class="leader-avatar">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <h3>{% trans "Ректор" %}</h3>
                         </div>
-                        <h3>Имя Ректора</h3>
-                    </div>
-                    
-                    <div class="leader-card">
-                        <div class="leader-avatar">
-                            <i class="fas fa-user"></i>
+                        
+                        <div class="leader-card">
+                            <div class="leader-avatar">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <h3>{% trans "Проректор" %}</h3>
                         </div>
-                        <h3>Имя Проректора</h3>
-                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -145,6 +125,16 @@
 </div>
 
 <style>
+/* Шрифт страницы Об университете */
+@font-face {
+    font-family: 'Helvetica Neue';
+    src: local('Helvetica Neue'), local('HelveticaNeue');
+    font-display: swap;
+}
+
+.about-content, .about-content * {
+    font-family: 'Helvetica Neue', Arial, Helvetica, sans-serif !important;
+}
 /* Фиксированный логотип AlmaUni */
 .fixed-almau-logo {
     position: fixed !important;
@@ -195,6 +185,9 @@
 
 .history-text {
     flex: 1;
+    max-width: 60%; /* Ограничиваем ширину текста */
+    word-wrap: break-word; /* Перенос длинных слов */
+    overflow-wrap: break-word; /* Современный способ переноса */
 }
 
 .history-text p {
@@ -202,6 +195,9 @@
     line-height: 1.6;
     color: #000000;
     text-align: justify;
+    word-wrap: break-word; /* Перенос длинных слов */
+    overflow-wrap: break-word; /* Современный способ переноса */
+    max-width: 100%; /* Текст не может быть шире контейнера */
 }
 
 .history-image {
@@ -224,22 +220,66 @@
     justify-content: center;
 }
 
+/* Мобильная версия для миссии и ценностей */
+@media (max-width: 768px) {
+    .mission-values {
+        flex-direction: column;
+        gap: 40px;
+        align-items: center;
+    }
+    
+    .mission-card, .values-card {
+        max-width: 300px;
+    }
+    
+    .circle-icon {
+        width: 120px;
+        height: 120px;
+    }
+}
+
 .mission-card, .values-card {
     text-align: center;
     max-width: 400px;
 }
 
 .circle-icon {
-    width: 120px;
-    height: 120px;
+    width: 150px;
+    height: 150px;
     border-radius: 50%;
-    background: #1976D2;
+    background: transparent;
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 0 auto 20px;
     color: white;
     font-size: 40px;
+    overflow: hidden;
+    border: none;
+}
+
+.custom-icon {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Иконки для светлой и темной темы */
+.light-theme-icon {
+    display: block;
+}
+
+.dark-theme-icon {
+    display: none;
+}
+
+/* Темная тема */
+[data-theme="dark"] .light-theme-icon {
+    display: none;
+}
+
+[data-theme="dark"] .dark-theme-icon {
+    display: block;
 }
 
 .mission-card h3, .values-card h3 {
@@ -254,6 +294,9 @@
     line-height: 1.6;
     color: #000000;
     text-align: center;
+    word-wrap: break-word; /* Перенос длинных слов */
+    overflow-wrap: break-word; /* Современный способ переноса */
+    max-width: 100%; /* Текст не может быть шире контейнера */
 }
 
 /* Руководство */
@@ -295,7 +338,21 @@
 .leader-card h3 {
     font-size: 24px;
     font-weight: 600;
-    color: #000000;
+    color: #333;
+}
+
+.leader-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.leader-name {
+    margin-top: 8px;
+    font-size: 14px;
+    color: #666;
+    text-align: center;
 }
 
 /* Responsive */
@@ -318,5 +375,96 @@
         gap: 40px;
     }
 }
+
+/* Темная тема */
+@media (prefers-color-scheme: dark) {
+    .about-content .history-section h2 {
+        color: white !important;
+    }
+    
+    .about-content .leadership-section h2 {
+        color: white !important;
+    }
+    
+    .about-content .leader-card h3 {
+        color: white !important;
+    }
+}
+
+/* Светлая тема */
+@media (prefers-color-scheme: light) {
+    .about-content .history-section h2 {
+        color: #333333 !important;
+    }
+    
+    .about-content .leadership-section h2 {
+        color: #333333 !important;
+    }
+    
+    .about-content .leader-card h3 {
+        color: #000000 !important;
+    }
+}
+
+/* Принудительное переопределение цветов */
+body.theme-dark .about-content .history-section h2,
+body.theme-dark .about-content .leadership-section h2,
+body.theme-dark .about-content .leader-card h3,
+body.theme-dark .about-content .leader-name {
+    color: white !important;
+}
+
+body.theme-light .about-content .leader-name {
+    color: #666 !important;
+}
+
+body.theme-light .about-content .history-section h2,
+body.theme-light .about-content .leadership-section h2,
+body.theme-light .about-content .leader-card h3 {
+    color: #333333 !important;
+}
+
+body.theme-light .about-content .leader-card h3 {
+    color: #000000 !important;
+}
 </style>
+
+<script>
+// Принудительное применение цветов при загрузке страницы
+document.addEventListener('DOMContentLoaded', function() {
+    function applyThemeColors() {
+        const body = document.body;
+        const historyH2 = document.querySelector('.history-section h2');
+        const leadershipH2 = document.querySelector('.leadership-section h2');
+        const leaderH3s = document.querySelectorAll('.leader-card h3');
+        
+        if (body.classList.contains('theme-dark')) {
+            if (historyH2) historyH2.style.color = 'white';
+            if (leadershipH2) leadershipH2.style.color = 'white';
+            leaderH3s.forEach(h3 => h3.style.color = 'white');
+        } else {
+            if (historyH2) historyH2.style.color = '#333333';
+            if (leadershipH2) leadershipH2.style.color = '#333333';
+            leaderH3s.forEach(h3 => h3.style.color = '#000000');
+        }
+    }
+    
+    // Применяем цвета сразу
+    applyThemeColors();
+    
+    // Применяем цвета при изменении темы
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                setTimeout(applyThemeColors, 100);
+            }
+        });
+    });
+    
+    observer.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class']
+    });
+});
+</script>
 {% endblock %}

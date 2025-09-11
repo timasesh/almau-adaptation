@@ -1,0 +1,462 @@
+{% extends 'main/admin/base.html' %}
+{% load static i18n %}
+
+{% block title %}Контакты и карта - Админ-панель | ALMAU Adaptation{% endblock %}
+{% block heading %}Управление страницей "Контакты и карта"{% endblock %}
+
+{% block extra_css %}
+<style>
+    .form-section {
+        background: white;
+        border-radius: 10px;
+        padding: 25px;
+        margin-bottom: 25px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        border: 1px solid #e9ecef;
+    }
+    
+    .form-section h3 {
+        color: #2c3e50;
+        border-bottom: 2px solid #3498db;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+    }
+    
+    .language-tabs {
+        border-bottom: 1px solid #dee2e6;
+        margin-bottom: 20px;
+    }
+    
+    .language-tabs .nav-link {
+        border: none;
+        color: #6c757d;
+        font-weight: 500;
+    }
+    
+    .language-tabs .nav-link.active {
+        color: #3498db;
+        border-bottom: 2px solid #3498db;
+        background: none;
+    }
+    
+    .form-group {
+        margin-bottom: 20px;
+    }
+    
+    .form-label {
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 8px;
+    }
+    
+    .form-control, .form-select {
+        border: 1px solid #ced4da;
+        border-radius: 8px;
+        padding: 12px 15px;
+        transition: all 0.3s ease;
+    }
+    
+    .form-control:focus, .form-select:focus {
+        border-color: #3498db;
+        box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+    }
+    
+    .btn-primary {
+        background: #3498db;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-primary:hover {
+        background: #2980b9;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+    }
+    
+    .map-preview {
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        padding: 20px;
+        text-align: center;
+    }
+    
+    .map-preview iframe {
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    .help-text {
+        background: #e3f2fd;
+        border: 1px solid #2196f3;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+    
+    .help-text h5 {
+        color: #1976d2;
+        margin-bottom: 10px;
+    }
+    
+    .help-text ul {
+        margin-bottom: 0;
+        padding-left: 20px;
+    }
+    
+    /* Простой стилизованный чекбокс */
+    .simple-checkbox-group {
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        border: 1px solid #e9ecef;
+    }
+    
+    .simple-checkbox-label {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        margin: 0;
+        font-weight: 500;
+        color: #495057;
+    }
+    
+    .simple-checkbox {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+    }
+    
+    .checkbox-custom {
+        width: 18px;
+        height: 18px;
+        border: 2px solid #3498db;
+        border-radius: 3px;
+        margin-right: 10px;
+        position: relative;
+        transition: all 0.3s ease;
+        background: white;
+        flex-shrink: 0;
+    }
+    
+    .checkbox-custom::after {
+        content: '✓';
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        color: white;
+        font-size: 12px;
+        font-weight: bold;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    
+    .simple-checkbox:checked + .checkbox-custom {
+        background: #3498db;
+        border-color: #3498db;
+    }
+    
+    .simple-checkbox:checked + .checkbox-custom::after {
+        opacity: 1;
+    }
+    
+    .simple-checkbox:hover + .checkbox-custom {
+        border-color: #2980b9;
+        box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+    }
+    
+    .checkbox-text {
+        font-size: 14px;
+        font-weight: 600;
+        color: #2c3e50;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Контактная информация -->
+    <div class="col-12">
+        <div class="form-section">
+            <h3><i class="fas fa-address-book me-2"></i>Контактная информация</h3>
+            
+            <!-- Справка -->
+            <div class="help-text">
+                <h5><i class="fas fa-info-circle me-2"></i>Справка по заполнению</h5>
+                <ul>
+                    <li><strong>Адрес:</strong> Укажите полный адрес университета на соответствующем языке</li>
+                    <li><strong>Телефон:</strong> Основной контактный номер университета</li>
+                    <li><strong>Кампус:</strong> Перечислите объекты кампуса, каждый с новой строки</li>
+                </ul>
+            </div>
+            
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <!-- Адрес -->
+                <div class="form-group">
+                    <label class="form-label">Адрес университета</label>
+                    
+                    <!-- Языковые вкладки -->
+                    <ul class="nav nav-tabs language-tabs" id="addressTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="address-ru-tab" data-bs-toggle="tab" data-bs-target="#address-ru" type="button" role="tab">
+                                <i class="fas fa-flag me-1"></i>Русский
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="address-en-tab" data-bs-toggle="tab" data-bs-target="#address-en" type="button" role="tab">
+                                <i class="fas fa-flag me-1"></i>English
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="address-kk-tab" data-bs-toggle="tab" data-bs-target="#address-kk" type="button" role="tab">
+                                <i class="fas fa-flag me-1"></i>Қазақша
+                            </button>
+                        </li>
+                    </ul>
+                    
+                    <!-- Содержимое вкладок -->
+                    <div class="tab-content" id="addressTabContent">
+                        <!-- Русский -->
+                        <div class="tab-pane fade show active" id="address-ru" role="tabpanel">
+                            <input type="text" class="form-control" name="address" value="{{ contact_info.address|default:'' }}" placeholder="Введите адрес университета на русском языке">
+                        </div>
+                        
+                        <!-- English -->
+                        <div class="tab-pane fade" id="address-en" role="tabpanel">
+                            <input type="text" class="form-control" name="address_en" value="{{ contact_info.address_en|default:'' }}" placeholder="Enter university address in English">
+                        </div>
+                        
+                        <!-- Қазақша -->
+                        <div class="tab-pane fade" id="address-kk" role="tabpanel">
+                            <input type="text" class="form-control" name="address_kk" value="{{ contact_info.address_kk|default:'' }}" placeholder="Университет мекенжайын қазақ тілінде енгізіңіз">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Телефон -->
+                <div class="form-group">
+                    <label class="form-label">Контактный телефон</label>
+                    <input type="tel" class="form-control" name="phone" value="{{ contact_info.phone|default:'' }}" placeholder="+7 (727) XXX-XX-XX">
+                    <small class="form-text text-muted">Укажите основной контактный номер университета</small>
+                </div>
+                
+                <!-- Объекты кампуса -->
+                <div class="form-group">
+                    <label class="form-label">Объекты кампуса</label>
+                    
+                    <!-- Языковые вкладки -->
+                    <ul class="nav nav-tabs language-tabs" id="campusTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="campus-ru-tab" data-bs-toggle="tab" data-bs-target="#campus-ru" type="button" role="tab">
+                                <i class="fas fa-flag me-1"></i>Русский
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="campus-en-tab" data-bs-toggle="tab" data-bs-target="#campus-en" type="button" role="tab">
+                                <i class="fas fa-flag me-1"></i>English
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="campus-kk-tab" data-bs-toggle="tab" data-bs-target="#campus-kk" type="button" role="tab">
+                                <i class="fas fa-flag me-1"></i>Қазақша
+                            </button>
+                        </li>
+                    </ul>
+                    
+                    <!-- Содержимое вкладок -->
+                    <div class="tab-content" id="campusTabContent">
+                        <!-- Русский -->
+                        <div class="tab-pane fade show active" id="campus-ru" role="tabpanel">
+                            <textarea class="form-control" name="campus_items" rows="6" placeholder="Укажите объекты кампуса, каждый с новой строки&#10;Например:&#10;Учебные корпуса&#10;Библиотека&#10;Спортивные залы&#10;Столовая">{{ contact_info.campus_items|default:'' }}</textarea>
+                        </div>
+                        
+                        <!-- English -->
+                        <div class="tab-pane fade" id="campus-en" role="tabpanel">
+                            <textarea class="form-control" name="campus_items_en" rows="6" placeholder="List campus facilities, each on a new line&#10;For example:&#10;Academic buildings&#10;Library&#10;Sports halls&#10;Cafeteria">{{ contact_info.campus_items_en|default:'' }}</textarea>
+                        </div>
+                        
+                        <!-- Қазақша -->
+                        <div class="tab-pane fade" id="campus-kk" role="tabpanel">
+                            <textarea class="form-control" name="campus_items_kk" rows="6" placeholder="Кампус объектілерін көрсетіңіз, әрқайсысын жаңа жолға&#10;Мысалы:&#10;Оқу корпусы&#10;Кітапхана&#10;Спорт залдары&#10;Асхана">{{ contact_info.campus_items_kk|default:'' }}</textarea>
+                        </div>
+                    </div>
+                    <small class="form-text text-muted">Каждый объект указывайте с новой строки</small>
+                </div>
+                
+                <!-- Изображение кампуса -->
+                <div class="form-group">
+                    <label class="form-label">Изображение кампуса</label>
+                    
+                    {% if contact_info.campus_image %}
+                        <div class="current-image mb-3">
+                            <p><strong>Текущее изображение:</strong></p>
+                            <img src="{{ contact_info.campus_image.url }}" alt="Кампус" class="img-thumbnail" style="max-width: 300px; max-height: 200px;">
+                            <p class="text-muted mt-2">{{ contact_info.campus_image.name }}</p>
+                        </div>
+                    {% endif %}
+                    
+                    <input type="file" class="form-control" name="campus_image" accept="image/*">
+                    <small class="form-text text-muted">
+                        Загрузите изображение кампуса в формате JPG, PNG или GIF. Рекомендуемый размер: 600x400 пикселей.
+                        {% if contact_info.campus_image %}
+                            <br><strong>Примечание:</strong> Выбор нового файла заменит текущее изображение.
+                        {% endif %}
+                    </small>
+                </div>
+                
+                <!-- 3D Кампус -->
+                <div class="form-group">
+                    <label class="form-label">Настройки 3D кампуса</label>
+                    
+                    <!-- Включить/выключить кнопку -->
+                    <div class="simple-checkbox-group mb-3">
+                        <label class="simple-checkbox-label">
+                            <input type="checkbox" class="simple-checkbox" name="campus_3d_enabled" id="campus_3d_enabled" {% if contact_info.campus_3d_enabled %}checked{% endif %}>
+                            <span class="checkbox-custom"></span>
+                            <span class="checkbox-text">Показывать кнопку 3D кампуса</span>
+                        </label>
+                        <small class="form-text text-muted d-block mt-1">Включите эту опцию, чтобы кнопка отображалась на сайте</small>
+                    </div>
+                    
+                    <!-- URL для 3D кампуса -->
+                    <div class="mb-3">
+                        <label class="form-label">Ссылка на 3D кампус</label>
+                        <input type="url" class="form-control" name="campus_3d_url" value="{{ contact_info.campus_3d_url|default:'' }}" placeholder="https://example.com/3d-campus-tour">
+                        <small class="form-text text-muted">Введите URL для виртуального 3D тура по кампусу</small>
+                    </div>
+                    
+                    <!-- Языковые вкладки для текста кнопки -->
+                    <label class="form-label">Текст кнопки</label>
+                    <ul class="nav nav-tabs language-tabs" id="button3dTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="button3d-ru-tab" data-bs-toggle="tab" data-bs-target="#button3d-ru" type="button" role="tab">
+                                <i class="fas fa-flag me-1"></i>Русский
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="button3d-en-tab" data-bs-toggle="tab" data-bs-target="#button3d-en" type="button" role="tab">
+                                <i class="fas fa-flag me-1"></i>English
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="button3d-kk-tab" data-bs-toggle="tab" data-bs-target="#button3d-kk" type="button" role="tab">
+                                <i class="fas fa-flag me-1"></i>Қазақша
+                            </button>
+                        </li>
+                    </ul>
+                    
+                    <!-- Содержимое вкладок -->
+                    <div class="tab-content" id="button3dTabContent">
+                        <!-- Русский -->
+                        <div class="tab-pane fade show active" id="button3d-ru" role="tabpanel">
+                            <input type="text" class="form-control" name="campus_3d_button_text" value="{{ contact_info.campus_3d_button_text|default:'Изучить кампус в 3D' }}" placeholder="Изучить кампус в 3D">
+                        </div>
+                        
+                        <!-- English -->
+                        <div class="tab-pane fade" id="button3d-en" role="tabpanel">
+                            <input type="text" class="form-control" name="campus_3d_button_text_en" value="{{ contact_info.campus_3d_button_text_en|default:'' }}" placeholder="Explore Campus in 3D">
+                        </div>
+                        
+                        <!-- Қазақша -->
+                        <div class="tab-pane fade" id="button3d-kk" role="tabpanel">
+                            <input type="text" class="form-control" name="campus_3d_button_text_kk" value="{{ contact_info.campus_3d_button_text_kk|default:'' }}" placeholder="Кампусты 3D форматында зерттеу">
+                        </div>
+                    </div>
+                    <small class="form-text text-muted">Текст, который будет отображаться на кнопке 3D кампуса</small>
+                </div>
+                
+                <!-- IT Поддержка -->
+                <div class="form-group">
+                    <label class="form-label">Настройки IT поддержки</label>
+                    
+                    <!-- Включить/выключить кнопку -->
+                    <div class="simple-checkbox-group mb-3">
+                        <label class="simple-checkbox-label">
+                            <input type="checkbox" class="simple-checkbox" name="it_support_enabled" id="it_support_enabled" {% if contact_info.it_support_enabled %}checked{% endif %}>
+                            <span class="checkbox-custom"></span>
+                            <span class="checkbox-text">Показывать кнопку IT поддержки</span>
+                        </label>
+                        <small class="form-text text-muted d-block mt-1">Включите, чтобы кнопка IT поддержки отображалась на странице обратной связи</small>
+                    </div>
+                    
+                    <!-- URL для IT поддержки -->
+                    <div class="mb-3">
+                        <label class="form-label">Ссылка на IT поддержку</label>
+                        <input type="url" class="form-control" name="it_support_url" value="{{ contact_info.it_support_url|default:'' }}" placeholder="https://helpdesk.almau.edu.kz">
+                        <small class="form-text text-muted">Введите URL для системы IT поддержки (например, helpdesk или система заявок)</small>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save me-2"></i>Сохранить контактную информацию
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Предварительный просмотр карты -->
+    <div class="col-12">
+        <div class="form-section">
+            <h3><i class="fas fa-map me-2"></i>Предварительный просмотр карты</h3>
+            <div class="map-preview">
+                <p class="mb-3"><strong>Google Maps интеграция</strong></p>
+                <iframe 
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2908.1522025829113!2d76.8907047096891!3d43.20629688110313!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38836895257e39cb%3A0x28bb8b25d8c43156!2z0JDQu9C80LDRgtGLINCc0LXQvdC10LTQttC80LXQvdGCINCj0L3QuNCy0LXRgNGB0LjRgtC10YI!5e0!3m2!1sru!2skz!4v1753963064704!5m2!1sru!2skz" 
+                    width="100%" 
+                    height="450" 
+                    style="border:0;" 
+                    allowfullscreen="" 
+                    loading="lazy" 
+                    referrerpolicy="no-referrer-when-downgrade">
+                </iframe>
+                <p class="mt-3 text-muted">
+                    <i class="fas fa-info-circle me-1"></i>
+                    Карта отображает расположение университета ALMAU в Алматы
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    $(document).ready(function() {
+        // Автоматическое переключение вкладок при отправке формы
+        $('form').on('submit', function() {
+            const activeAddressTab = $('#addressTabs .nav-link.active').attr('id');
+            const activeCampusTab = $('#campusTabs .nav-link.active').attr('id');
+            const activeButton3dTab = $('#button3dTabs .nav-link.active').attr('id');
+            localStorage.setItem('activeAddressTab', activeAddressTab);
+            localStorage.setItem('activeCampusTab', activeCampusTab);
+            localStorage.setItem('activeButton3dTab', activeButton3dTab);
+        });
+        
+        // Восстановление активных вкладок
+        const savedAddressTab = localStorage.getItem('activeAddressTab');
+        const savedCampusTab = localStorage.getItem('activeCampusTab');
+        const savedButton3dTab = localStorage.getItem('activeButton3dTab');
+        
+        if (savedAddressTab) {
+            $('#' + savedAddressTab).tab('show');
+            localStorage.removeItem('activeAddressTab');
+        }
+        
+        if (savedCampusTab) {
+            $('#' + savedCampusTab).tab('show');
+            localStorage.removeItem('activeCampusTab');
+        }
+        
+        if (savedButton3dTab) {
+            $('#' + savedButton3dTab).tab('show');
+            localStorage.removeItem('activeButton3dTab');
+        }
+    });
+</script>
+{% endblock %}

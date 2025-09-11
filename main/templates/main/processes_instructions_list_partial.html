@@ -1,50 +1,37 @@
-<!-- Процессы -->
-{% if current_tab == 'all' or current_tab == 'processes' or not current_tab %}
+{% load i18n %}
+{% load document_filters %}
+{% if filtered_processes or filtered_instructions %}
     {% for process in filtered_processes %}
-        <div class="document-card expandable-card">
-            <div class="document-info">
-                <h3 class="document-title">{{ process.title }}</h3>
+        <div class="process-item">
+            <div class="process-question">
+                <h3 class="process-question-text">{{ process|get_process_title:current_language }}</h3>
+                <i class="fas fa-chevron-down process-expand-icon"></i>
             </div>
-            <div class="document-meta">
-                <button class="expand-btn">
-                    <i class="fas fa-chevron-down"></i>
-                </button>
-            </div>
-            <div class="document-content" style="display: none;">
-                <p>{{ process.description }}</p>
+            <div class="process-answer">
+                <p class="process-answer-text">{{ process|get_process_description:current_language|linebreaks }}</p>
             </div>
         </div>
     {% endfor %}
-{% endif %}
-
-<!-- Инструкции -->
-{% if current_tab == 'all' or current_tab == 'instructions' or not current_tab %}
+    
     {% for instruction in filtered_instructions %}
-        <div class="document-card expandable-card">
-            <div class="document-info">
-                <h3 class="document-title">{{ instruction.title }}</h3>
+        <div class="process-item">
+            <div class="process-question">
+                <h3 class="process-question-text">{{ instruction|get_instruction_title:current_language }}</h3>
+                <i class="fas fa-chevron-down process-expand-icon"></i>
             </div>
-            <div class="document-meta">
-                <button class="expand-btn">
-                    <i class="fas fa-chevron-down"></i>
-                </button>
-            </div>
-            <div class="document-content" style="display: none;">
-                <p>{{ instruction.description }}</p>
+            <div class="process-answer">
+                <p class="process-answer-text">{{ instruction|get_instruction_description:current_language|linebreaks }}</p>
             </div>
         </div>
     {% endfor %}
-{% endif %}
-
-<!-- Сообщение, если ничего не найдено -->
-{% if filtered_processes|length == 0 and filtered_instructions|length == 0 %}
-    <div class="no-documents">
+{% else %}
+    <div class="no-processes">
         <i class="fas fa-cogs"></i>
-        <h3>Ничего не найдено</h3>
-        <p>{% if search_query or current_tab %}
-            Попробуйте изменить критерии поиска или выбрать другую вкладку.
+        <h3>{% trans "Ничего не найдено" %}</h3>
+        <p>{% if search_query or current_tab != 'all' %}
+            {% trans "Попробуйте изменить критерии поиска или выбрать другую категорию." %}
         {% else %}
-            В данный момент процессы и инструкции отсутствуют.
+            {% trans "В данный момент процессы и инструкции отсутствуют" %}.
         {% endif %}</p>
     </div>
 {% endif %}

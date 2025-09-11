@@ -1,0 +1,206 @@
+{% extends 'main/admin/base.html' %}
+{% load static %}
+
+{% block heading %}Управление документами{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Добавление нового документа -->
+    <div class="col-lg-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-plus-circle me-2"></i>Добавить новый документ
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="add_document">
+                    
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Название документа (Русский) *</label>
+                        <input type="text" class="form-control" id="title" name="title" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="title_en" class="form-label">Название документа (English)</label>
+                        <input type="text" class="form-control" id="title_en" name="title_en">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="title_kk" class="form-label">Название документа (Қазақша)</label>
+                        <input type="text" class="form-control" id="title_kk" name="title_kk">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Описание (Русский)</label>
+                        <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="description_en" class="form-label">Описание (English)</label>
+                        <textarea class="form-control" id="description_en" name="description_en" rows="3"></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="description_kk" class="form-label">Описание (Қазақша)</label>
+                        <textarea class="form-control" id="description_kk" name="description_kk" rows="3"></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="category" class="form-label">Категория *</label>
+                        <select class="form-select" id="category" name="category" required>
+                            <option value="">Выберите категорию</option>
+                            {% for category in categories %}
+                                <option value="{{ category.id }}">{{ category.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="file" class="form-label">Файл (Русский)</label>
+                        <input type="file" class="form-control" id="file" name="file" accept=".pdf,.doc,.docx">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="file_en" class="form-label">Файл (English)</label>
+                        <input type="file" class="form-control" id="file_en" name="file_en" accept=".pdf,.doc,.docx">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="file_kk" class="form-label">Файл (Қазақша)</label>
+                        <input type="file" class="form-control" id="file_kk" name="file_kk" accept=".pdf,.doc,.docx">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-2"></i>Добавить документ
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Список документов -->
+    <div class="col-lg-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-list me-2"></i>Список документов
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if documents %}
+                    <div class="list-group">
+                        {% for document in documents %}
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1">{{ document.title }}</h6>
+                                    <small class="text-muted">
+                                        Категория: {{ document.category.name }} | 
+                                        Загружен: {{ document.created_at|date:"d.m.Y" }} |
+                                        Скачиваний: {{ document.download_count }}
+                                    </small>
+                                    {% if document.description %}
+                                        <p class="mb-1 mt-2">{{ document.description|truncatewords:20 }}</p>
+                                    {% endif %}
+                                </div>
+                                <div class="ms-3">
+                                    <a href="{% url 'main:edit_document' document.id %}" 
+                                       class="btn btn-primary btn-sm me-2" 
+                                       title="Редактировать">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <form method="post" style="display: inline;">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="action" value="delete_document">
+                                        <input type="hidden" name="document_id" value="{{ document.id }}">
+                                        <button type="submit" class="btn btn-danger btn-sm" 
+                                                onclick="return confirm('Вы уверены, что хотите удалить этот документ?')"
+                                                title="Удалить">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-muted text-center py-3">Документы отсутствуют</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Добавление новой категории -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-folder-plus me-2"></i>Добавить новую категорию
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="add_category">
+                    
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label for="cat_name" class="form-label">Название категории (Русский) *</label>
+                                <input type="text" class="form-control" id="cat_name" name="name" required>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label for="cat_name_en" class="form-label">Название (English)</label>
+                                <input type="text" class="form-control" id="cat_name_en" name="name_en">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label for="cat_name_kk" class="form-label">Название (Қазақша)</label>
+                                <input type="text" class="form-control" id="cat_name_kk" name="name_kk">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label for="order_index" class="form-label">Порядок сортировки</label>
+                                <input type="number" class="form-control" id="order_index" name="order_index" value="0" min="0">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="cat_description" class="form-label">Описание (Русский)</label>
+                                <textarea class="form-control" id="cat_description" name="description" rows="2"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="cat_description_en" class="form-label">Описание (English)</label>
+                                <textarea class="form-control" id="cat_description_en" name="description_en" rows="2"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="cat_description_kk" class="form-label">Описание (Қазақша)</label>
+                                <textarea class="form-control" id="cat_description_kk" name="description_kk" rows="2"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-plus me-2"></i>Добавить категорию
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,84 @@
+{% extends 'main/admin/base.html' %}
+{% load static %}
+
+{% block heading %}Добавление категории документов{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-folder-plus me-2"></i>Новая категория документов
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Название категории (Русский) *</label>
+                                <input type="text" class="form-control" id="name" name="name" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="name_en" class="form-label">Название (English)</label>
+                                <input type="text" class="form-control" id="name_en" name="name_en">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="name_kk" class="form-label">Название (Қазақша)</label>
+                                <input type="text" class="form-control" id="name_kk" name="name_kk">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="description" class="form-label">Описание (Русский)</label>
+                                <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="description_en" class="form-label">Описание (English)</label>
+                                <textarea class="form-control" id="description_en" name="description_en" rows="3"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="description_kk" class="form-label">Описание (Қазақша)</label>
+                                <textarea class="form-control" id="description_kk" name="description_kk" rows="3"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="order_index" class="form-label">Порядок сортировки</label>
+                                <input type="number" class="form-control" id="order_index" name="order_index" value="0" min="0">
+                                <div class="form-text">Чем меньше число, тем выше в списке будет категория</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-save me-2"></i>Сохранить категорию
+                        </button>
+                        <a href="{% url 'main:admin_documents' %}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>Назад к документам
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

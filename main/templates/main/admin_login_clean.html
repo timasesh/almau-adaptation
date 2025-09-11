@@ -1,0 +1,70 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход в Админ Панель - AlmaU</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/admin_clean.css' %}">
+</head>
+<body class="admin-body">
+    <div class="admin-login-container">
+        <div class="admin-login-card">
+            <div class="admin-login-header">
+                <div class="logo-container">
+                    <img src="{% static 'images/adaptation_almau.png' %}" alt="AlmaU" class="login-logo">
+                </div>
+                <h1 class="admin-login-title">Панель Администратора</h1>
+                <p class="admin-login-subtitle">Авторизация для администраторов системы</p>
+            </div>
+
+            <form method="POST" class="admin-login-form">
+                {% csrf_token %}
+                <div class="form-group">
+                    <input type="text" 
+                           name="username" 
+                           class="admin-form-input" 
+                           placeholder="Имя пользователя"
+                           required>
+                </div>
+                
+                <div class="form-group">
+                    <input type="password" 
+                           name="password" 
+                           class="admin-form-input" 
+                           placeholder="Пароль"
+                           required>
+                </div>
+                
+                <button type="submit" class="admin-login-btn">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Войти в админ панель
+                </button>
+            </form>
+
+            <!-- Сообщения об ошибках -->
+            {% if messages %}
+                <div class="admin-messages">
+                    {% for message in messages %}
+                        <div class="admin-message admin-message-{{ message.tags }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            
+            <div class="admin-login-footer">
+                <p>
+                    <i class="fas fa-shield-alt"></i>
+                    Только для авторизованных администраторов
+                </p>
+                <a href="{% url 'main:login' %}" class="back-to-site">
+                    <i class="fas fa-arrow-left"></i>
+                    Вернуться на сайт
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

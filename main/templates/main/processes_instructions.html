@@ -1,189 +1,109 @@
 {% extends 'main/base.html' %}
 {% load static %}
+{% load i18n %}
+{% load translation_tags %}
 
 {% block title %}Процессы и инструкции - Adaptation AlmaU{% endblock %}
 
 {% block content %}
 <div class="dashboard-container">
-    <!-- Sidebar -->
-    <div class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <div class="logo-container">
-                <img src="{% static 'images/logo.png' %}" alt="AlmaU" class="logo">
-            </div>
-            <button class="sidebar-toggle" id="sidebarToggle">
-                <i class="fas fa-angle-double-left"></i>
-            </button>
-        </div>
-        
-        <nav class="sidebar-nav">
-            <ul class="nav-list">
-                <li class="nav-item">
-                    <a href="{% url 'main:dashboard' %}" class="nav-link">
-                        <i class="fas fa-home"></i>
-                        <span class="nav-text">Главная</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{% url 'main:about' %}" class="nav-link">
-                        <i class="fas fa-university"></i>
-                        <span class="nav-text">Об университете</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{% url 'main:documents' %}" class="nav-link">
-                        <i class="fas fa-file-alt"></i>
-                        <span class="nav-text">Документация</span>
-                    </a>
-                </li>
-                <li class="nav-item active">
-                    <a href="{% url 'main:processes_instructions' %}" class="nav-link">
-                        <i class="fas fa-cogs"></i>
-                        <span class="nav-text">Процессы и инструкции</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{% url 'main:map' %}" class="nav-link">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <span class="nav-text">Контакты и карта</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="fas fa-comments"></i>
-                        <span class="nav-text">Обратная связь</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="fas fa-question-circle"></i>
-                        <span class="nav-text">Часто задаваемые вопросы</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
-        
-        <div class="sidebar-footer">
-            <div class="user-menu">
-                <button class="settings-btn">
-                    <i class="fas fa-cog"></i>
-                    <span class="nav-text">Настройки</span>
-                </button>
-                <a href="{% url 'main:logout' %}" class="logout-btn">
-                    <i class="fas fa-sign-out-alt"></i>
-                    <span class="nav-text">Выход</span>
-                </a>
-            </div>
-        </div>
-    </div>
+    <script>
+    // Немедленное применение темы
+    (function() {
+        const savedTheme = localStorage.getItem('selectedTheme') || 'light';
+        if (savedTheme === 'dark') {
+            document.documentElement.classList.add('theme-dark');
+            document.body.classList.add('theme-dark');
+            document.documentElement.style.backgroundColor = '#1a1a1a';
+            document.body.style.backgroundColor = '#1a1a1a';
+        } else {
+            document.documentElement.classList.add('theme-light');
+            document.body.classList.add('theme-light');
+            document.documentElement.style.backgroundColor = '#ffffff';
+            document.body.style.backgroundColor = '#ffffff';
+        }
+    })();
+    </script>
+    {% include 'main/sidebar.html' %}
     
     <!-- Main content -->
     <div class="main-content" id="mainContent">
+        <!-- Фиксированный логотип (не в потоке документа) -->
         <span class="user-badge fixed-almau-logo">AlmaUni</span>
-
+        
         <div class="content-header">
             <div class="greeting">
-                <h1>Процессы и инструкции</h1>
+                <h1>{% trans "Процессы и инструкции" %}</h1>
             </div>
         </div>
+        
+        <div class="processes-content">
+            <div class="processes-description">
+                <h2>{% trans "Узнайте больше о внутренних процессах" %}</h2>
+            </div>
 
-        <div class="documents-content">
             <!-- Поиск -->
             <div class="search-section">
                 <form method="GET" class="search-form" id="searchForm">
                     <div class="search-input-wrapper">
-                        <input type="text"
-                            name="search"
-                            id="searchInput"
-                            value="{{ search_query }}"
-                            placeholder="Начать поиск"
-                            class="search-input">
+                        <input type="text" 
+                               name="search" 
+                               id="searchInput"
+                               value="{{ search_query }}" 
+                               placeholder="{% trans 'Начать поиск' %}" 
+                               class="search-input">
                         <button type="submit" class="search-btn">
                             <i class="fas fa-search"></i>
                         </button>
                     </div>
-                    {% if current_tab %}
+                    {% if current_tab and current_tab != 'all' %}
                         <input type="hidden" name="tab" value="{{ current_tab }}" id="tabInput">
                     {% endif %}
                 </form>
             </div>
-
-            <!-- Фильтры по вкладкам -->
+            
+            <!-- Фильтры по типам -->
             <div class="category-filters">
                 <div class="filter-tabs">
-                    <a href="{% url 'main:processes_instructions' %}{% if search_query %}?search={{ search_query }}{% endif %}"
+                    <a href="{% url 'main:processes_instructions' %}{% if search_query %}?search={{ search_query }}{% endif %}" 
                        class="filter-tab {% if current_tab == 'all' or not current_tab %}active{% endif %}">
                         <i class="fas fa-times"></i>
                     </a>
-                    <a href="{% url 'main:processes_instructions' %}?tab=processes{% if search_query %}&search={{ search_query }}{% endif %}"
+                    <a href="{% url 'main:processes_instructions' %}?tab=processes{% if search_query %}&search={{ search_query }}{% endif %}" 
                        class="filter-tab {% if current_tab == 'processes' %}active{% endif %}">
-                        Процессы
+                        {% trans "Процессы" %}
                     </a>
-                    <a href="{% url 'main:processes_instructions' %}?tab=instructions{% if search_query %}&search={{ search_query }}{% endif %}"
+                    <a href="{% url 'main:processes_instructions' %}?tab=instructions{% if search_query %}&search={{ search_query }}{% endif %}" 
                        class="filter-tab {% if current_tab == 'instructions' %}active{% endif %}">
-                        Инструкции
+                        {% trans "Инструкции" %}
                     </a>
                 </div>
             </div>
-
-            <!-- Список -->
-            <div class="documents-list" id="documentsList">
-                {% for item in filtered_processes|default_if_none:"" %}
-                    <div class="document-card expandable-card">
-                        <div class="document-header">
-                            <div class="document-info">
-                                <h3 class="document-title">{{ item.title }}</h3>
-                            </div>
-                            <div class="document-meta">
-                                <button class="expand-btn">
-                                    <i class="fas fa-chevron-down"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="document-content">
-                            <div class="document-description">
-                                <p>{{ item.description }}</p>
-                            </div>
-                        </div>
-                    </div>
-                {% endfor %}
-
-                {% for item in filtered_instructions|default_if_none:"" %}
-                    <div class="document-card expandable-card">
-                        <div class="document-header">
-                            <div class="document-info">
-                                <h3 class="document-title">{{ item.title }}</h3>
-                            </div>
-                            <div class="document-meta">
-                                <button class="expand-btn">
-                                    <i class="fas fa-chevron-down"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="document-content">
-                            <div class="document-description">
-                                <p>{{ item.description }}</p>
-                            </div>
-                        </div>
-                    </div>
-                {% endfor %}
-
-                {% if filtered_processes|length == 0 and filtered_instructions|length == 0 %}
-                    <div class="no-documents">
-                        <i class="fas fa-cogs"></i>
-                        <h3>Ничего не найдено</h3>
-                        <p>{% if search_query or current_tab %}
-                            Попробуйте изменить критерии поиска или выбрать другую вкладку.
-                        {% else %}
-                            В данный момент процессы и инструкции отсутствуют.
-                        {% endif %}</p>
-                    </div>
-                {% endif %}
+            
+            <!-- Список процессов и инструкций -->
+            <div class="processes-list" id="processesList">
+                {% include 'main/processes_instructions_list_partial.html' %}
             </div>
         </div>
     </div>
-
 </div>
+
+<script>
+// Немедленное применение темы при загрузке страницы
+document.addEventListener('DOMContentLoaded', function() {
+    const savedTheme = localStorage.getItem('selectedTheme') || 'light';
+    
+    // Применяем тему немедленно
+    if (typeof applyTheme === 'function') {
+        applyTheme(savedTheme);
+    }
+    
+    // Показываем страницу после применения темы
+    setTimeout(() => {
+        document.documentElement.classList.add('theme-loaded');
+    }, 50);
+});
+</script>
 
 <style>
 /* Исправляем позиционирование логотипа AlmaUni справа сверху */
@@ -215,6 +135,28 @@
     white-space: nowrap !important;
 }
 
+.sidebar {
+    width: 250px; /* фиксированная ширина */
+    min-width: 250px;
+    max-width: 250px;
+    transition: all 0.3s ease;
+    overflow-x: hidden;
+}
+
+.sidebar-nav .nav-link {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sidebar .nav-text {
+    display: inline-block;
+    max-width: 180px; /* ограничение по ширине текста */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: middle;
+}
+
 /* На мобильных устройствах */
 @media (max-width: 768px) {
     .fixed-almau-logo {
@@ -223,10 +165,21 @@
     }
 }
 
-.documents-content {
+.processes-content {
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
+}
+
+.processes-description {
+    margin-bottom: 30px;
+}
+
+.processes-description h2 {
+    font-size: 24px;
+    font-weight: 500;
+    color: #333;
+    margin: 0;
 }
 
 /* Поиск */
@@ -248,26 +201,30 @@
     width: 100%;
     padding: 15px 20px;
     padding-right: 60px;
-    border: 2px solid #e0e0e0;
+    border: none;
     border-radius: 30px;
     font-size: 16px;
-    background: #f8f9fa;
+    background: rgba(135, 206, 235, 0.3);
     transition: all 0.3s ease;
+    color: #333;
+}
+
+.search-input::placeholder {
+    color: #666;
 }
 
 .search-input:focus {
     outline: none;
-    border-color: #1976D2;
-    background: white;
-    box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
+    background: rgba(135, 206, 235, 0.4);
+    box-shadow: 0 0 0 3px rgba(135, 206, 235, 0.2);
 }
 
 .search-btn {
     position: absolute;
     right: 10px;
-    background: #1976D2;
+    background: transparent;
     border: none;
-    color: white;
+    color: #666;
     width: 40px;
     height: 40px;
     border-radius: 50%;
@@ -275,77 +232,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background 0.3s ease;
-}
-
-/* Стили для раскрывающихся карточек */
-.expandable-card {
-    position: relative;
     transition: all 0.3s ease;
-    border: 1px solid #e0e0e0;
-    border-radius: 10px;
-    padding: 16px;
-    margin-bottom: 16px;
-    background-color: #fff;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-}
-
-.expand-btn {
-    background: none;
-    border: none;
-    color: #1976D2;
-    font-size: 16px;
-    cursor: pointer;
-    transition: transform 0.3s ease;
-    padding: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.expand-btn:hover {
-    color: #0d47a1;
-}
-
-.expand-btn i {
-    transition: transform 0.3s ease;
-}
-
-.expand-btn.rotate i {
-    transform: rotate(180deg);
-}
-
-.document-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: relative;
-    z-index: 2;
-    background-color: #fff;
-}
-
-.document-content {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease, padding-top 0.3s ease;
-    margin-top: 15px;
-    border-top: 1px solid #e0e0e0;
-    padding-top: 0;
-    font-size: 16px;
-    line-height: 1.6;
-    color: #333;
-    width: 100%;
-    position: relative;
-    z-index: 1;
-}
-
-.expandable-card.expanded .document-content {
-    max-height: 500px;
-    padding-top: 15px;
 }
 
 .search-btn:hover {
-    background: #1565C0;
+    background: rgba(0, 0, 0, 0.1);
+    color: #333;
 }
 
 /* Фильтры */
@@ -378,7 +270,7 @@
     text-decoration: none;
     color: #000;
     background: #f8f9fa;
-    border: 2px solid #e0e0e0;
+    border: none;
     border-radius: 25px;
     transition: all 0.3s ease;
     font-weight: 500;
@@ -391,22 +283,23 @@
 
 .filter-tab:hover {
     color: #1976D2;
-    border-color: #1976D2;
     background: #e3f2fd;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .filter-tab.active {
     color: white;
     background: #1976D2;
-    border-color: #1976D2;
+    border: none;
 }
 
 .filter-tab i {
     font-size: 12px;
 }
 
-/* Список документов */
-.documents-list {
+/* Список процессов */
+.processes-list {
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -414,102 +307,122 @@
     transition: opacity 0.3s ease;
 }
 
-.document-card {
+.process-item {
     background: white;
-    border-radius: 20px;
-    padding: 20px 25px;
+    border-radius: 15px;
+    overflow: hidden;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.process-item:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.process-question {
+    padding: 20px 25px;
+    cursor: pointer;
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
-    transition: none;
-    border: none;
-}
-
-.document-card:hover {
-    /* Убираем hover эффекты */
-}
-
-.document-info {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-}
-
-.document-title {
-    font-size: 18px;
-    font-weight: 400;
-    color: #000;
-    margin-bottom: 8px;
-    line-height: 1.2;
-}
-
-.document-category {
-    font-size: 14px;
-    color: #000;
-    margin: 0;
-    font-weight: 400;
-}
-
-.document-meta {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 8px;
-    text-align: right;
-}
-
-.document-date {
-    font-size: 16px;
-    color: #000;
-    font-weight: 400;
-    margin: 0;
-}
-
-.download-btn {
-    background: none;
-    border: none;
-    color: #1976D2;
-    font-size: 14px;
-    font-weight: 400;
-    text-decoration: underline;
-    display: flex;
     align-items: center;
-    gap: 6px;
-    cursor: pointer;
-    transition: color 0.3s ease;
-    padding: 0;
+    background: white;
+    transition: background 0.3s ease;
+}
+
+.process-question:hover {
+    background: #f8f9fa;
+}
+
+.process-question.active {
+    background: #f0f8ff;
+}
+
+.process-question-text {
+    font-size: 18px;
+    font-weight: 500;
+    color: #333;
+    margin: 0;
+    flex: 1;
+    padding-right: 20px;
+}
+
+.process-expand-icon {
+    font-size: 16px;
+    color: #666;
+    transition: transform 0.3s ease;
+}
+
+.process-question.active .process-expand-icon {
+    transform: rotate(180deg);
+}
+
+.process-answer {
+    padding: 0 25px 20px;
+    background: #f8f9fa;
+    display: none;
+    border-radius: 0 0 15px 15px; /* мягкие углы снизу */
+}
+
+.process-answer.active {
+    display: block;
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        max-height: 0;
+        padding: 0 25px;
+    }
+    to {
+        opacity: 1;
+        max-height: 200px;
+        padding: 0 25px 20px;
+    }
+}
+
+.process-answer-text {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #555;
     margin: 0;
 }
 
-.download-btn:hover {
-    color: #0d47a1;
+.process-meta {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 10px 25px;
+    background: #f0f8ff;
+    border-top: 1px solid #e0e0e0;
+    font-size: 14px;
+    color: #666;
 }
 
-.download-btn i {
-    font-size: 14px;
+.process-category {
+    font-weight: 500;
 }
 
 /* Пустое состояние */
-.no-documents {
+.no-processes {
     text-align: center;
     padding: 60px 20px;
     color: #666;
 }
 
-.no-documents i {
+.no-processes i {
     font-size: 48px;
     color: #ccc;
     margin-bottom: 20px;
 }
 
-.no-documents h3 {
+.no-processes h3 {
     font-size: 24px;
     margin-bottom: 10px;
     color: #333;
 }
 
-.no-documents p {
+.no-processes p {
     font-size: 16px;
     max-width: 400px;
     margin: 0 auto;
@@ -517,26 +430,29 @@
 
 /* Адаптивность */
 @media (max-width: 768px) {
-    .documents-content {
+    .processes-content {
         padding: 15px;
     }
     
-    .documents-list {
+    .processes-list {
         max-width: 100%;
     }
     
-    .document-card {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 15px;
+    .process-question {
         padding: 16px 20px;
     }
     
-    .document-meta {
-        width: 100%;
-        align-items: flex-start;
-        text-align: left;
-        gap: 10px;
+    .process-question-text {
+        font-size: 16px;
+        padding-right: 15px;
+    }
+    
+    .process-answer {
+        padding: 0 20px 16px;
+    }
+    
+    .process-meta {
+        padding: 8px 20px;
     }
     
     .filter-tabs {
@@ -548,80 +464,152 @@
         padding: 10px 16px;
         font-size: 15px;
     }
+}
+
+/* Темная тема */
+@media (prefers-color-scheme: dark) {
+    .processes-description h2 {
+        color: white !important;
+    }
     
-    .search-input {
-        padding: 12px 18px;
-        padding-right: 55px;
-        font-size: 15px;
+    .process-item {
+        border: 2px solid white !important;
+        background: transparent !important;
+    }
+    
+    .process-question {
+        background: transparent !important;
+        color: white !important;
+    }
+    
+    .process-question-text {
+        color: white !important;
+    }
+    
+    .process-answer {
+        background: transparent !important;
+        color: white !important;
+    }
+    
+    .process-answer-text {
+        color: white !important;
+    }
+    
+    .process-meta {
+        background: transparent !important;
+        color: white !important;
+        border-color: white !important;
     }
 }
-.document-description p {
-    margin: 0;
-    color: #333;
-    font-size: 14px;
-}
-.sidebar {
-    width: 250px; /* фиксированная ширина */
-    min-width: 250px;
-    max-width: 250px;
-    transition: all 0.3s ease;
-    overflow-x: hidden;
+
+/* Светлая тема */
+@media (prefers-color-scheme: light) {
+    .processes-description h2 {
+        color: #333333 !important;
+    }
+    
+    .process-item {
+        border: 2px solid #e0e0e0 !important;
+        background: white !important;
+    }
+    
+    .process-question {
+        background: white !important;
+        color: #333333 !important;
+    }
+    
+    .process-question-text {
+        color: #333333 !important;
+    }
+    
+    .process-answer {
+        background: #f8f9fa !important;
+        color: #555555 !important;
+    }
+    
+    .process-answer-text {
+        color: #555555 !important;
+    }
+    
+    .process-meta {
+        background: #f0f8ff !important;
+        color: #666666 !important;
+        border-color: #e0e0e0 !important;
+    }
 }
 
-.sidebar-nav .nav-link {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+/* Принудительное переопределение цветов */
+body.theme-dark .processes-description h2 {
+    color: white !important;
 }
 
-.sidebar .nav-text {
-    display: inline-block;
-    max-width: 180px; /* ограничение по ширине текста */
-    overflow: hidden;
-    text-overflow: ellipsis;
-    vertical-align: middle;
+body.theme-dark .process-item {
+    border: 2px solid white !important;
+    background: transparent !important;
 }
 
+body.theme-dark .process-question,
+body.theme-dark .process-question-text,
+body.theme-dark .process-answer,
+body.theme-dark .process-answer-text,
+body.theme-dark .process-meta {
+    color: white !important;
+    background: transparent !important;
+}
+
+body.theme-dark .process-meta {
+    border-color: white !important;
+}
+
+body.theme-light .processes-description h2 {
+    color: #333333 !important;
+}
+
+body.theme-light .process-item {
+    border: 2px solid #e0e0e0 !important;
+    background: white !important;
+}
+
+body.theme-light .process-question,
+body.theme-light .process-question-text {
+    color: #333333 !important;
+    background: white !important;
+}
+
+body.theme-light .process-answer,
+body.theme-light .process-answer-text {
+    color: #555555 !important;
+    background: #f8f9fa !important;
+}
+
+body.theme-light .process-meta {
+    color: #666666 !important;
+    background: #f0f8ff !important;
+    border-color: #e0e0e0 !important;
+}
 </style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // AJAX поиск без перезагрузки страницы
     const searchInput = document.getElementById('searchInput');
-    const documentsList = document.getElementById('documentsList');
-    let searchTimeout; // Выносим наружу для доступа из обработчика вкладок
+    const processesList = document.getElementById('processesList');
+    let searchTimeout;
     
-    // Функция для обработки раскрывающихся карточек
-    function setupExpandableCards() {
-        const expandButtons = document.querySelectorAll('.expand-btn');
-        
-        expandButtons.forEach(button => {
-            // Удаляем существующий обработчик, чтобы избежать дублирования
-            button.removeEventListener('click', toggleCardExpansion);
-            // Добавляем новый обработчик
-            button.addEventListener('click', toggleCardExpansion);
-        });
-    }
-    
-    // Функция для переключения состояния карточки
-    function toggleCardExpansion() {
-        const card = this.closest('.expandable-card');
-        const content = card.querySelector('.document-content');
-        
-        // Переключаем класс expanded для карточки
-        card.classList.toggle('expanded');
-        
-        // Переключаем класс rotate для кнопки
-        this.classList.toggle('rotate');
-    }
-    
-    // Функция для выполнения поиска - выносим наружу для доступа из обработчика вкладок
+    // Функция для выполнения поиска
     function performSearch() {
-        if (!searchInput || !documentsList) return;
+        if (!searchInput || !processesList) return;
         
         const searchValue = searchInput.value.trim();
         const currentTab = document.getElementById('tabInput') ? 
             document.getElementById('tabInput').value : '';
+        
+        // Отладочная информация
+        console.log('Выполняем поиск процессов/инструкций:', {
+            search: searchValue,
+            tab: currentTab,
+            tabInputExists: !!document.getElementById('tabInput')
+        });
         
         // Строим URL для API запроса
         let apiUrl = new URL('/api/processes_instructions/search/', window.location.origin);
@@ -634,20 +622,23 @@ document.addEventListener('DOMContentLoaded', function() {
             apiUrl.searchParams.set('tab', currentTab);
         }
         
+        console.log('API URL:', apiUrl.toString());
+        
         // Показываем индикатор загрузки
-        documentsList.style.opacity = '0.6';
+        processesList.style.opacity = '0.6';
         
         // Выполняем AJAX запрос
         fetch(apiUrl.toString())
             .then(response => response.json())
             .then(data => {
+                console.log('API ответ:', data);
                 if (data.success) {
-                    // Обновляем список процессов и инструкций без перезагрузки страницы
-                    documentsList.innerHTML = data.html;
-                    documentsList.style.opacity = '1';
+                    // Обновляем список процессов без перезагрузки страницы
+                    processesList.innerHTML = data.html;
+                    processesList.style.opacity = '1';
                     
-                    // Настраиваем раскрывающиеся карточки
-                    setupExpandableCards();
+                    // Переинициализируем обработчики событий для новых элементов
+                    initializeProcessHandlers();
                     
                     // Обновляем URL для возможности делиться ссылками
                     const pageUrl = new URL(window.location.href);
@@ -667,44 +658,37 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .catch(error => {
                 console.error('Ошибка поиска:', error);
-                documentsList.style.opacity = '1';
+                processesList.style.opacity = '1';
             });
     }
     
     if (searchInput) {
         searchInput.addEventListener('input', function() {
             clearTimeout(searchTimeout);
-            
-            // Добавляем небольшую задержку чтобы не слать запрос на каждую букву
-            searchTimeout = setTimeout(performSearch, 300); // Уменьшил задержку до 300ms
+            searchTimeout = setTimeout(performSearch, 300);
         });
         
-        // Убираем стандартную отправку формы при Enter
         document.getElementById('searchForm').addEventListener('submit', function(e) {
             e.preventDefault();
             clearTimeout(searchTimeout);
-            performSearch(); // Выполняем поиск сразу при нажатии Enter
+            performSearch();
         });
     }
     
-    // Настраиваем раскрывающиеся карточки при загрузке страницы
-    setupExpandableCards();
-    
-    // Обработка кликов по фильтрам вкладок
+    // Обработка кликов по фильтрам
     const filterTabs = document.querySelectorAll('.filter-tab');
     
     filterTabs.forEach(tab => {
         tab.addEventListener('click', function(e) {
             e.preventDefault();
             
-            // Извлекаем вкладку из URL ссылки
             const url = new URL(this.href);
-            const tab = url.searchParams.get('tab');
+            const tabValue = url.searchParams.get('tab');
             const search = url.searchParams.get('search');
             
-            // Обновляем скрытое поле с вкладкой
+            // Обновляем скрытое поле с табом
             let tabInput = document.getElementById('tabInput');
-            if (tab) {
+            if (tabValue) {
                 if (!tabInput) {
                     tabInput = document.createElement('input');
                     tabInput.type = 'hidden';
@@ -712,27 +696,133 @@ document.addEventListener('DOMContentLoaded', function() {
                     tabInput.id = 'tabInput';
                     document.getElementById('searchForm').appendChild(tabInput);
                 }
-                tabInput.value = tab;
+                tabInput.value = tabValue;
             } else {
+                // Если таб не указан (сброс фильтра), удаляем поле
                 if (tabInput) {
                     tabInput.remove();
                 }
             }
             
-            // Если есть поисковый запрос, сохраняем его
             if (search && searchInput) {
                 searchInput.value = search;
             }
             
-            // Выполняем поиск
             clearTimeout(searchTimeout);
             performSearch();
             
-            // Обновляем активный класс у вкладок
             filterTabs.forEach(t => t.classList.remove('active'));
             this.classList.add('active');
         });
     });
+    
+    // Инициализация обработчиков процессов
+    function initializeProcessHandlers() {
+        const processQuestions = document.querySelectorAll('.process-question');
+        
+        processQuestions.forEach(question => {
+            question.addEventListener('click', function() {
+                const processItem = this.closest('.process-item');
+                const answer = processItem.querySelector('.process-answer');
+                
+                // Переключаем состояние
+                const isActive = this.classList.contains('active');
+                
+                if (!isActive) {
+                    // Закрываем все остальные
+                    document.querySelectorAll('.process-question.active').forEach(q => {
+                        q.classList.remove('active');
+                        q.closest('.process-item').querySelector('.process-answer').classList.remove('active');
+                    });
+                    
+                    // Открываем текущий
+                    this.classList.add('active');
+                    answer.classList.add('active');
+                } else {
+                    // Закрываем текущий
+                    this.classList.remove('active');
+                    answer.classList.remove('active');
+                }
+            });
+        });
+    }
+    
+    // Инициализируем обработчики при загрузке страницы
+    initializeProcessHandlers();
+    
+    // Функция для принудительного применения цветов процессов
+    function applyProcessColors() {
+        const body = document.body;
+        const processesDescription = document.querySelector('.processes-description h2');
+        const processItems = document.querySelectorAll('.process-item');
+        const processQuestions = document.querySelectorAll('.process-question, .process-question-text');
+        const processAnswers = document.querySelectorAll('.process-answer, .process-answer-text');
+        const processMetas = document.querySelectorAll('.process-meta');
+        
+        if (body.classList.contains('theme-dark')) {
+            if (processesDescription) processesDescription.style.color = 'white';
+            processItems.forEach(item => {
+                item.style.border = '2px solid white';
+                item.style.background = 'transparent';
+            });
+            processQuestions.forEach(q => {
+                q.style.color = 'white';
+                q.style.background = 'transparent';
+            });
+            processAnswers.forEach(a => {
+                a.style.color = 'white';
+                a.style.background = 'transparent';
+            });
+            processMetas.forEach(m => {
+                m.style.color = 'white';
+                m.style.background = 'transparent';
+                m.style.borderColor = 'white';
+            });
+        } else {
+            if (processesDescription) processesDescription.style.color = '#333333';
+            processItems.forEach(item => {
+                item.style.border = '2px solid #e0e0e0';
+                item.style.background = 'white';
+            });
+            processQuestions.forEach(q => {
+                q.style.color = '#333333';
+                q.style.background = 'white';
+            });
+            processAnswers.forEach(a => {
+                a.style.color = '#555555';
+                a.style.background = '#f8f9fa';
+            });
+            processMetas.forEach(m => {
+                m.style.color = '#666666';
+                m.style.background = '#f0f8ff';
+                m.style.borderColor = '#e0e0e0';
+            });
+        }
+    }
+    
+    // Применяем цвета сразу при загрузке
+    applyProcessColors();
+    
+    // Применяем цвета при изменении темы
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                setTimeout(applyProcessColors, 100);
+            }
+        });
+    });
+    
+    observer.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class']
+    });
+    
+    // Применяем цвета после AJAX обновления списка процессов
+    const originalPerformSearch = performSearch;
+    performSearch = function() {
+        originalPerformSearch.call(this);
+        setTimeout(applyProcessColors, 200);
+    };
 });
 </script>
 {% endblock %}

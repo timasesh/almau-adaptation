@@ -1,0 +1,89 @@
+{% load static %}
+
+<!-- Admin Sidebar -->
+<div class="admin-sidebar" id="adminSidebar">
+    <div class="admin-sidebar-header">
+        <div class="admin-logo-container">
+            <img src="{% static 'images/logo.png' %}" alt="AlmaU" class="admin-logo">
+        </div>
+        <button class="admin-sidebar-toggle" id="adminSidebarToggle">
+            <i class="fas fa-angle-double-left"></i>
+        </button>
+    </div>
+    
+    <nav class="admin-sidebar-nav">
+        <ul class="admin-nav-list">
+            <li class="admin-nav-item {% if current_page == 'admin_dashboard' %}active{% endif %}">
+                <a href="{% url 'main:admin_dashboard' %}" class="admin-nav-link">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span class="admin-nav-text">Панель управления</span>
+                </a>
+            </li>
+            <li class="admin-nav-item">
+                <a href="#" class="admin-nav-link">
+                    <i class="fas fa-users"></i>
+                    <span class="admin-nav-text">Управление пользователями</span>
+                </a>
+            </li>
+            <li class="admin-nav-item">
+                <a href="#" class="admin-nav-link">
+                    <i class="fas fa-file-alt"></i>
+                    <span class="admin-nav-text">Редактирование документов</span>
+                </a>
+            </li>
+            <li class="admin-nav-item">
+                <a href="#" class="admin-nav-link">
+                    <i class="fas fa-cogs"></i>
+                    <span class="admin-nav-text">Процессы и инструкции</span>
+                </a>
+            </li>
+            <li class="admin-nav-item">
+                <a href="#" class="admin-nav-link">
+                    <i class="fas fa-question-circle"></i>
+                    <span class="admin-nav-text">Управление FAQ</span>
+                </a>
+            </li>
+            <li class="admin-nav-item">
+                <a href="#" class="admin-nav-link">
+                    <i class="fas fa-comments"></i>
+                    <span class="admin-nav-text">Обратная связь</span>
+                </a>
+            </li>
+            <li class="admin-nav-item">
+                <a href="#" class="admin-nav-link">
+                    <i class="fas fa-university"></i>
+                    <span class="admin-nav-text">Информация об университете</span>
+                </a>
+            </li>
+            <li class="admin-nav-item">
+                <a href="#" class="admin-nav-link">
+                    <i class="fas fa-chart-bar"></i>
+                    <span class="admin-nav-text">Аналитика</span>
+                </a>
+            </li>
+            <li class="admin-nav-item">
+                <a href="/admin-panel/employee-progress/" class="admin-nav-link">
+                    <i class="fas fa-chart-line"></i>
+                    <span class="admin-nav-text">Прогресс сотрудников</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    
+    <div class="admin-sidebar-footer">
+        <div class="admin-user-menu">
+            <div class="admin-user-info">
+                <i class="fas fa-user-shield"></i>
+                <span class="admin-nav-text">Администратор</span>
+            </div>
+            <a href="{% url 'main:admin_logout' %}" class="admin-logout-btn">
+                <i class="fas fa-sign-out-alt"></i>
+                <span class="admin-nav-text">Выход</span>
+            </a>
+            <a href="{% url 'main:dashboard' %}" class="admin-back-to-site-btn" target="_blank">
+                <i class="fas fa-external-link-alt"></i>
+                <span class="admin-nav-text">Перейти на сайт</span>
+            </a>
+        </div>
+    </div>
+</div>

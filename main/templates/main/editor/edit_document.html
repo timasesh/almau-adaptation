@@ -1,0 +1,94 @@
+{% load static i18n %}
+<!DOCTYPE html>
+<html lang="{{ request.LANGUAGE_CODE|default:'ru' }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Редактировать документ | Редактор ALMAU</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'main:editor_dashboard' %}?tab=documents">
+                <img src="{% static 'images/logo-white.png' %}" alt="ALMAU" height="30" class="me-2">
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="{% url 'main:editor_dashboard' %}?tab=documents"><i class="fas fa-arrow-left me-1"></i>Назад</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="card">
+            <div class="card-header"><i class="fas fa-edit me-2"></i>Редактировать документ</div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Название (RU) *</label>
+                            <input type="text" name="title" class="form-control" value="{{ document.title }}" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Категория</label>
+                            <select name="category" class="form-select">
+                                <option value="">Без категории</option>
+                                {% for c in categories %}
+                                    <option value="{{ c.id }}" {% if document.category_id == c.id %}selected{% endif %}>{{ c.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Название (EN)</label>
+                            <input type="text" name="title_en" class="form-control" value="{{ document.title_en }}">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Название (KK)</label>
+                            <input type="text" name="title_kk" class="form-control" value="{{ document.title_kk }}">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Описание (RU)</label>
+                        <textarea name="description" class="form-control" rows="3">{{ document.description }}</textarea>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Описание (EN)</label>
+                            <textarea name="description_en" class="form-control" rows="3">{{ document.description_en }}</textarea>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Описание (KK)</label>
+                            <textarea name="description_kk" class="form-control" rows="3">{{ document.description_kk }}</textarea>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Файл (RU) {% if document.file %}<a href="{{ document.file.url }}" target="_blank">(текущий)</a>{% endif %}</label>
+                            <input type="file" name="file" class="form-control">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Файл (EN) {% if document.file_en %}<a href="{{ document.file_en.url }}" target="_blank">(текущий)</a>{% endif %}</label>
+                            <input type="file" name="file_en" class="form-control">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Файл (KK) {% if document.file_kk %}<a href="{{ document.file_kk.url }}" target="_blank">(текущий)</a>{% endif %}</label>
+                            <input type="file" name="file_kk" class="form-control">
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-end gap-2">
+                        <a href="{% url 'main:editor_dashboard' %}?tab=documents" class="btn btn-secondary">Отмена</a>
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i>Сохранить</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+

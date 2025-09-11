@@ -1,0 +1,652 @@
+{% load static i18n %}
+<!DOCTYPE html>
+<html lang="{{ request.LANGUAGE_CODE|default:'ru' }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Дашборд редактора | ALMAU Adaptation</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: #f8fafc;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .navbar .nav-user {
+            color: #fff;
+            display: inline-flex;
+            align-items: center;
+        }
+        .navbar .nav-user i { margin-right: 6px; }
+        .navbar .nav-link { color: #fff !important; }
+        .navbar .nav-tabs-header .nav-link {
+            color: #eaeaea !important;
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin-right: 6px;
+        }
+        .navbar .nav-tabs-header .nav-link.active {
+            background: rgba(255,255,255,0.15);
+            color: #fff !important;
+        }
+        .welcome-logo {
+            height: 64px;
+            opacity: 0.9;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px 15px 0 0 !important;
+            border: none;
+        }
+        
+        .stats-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+        }
+        
+        .stats-card .card-body {
+            padding: 2rem;
+        }
+        
+        .stats-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stats-label {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 10px;
+            padding: 10px 20px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .table {
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .table thead th {
+            background: #f8f9fa;
+            border: none;
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .badge {
+            border-radius: 8px;
+            padding: 0.5rem 0.75rem;
+            font-weight: 500;
+        }
+        
+        .welcome-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .welcome-section h1 {
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .welcome-section p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+        
+        /* Tab Navigation */
+        .nav-tabs {
+            border: none;
+            background: white;
+            border-radius: 15px;
+            padding: 0.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .nav-tabs .nav-link {
+            border: none;
+            border-radius: 10px;
+            color: #6c757d;
+            font-weight: 500;
+            padding: 0.75rem 1.5rem;
+            margin: 0 0.25rem;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-tabs .nav-link:hover {
+            background: #f8f9fa;
+            color: #495057;
+        }
+        
+        .nav-tabs .nav-link.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+        }
+        
+        .tab-content {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        
+        .tab-pane {
+            display: none;
+        }
+        
+        .tab-pane.active {
+            display: block;
+        }
+        
+        .action-btn {
+            display: inline-block;
+            padding: 1rem 1.5rem;
+            margin: 0.5rem;
+            background: #f8f9fa;
+            color: #495057;
+            text-decoration: none;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .action-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+            text-decoration: none;
+        }
+        
+        .action-btn i {
+            margin-right: 0.5rem;
+        }
+        
+        /* Feedback Cards */
+        .feedback-card {
+            border-left: 4px solid #667eea;
+            margin-bottom: 1rem;
+        }
+        
+        .feedback-card.positive {
+            border-left-color: #28a745;
+        }
+        
+        .feedback-card.negative {
+            border-left-color: #dc3545;
+        }
+        
+        .feedback-card.neutral {
+            border-left-color: #ffc107;
+        }
+        
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            .stats-number {
+                font-size: 2rem;
+            }
+            
+            .welcome-section {
+                padding: 1.5rem;
+            }
+            
+            .welcome-section h1 {
+                font-size: 1.5rem;
+            }
+            
+            .action-btn {
+                display: block;
+                margin: 0.5rem 0;
+                text-align: center;
+            }
+            
+            .nav-tabs .nav-link {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+            
+            .tab-content {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header restored: user name and logout (without logo) -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <ul class="navbar-nav nav-tabs-header me-auto">
+                <li class="nav-item"><a href="#" id="lessons-tab" class="nav-link active" data-bs-toggle="tab" data-bs-target="#lessons" data-tab="lessons"><i class="fas fa-graduation-cap me-1"></i>Мои уроки</a></li>
+                <li class="nav-item"><a href="#" id="documents-tab" class="nav-link" data-bs-toggle="tab" data-bs-target="#documents" data-tab="documents"><i class="fas fa-file-alt me-1"></i>Документация</a></li>
+                <li class="nav-item"><a href="#" id="feedback-tab" class="nav-link" data-bs-toggle="tab" data-bs-target="#feedback" data-tab="feedback"><i class="fas fa-comments me-1"></i>Обратная связь</a></li>
+                <li class="nav-item"><a href="#" id="profile-tab" class="nav-link" data-bs-toggle="tab" data-bs-target="#profile" data-tab="profile"><i class="fas fa-user me-1"></i>Профиль</a></li>
+                <li class="nav-item"><a href="{% url 'main:editor_progress' %}" class="nav-link"><i class="fas fa-chart-line me-1"></i>Прогресс пользователей</a></li>
+            </ul>
+            <div class="d-flex align-items-center">
+                <span class="nav-user me-3">
+                    <i class="fas fa-user-circle"></i>{{ editor.full_name }}
+                </span>
+                <a class="nav-link" href="{% url 'main:editor_logout' %}"><i class="fas fa-sign-out-alt me-1"></i>Выйти</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    <i class="fas fa-{% if message.tags == 'error' %}exclamation-triangle{% elif message.tags == 'success' %}check-circle{% else %}info-circle{% endif %} me-2"></i>
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- Welcome Section -->
+        <div class="welcome-section">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1>Добро пожаловать, {{ editor.full_name }}!</h1>
+                    <p>Управляйте своими уроками, документацией и получайте обратную связь от пользователей.</p>
+                </div>
+                <div class="col-md-4 text-end">
+                    <img src="{% static 'images/logo-white.png' %}" alt="ALMAU" class="welcome-logo">
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        
+
+        <!-- Tab Navigation moved to header -->
+
+        <!-- Tab Content -->
+        <div class="tab-content" id="editorTabContent">
+            <!-- Lessons Tab -->
+            <div class="tab-pane fade show active" id="lessons" role="tabpanel">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4><i class="fas fa-graduation-cap me-2"></i>Мои уроки</h4>
+                    <a href="{% url 'main:editor_create_lesson' %}" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i>Создать урок
+                    </a>
+                </div>
+                
+                {% if lessons %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Название</th>
+                                    <th>Категория</th>
+                                    <th>Автор</th>
+                                    <th>Статус</th>
+                                    <th>Дата создания</th>
+                                    <th>Действия</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for lesson in lessons %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ lesson.title }}</strong>
+                                        {% if lesson.description %}
+                                            <br><small class="text-muted">{{ lesson.description|truncatewords:10 }}</small>
+                                        {% endif %}
+                                        <div class="mt-1">
+                                            {% if lesson.video %}
+                                                <span class="badge bg-primary me-1">
+                                                    <i class="fas fa-video me-1"></i>Видео
+                                                </span>
+                                            {% endif %}
+                                            {% if lesson.pdf_file %}
+                                                <span class="badge bg-info me-1">
+                                                    <i class="fas fa-file-pdf me-1"></i>PDF
+                                                </span>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        {% if lesson.category %}
+                                            <span class="badge bg-info">{{ lesson.category.name }}</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">Без категории</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if lesson.created_by %}
+                                            {% if lesson.created_by.is_staff %}
+                                                <span class="badge bg-primary">
+                                                    <i class="fas fa-user-shield me-1"></i>Администратор
+                                                </span>
+                                            {% else %}
+                                                <span class="badge bg-success">
+                                                    <i class="fas fa-user-edit me-1"></i>{{ lesson.created_by.first_name }}
+                                                </span>
+                                            {% endif %}
+                                        {% else %}
+                                            <span class="badge bg-secondary">
+                                                <i class="fas fa-question me-1"></i>Не указан
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if lesson.is_active %}
+                                            <span class="badge bg-success">
+                                                <i class="fas fa-check me-1"></i>Активен
+                                            </span>
+                                        {% else %}
+                                            <span class="badge bg-warning">
+                                                <i class="fas fa-clock me-1"></i>Черновик
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ lesson.created_at|date:"d.m.Y H:i" }}</td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a href="{% url 'main:editor_edit_lesson' lesson.id %}" class="btn btn-sm btn-outline-primary" title="Редактировать">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <form method="post" action="{% url 'main:editor_lessons' %}" onsubmit="return confirm('Удалить урок?');">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="action" value="delete_lesson">
+                                                <input type="hidden" name="lesson_id" value="{{ lesson.id }}">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Удалить">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-graduation-cap fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">У вас пока нет уроков</h5>
+                        <p class="text-muted">Создайте свой первый урок для адаптации сотрудников</p>
+                        <a href="{% url 'main:editor_create_lesson' %}" class="btn btn-primary">
+                            <i class="fas fa-plus me-2"></i>Создать первый урок
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Documents Tab -->
+            <div class="tab-pane fade" id="documents" role="tabpanel">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4><i class="fas fa-file-alt me-2"></i>Документация</h4>
+                    <a href="{% url 'main:editor_create_document' %}" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i>Добавить документ
+                    </a>
+                </div>
+                {% if documents %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Название</th>
+                                    <th>Категория</th>
+                                    <th>Файл</th>
+                                    <th class="text-end">Действия</th>
+                                    <th>Дата</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for doc in documents %}
+                                <tr>
+                                    <td>{{ doc.title }}</td>
+                                    <td>{% if doc.category %}<span class="badge bg-info">{{ doc.category.name }}</span>{% else %}<span class="badge bg-secondary">Без категории</span>{% endif %}</td>
+                                    <td>
+                                        {% if doc.file %}
+                                            <a href="{{ doc.file.url }}" target="_blank" class="btn btn-sm btn-outline-primary">Скачать</a>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-end">
+                                        <div class="btn-group" role="group">
+                                            <a href="{% url 'main:editor_edit_document' doc.id %}" class="btn btn-sm btn-outline-primary" title="Редактировать">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <form method="post" action="{% url 'main:editor_documents' %}" onsubmit="return confirm('Удалить документ?');">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="action" value="delete_document">
+                                                <input type="hidden" name="document_id" value="{{ doc.id }}">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Удалить">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                    <td>{{ doc.created_at|date:"d.m.Y H:i" }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-file-alt fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">Документация пока не добавлена</h5>
+                        <p class="text-muted">Здесь вы сможете управлять документами для адаптации</p>
+                        <a href="{% url 'main:editor_create_document' %}" class="btn btn-primary">
+                            <i class="fas fa-plus me-2"></i>Добавить первый документ
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Feedback Tab -->
+            <div class="tab-pane fade" id="feedback" role="tabpanel">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4><i class="fas fa-comments me-2"></i>Обратная связь</h4>
+                    <a href="{% url 'main:editor_feedback' %}" class="btn btn-primary btn-sm">
+                        <i class="fas fa-external-link-alt me-2"></i>Перейти к управлению
+                    </a>
+                </div>
+                
+                {% if feedbacks %}
+                    <div class="row">
+                        {% for feedback in feedbacks|slice:":6" %}
+                            <div class="col-md-6 mb-3">
+                                <div class="card feedback-card">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div class="flex-grow-1">
+                                                <h6 class="card-title">{{ feedback.subject|truncatechars:50 }}</h6>
+                                                <p class="card-text">{{ feedback.message|truncatechars:100 }}</p>
+                                                <small class="text-muted">
+                                                    <i class="fas fa-user me-1"></i>{{ feedback.user.get_full_name|default:feedback.user.username }} • 
+                                                    <i class="fas fa-clock me-1"></i>{{ feedback.created_at|date:"d.m.Y H:i" }}
+                                                </small>
+                                            </div>
+                                            <div class="ms-3">
+                                                {% if feedback.feedback_type == 'suggestion' %}
+                                                    <span class="badge bg-success">Предложение</span>
+                                                {% elif feedback.feedback_type == 'question' %}
+                                                    <span class="badge bg-info">Вопрос</span>
+                                                {% elif feedback.feedback_type == 'complaint' %}
+                                                    <span class="badge bg-danger">Жалоба</span>
+                                                {% elif feedback.feedback_type == 'site_issue' %}
+                                                    <span class="badge bg-warning">Проблема</span>
+                                                {% else %}
+                                                    <span class="badge bg-secondary">{{ feedback.get_feedback_type_display }}</span>
+                                                {% endif %}
+                                                <br>
+                                                {% if feedback.status == 'new' %}
+                                                    <span class="badge bg-primary mt-1">Новое</span>
+                                                {% elif feedback.status == 'in_progress' %}
+                                                    <span class="badge bg-warning mt-1">В работе</span>
+                                                {% elif feedback.status == 'resolved' %}
+                                                    <span class="badge bg-success mt-1">Решено</span>
+                                                {% elif feedback.status == 'closed' %}
+                                                    <span class="badge bg-secondary mt-1">Закрыто</span>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    
+                    {% if feedbacks.count > 6 %}
+                        <div class="text-center mt-4">
+                            <a href="{% url 'main:editor_feedback' %}" class="btn btn-outline-primary">
+                                <i class="fas fa-eye me-2"></i>Показать все ({{ feedbacks.count }})
+                            </a>
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-comments fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">Обращений пока нет</h5>
+                        <p class="text-muted">Когда пользователи отправят обращения, они появятся здесь</p>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Profile Tab -->
+            <div class="tab-pane fade" id="profile" role="tabpanel">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-user me-2"></i>Информация о редакторе
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <p><strong>Имя:</strong> {{ editor.full_name }}</p>
+                                <p><strong>Email:</strong> {{ editor.email }}</p>
+                                <p><strong>Дата регистрации:</strong> {{ editor.created_at|date:"d.m.Y" }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-shield-alt me-2"></i>Права доступа
+                                </h5>
+                            </div>
+                                                         <div class="card-body">
+                                 <div class="mb-2">
+                                     <span class="badge bg-success me-2">
+                                         <i class="fas fa-plus me-1"></i>Создание уроков
+                                     </span>
+                                 </div>
+                                 <div class="mb-2">
+                                     <span class="badge bg-success me-2">
+                                         <i class="fas fa-edit me-1"></i>Редактирование уроков
+                                     </span>
+                                 </div>
+                                 <div class="mb-2">
+                                     <span class="badge bg-success me-2">
+                                         <i class="fas fa-file-upload me-1"></i>Загрузка документов
+                                     </span>
+                                 </div>
+                                 {% if editor.bio %}
+                                     <hr>
+                                     <h6>Биография:</h6>
+                                     <p class="text-muted">{{ editor.bio }}</p>
+                                 {% endif %}
+                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Auto-hide alerts after 5 seconds
+        setTimeout(function() {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            });
+        }, 5000);
+        
+        // Tab functionality + activate tab from query + toggle welcome section
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabs = document.querySelectorAll('[data-bs-toggle="tab"]');
+            const welcome = document.getElementById('welcomeSection') || document.querySelector('.welcome-section');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const target = this.getAttribute('data-bs-target');
+                    
+                    // Remove active class from all tabs and panes
+                    document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+                    document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('show', 'active'));
+                    
+                    // Add active class to current tab and pane
+                    this.classList.add('active');
+                    document.querySelector(target).classList.add('show', 'active');
+
+                    // Show welcome only on lessons tab
+                    if (welcome) {
+                        if (target === '#lessons') {
+                            welcome.style.display = '';
+                        } else {
+                            welcome.style.display = 'none';
+                        }
+                    }
+                });
+            });
+
+            // If URL has ?tab=documents, activate Documents tab
+            const params = new URLSearchParams(window.location.search);
+            const tabParam = params.get('tab');
+            const mapping = {
+                'documents': 'documents-tab',
+                'lessons': 'lessons-tab',
+                'feedback': 'feedback-tab',
+                'profile': 'profile-tab'
+            };
+            const toOpen = mapping[tabParam] || 'lessons-tab';
+            const btn = document.getElementById(toOpen);
+            if (btn) btn.click();
+        });
+    </script>
+</body>
+</html>

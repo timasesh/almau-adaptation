@@ -1,0 +1,304 @@
+{% extends 'main/admin_base.html' %}
+{% load static %}
+{% load i18n %}
+{% load progress_filters %}
+
+{% block title %}Прогресс по уроку "{{ lesson.title }}"{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-chart-bar"></i>
+                        Прогресс по уроку: "{{ lesson.title }}"
+                    </h3>
+                    <div class="card-tools">
+                        <a href="{% url 'employee_progress' %}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Назад к общему прогрессу
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- Информация об уроке -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h5>Информация об уроке</h5>
+                            <table class="table table-sm">
+                                <tr>
+                                    <td><strong>Название:</strong></td>
+                                    <td>{{ lesson.title }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Категория:</strong></td>
+                                    <td>{{ lesson.category.name }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Сложность:</strong></td>
+                                    <td>{{ lesson.get_difficulty_level_display }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Длительность:</strong></td>
+                                    <td>Рассчитывается автоматически</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Контент:</strong></td>
+                                    <td>
+                                        {% if lesson.has_video %}
+                                            <span class="badge badge-primary">Видео</span>
+                                        {% endif %}
+                                        {% if lesson.has_pdf %}
+                                            <span class="badge badge-success">PDF</span>
+                                        {% endif %}
+                                        {% if lesson.has_slides %}
+                                            <span class="badge badge-warning">Слайды</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Статистика</h5>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="info-box bg-info">
+                                        <span class="info-box-icon"><i class="fas fa-users"></i></span>
+                                        <div class="info-box-content">
+                                            <span class="info-box-text">Всего сотрудников</span>
+                                            <span class="info-box-number">{{ total_users }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="info-box bg-success">
+                                        <span class="info-box-icon"><i class="fas fa-check-circle"></i></span>
+                                        <div class="info-box-content">
+                                            <span class="info-box-text">Завершили урок</span>
+                                            <span class="info-box-number">{{ completed_users }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="info-box bg-warning">
+                                        <span class="info-box-icon"><i class="fas fa-clock"></i></span>
+                                        <div class="info-box-content">
+                                            <span class="info-box-text">Активны (7 дней)</span>
+                                            <span class="info-box-number">{{ active_users }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="info-box bg-primary">
+                                        <span class="info-box-icon"><i class="fas fa-percentage"></i></span>
+                                        <div class="info-box-content">
+                                            <span class="info-box-text">Процент завершения</span>
+                                            <span class="info-box-number">
+                                                {% if total_users > 0 %}
+                                                    {% widthratio completed_users total_users 100 as percentage %}
+                                                    {{ percentage|floatformat:1 }}%
+                                                {% else %}
+                                                    0%
+                                                {% endif %}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Таблица прогресса сотрудников -->
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Сотрудник</th>
+                                    <th>Email</th>
+                                    {% if lesson.has_video %}
+                                        <th>Прогресс видео</th>
+                                        <th>Время просмотра</th>
+                                    {% endif %}
+                                    {% if lesson.has_pdf %}
+                                        <th>Прогресс PDF</th>
+                                        <th>Страницы</th>
+                                    {% endif %}
+                                    {% if lesson.has_slides %}
+                                        <th>Прогресс слайдов</th>
+                                        <th>Слайды</th>
+                                    {% endif %}
+                                    <th>Статус</th>
+                                    <th>Последняя активность</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for progress in progress_list %}
+                                    <tr>
+                                        <td>
+                                            <strong>{{ progress.user.username }}</strong>
+                                        </td>
+                                        <td>{{ progress.user.email }}</td>
+                                        
+                                        {% if lesson.has_video %}
+                                            <td>
+                                                <div class="progress">
+                                                    <div class="progress-bar bg-primary" 
+                                                         style="width: {{ progress.get_video_progress_percentage }}%">
+                                                        {{ progress.get_video_progress_percentage|floatformat:1 }}%
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <small>{{ progress.get_formatted_video_time }}</small>
+                                                {% if progress.video_total_time > 0 %}
+                                                    <br>
+                                                    <small class="text-muted">
+                                                        Макс. прогресс: {{ progress.video_max_progress_percent|floatformat:1 }}%
+                                                    </small>
+                                                    <br>
+                                                    <small class="text-muted">
+                                                        Осталось: {{ progress.get_remaining_video_time|floatformat:0 }} сек
+                                                    </small>
+                                                {% endif %}
+                                            </td>
+                                        {% endif %}
+                                        
+                                        {% if lesson.has_pdf %}
+                                            <td>
+                                                <div class="progress">
+                                                    <div class="progress-bar bg-success" 
+                                                         style="width: {{ progress.get_pdf_progress_percentage }}%">
+                                                        {{ progress.get_pdf_progress_percentage|floatformat:1 }}%
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <small>{{ progress.pdf_current_page }} / {{ progress.pdf_total_pages }}</small>
+                                            </td>
+                                        {% endif %}
+                                        
+                                        {% if lesson.has_slides %}
+                                            <td>
+                                                <div class="progress">
+                                                    <div class="progress-bar bg-warning" 
+                                                         style="width: {{ progress.get_slides_progress_percentage }}%">
+                                                        {{ progress.get_slides_progress_percentage|floatformat:1 }}%
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <small>{{ progress.slides_current_slide }} / {{ progress.slides_total_slides }}</small>
+                                            </td>
+                                        {% endif %}
+                                        
+                                                                                 <td>
+                                             {% if progress.is_completed %}
+                                                 <span class="badge badge-primary">
+                                                     <i class="fas fa-star"></i> Завершен
+                                                 </span>
+                                             {% elif progress.is_ready_to_complete %}
+                                                 <span class="badge badge-success">
+                                                     <i class="fas fa-check"></i> Готов к завершению
+                                                 </span>
+                                             {% else %}
+                                                 <span class="badge badge-secondary">
+                                                     <i class="fas fa-clock"></i> В процессе
+                                                 </span>
+                                             {% endif %}
+                                         </td>
+                                        
+                                        <td>
+                                            <small>{{ progress.last_activity|date:"d.m.Y H:i" }}</small>
+                                            <br>
+                                            <small class="text-muted">
+                                                {% if progress.last_activity %}
+                                                    {% if progress.last_activity|timesince == "0 минут" %}
+                                                        Только что
+                                                    {% else %}
+                                                        {{ progress.last_activity|timesince }} назад
+                                                    {% endif %}
+                                                {% else %}
+                                                    Никогда
+                                                {% endif %}
+                                            </small>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.info-box {
+    display: flex;
+    min-height: 60px;
+    background: #fff;
+    width: 100%;
+    box-shadow: 0 0 1px rgba(0,0,0,.125), 0 1px 3px rgba(0,0,0,.2);
+    border-radius: 0.25rem;
+    margin-bottom: 1rem;
+}
+
+.info-box-icon {
+    border-radius: 0.25rem 0 0 0.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-align: center;
+    width: 50px;
+    color: #fff;
+}
+
+.info-box-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    line-height: 1.4;
+    flex: 1;
+    padding: 0 8px;
+}
+
+.info-box-text {
+    display: block;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.info-box-number {
+    display: block;
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.bg-info {
+    background-color: #17a2b8 !important;
+}
+
+.bg-success {
+    background-color: #28a745 !important;
+}
+
+.bg-warning {
+    background-color: #ffc107 !important;
+}
+
+.bg-primary {
+    background-color: #007bff !important;
+}
+
+.progress {
+    height: 20px;
+    margin-bottom: 5px;
+}
+</style>
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends 'main/admin/base.html' %}
+{% load static %}
+{% block title %}
+    {% if form_type == 'process' %}
+        {% if process %}Редактирование процесса{% else %}Добавление процесса{% endif %}
+    {% else %}
+        {% if instruction %}Редактирование инструкции{% else %}Добавление инструкции{% endif %}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="form-content">
+    <form method="post" class="admin-form">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="title">Название (Русский) *</label>
+            <input type="text" id="title" name="title" required 
+                   value="{% if process %}{{ process.title }}{% elif instruction %}{{ instruction.title }}{% endif %}">
+        </div>
+        
+        <div class="form-group">
+            <label for="title_en">Название (English)</label>
+            <input type="text" id="title_en" name="title_en" 
+                   value="{% if process %}{{ process.title_en }}{% elif instruction %}{{ instruction.title_en }}{% endif %}">
+        </div>
+        
+        <div class="form-group">
+            <label for="title_kk">Название (Қазақша)</label>
+            <input type="text" id="title_kk" name="title_kk" 
+                   value="{% if process %}{{ process.title_kk }}{% elif instruction %}{{ instruction.title_kk }}{% endif %}">
+        </div>
+        
+        <div class="form-group">
+            <label for="description">Описание (Русский) *</label>
+            <textarea id="description" name="description" rows="6" required>{% if process %}{{ process.description }}{% elif instruction %}{{ instruction.description }}{% endif %}</textarea>
+        </div>
+        
+        <div class="form-group">
+            <label for="description_en">Описание (English)</label>
+            <textarea id="description_en" name="description_en" rows="6">{% if process %}{{ process.description_en }}{% elif instruction %}{{ instruction.description_en }}{% endif %}</textarea>
+        </div>
+        
+        <div class="form-group">
+            <label for="description_kk">Описание (Қазақша)</label>
+            <textarea id="description_kk" name="description_kk" rows="6">{% if process %}{{ process.description_kk }}{% elif instruction %}{{ instruction.description_kk }}{% endif %}</textarea>
+        </div>
+        
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">
+                {% if process or instruction %}Сохранить изменения{% else %}Добавить{% endif %}
+            </button>
+            <a href="{% url 'main:admin_processes' %}" class="btn btn-secondary">Отмена</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

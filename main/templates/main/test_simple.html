@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Простой тест темы</title>
+    <style>
+        /* CSS Variables for theming */
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --border-color: #dee2e6;
+            --accent-color: #1976D2;
+            --accent-hover: #1565C0;
+            --sidebar-bg: #ffffff;
+            --sidebar-text: #333333;
+            --sidebar-hover: #f8f9fa;
+            --card-bg: #ffffff;
+            --card-border: #e9ecef;
+            --shadow: 0 2px 10px rgba(0,0,0,0.1);
+            --input-bg: #ffffff;
+            --input-border: #ced4da;
+            --input-text: #495057;
+            --button-bg: #1976D2;
+            --button-text: #ffffff;
+            --button-hover: #1565C0;
+            --link-color: #1976D2;
+            --link-hover: #1565C0;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --info-color: #17a2b8;
+        }
+
+        /* Dark theme variables */
+        .theme-dark {
+            --bg-primary: #1a1a1a;
+            --bg-secondary: #2d2d2d;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --border-color: #404040;
+            --accent-color: #64b5f6;
+            --accent-hover: #42a5f5;
+            --sidebar-bg: #2d2d2d;
+            --sidebar-text: #ffffff;
+            --sidebar-hover: #404040;
+            --card-bg: #2d2d2d;
+            --card-border: #404040;
+            --shadow: 0 2px 10px rgba(0,0,0,0.3);
+            --input-bg: #404040;
+            --input-border: #555555;
+            --input-text: #ffffff;
+            --button-bg: #64b5f6;
+            --button-text: #ffffff;
+            --button-hover: #42a5f5;
+            --link-color: #64b5f6;
+            --link-hover: #42a5f5;
+            --success-color: #4caf50;
+            --warning-color: #ff9800;
+            --danger-color: #f44336;
+            --info-color: #2196f3;
+        }
+
+        /* Apply theme variables to all elements */
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            transition: background-color 0.3s ease, color 0.3s ease;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        .test-card {
+            background: var(--card-bg);
+            border: 2px solid var(--card-border);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+        }
+
+        .test-input {
+            background: var(--input-bg);
+            border: 2px solid var(--input-border);
+            color: var(--input-text);
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            width: 200px;
+        }
+
+        .test-button {
+            background: var(--button-bg);
+            color: var(--button-text);
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .test-button:hover {
+            background: var(--button-hover);
+        }
+
+        .theme-info {
+            background: var(--bg-secondary);
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>Простой тест темной темы</h1>
+    
+    <div class="test-card">
+        <h2>Тестовая карточка</h2>
+        <p>Это тестовый текст для проверки темной темы.</p>
+        <input type="text" class="test-input" placeholder="Тестовый ввод">
+        <button class="test-button" onclick="toggleTheme()">Переключить тему</button>
+    </div>
+
+    <div class="theme-info">
+        <strong>Текущая тема:</strong> <span id="currentTheme">светлая</span><br>
+        <strong>CSS переменные:</strong><br>
+        --bg-primary: <span id="bgPrimary">#ffffff</span><br>
+        --text-primary: <span id="textPrimary">#333333</span>
+    </div>
+
+    <script>
+        let currentTheme = 'light';
+        
+        function toggleTheme() {
+            const body = document.body;
+            const html = document.documentElement;
+            
+            if (currentTheme === 'light') {
+                currentTheme = 'dark';
+                body.classList.remove('theme-light');
+                body.classList.add('theme-dark');
+                html.classList.remove('theme-light');
+                html.classList.add('theme-dark');
+            } else {
+                currentTheme = 'light';
+                body.classList.remove('theme-dark');
+                body.classList.add('theme-light');
+                html.classList.remove('theme-dark');
+                html.classList.add('theme-light');
+            }
+            
+            updateThemeInfo();
+        }
+        
+        function updateThemeInfo() {
+            const computedStyle = getComputedStyle(document.documentElement);
+            document.getElementById('currentTheme').textContent = currentTheme === 'dark' ? 'темная' : 'светлая';
+            document.getElementById('bgPrimary').textContent = computedStyle.getPropertyValue('--bg-primary');
+            document.getElementById('textPrimary').textContent = computedStyle.getPropertyValue('--text-primary');
+        }
+        
+        // Инициализация
+        document.body.classList.add('theme-light');
+        document.documentElement.classList.add('theme-light');
+        updateThemeInfo();
+    </script>
+</body>
+</html>

@@ -1,0 +1,184 @@
+{% extends 'main/admin/base.html' %}
+
+{% block title %}Документация - Админ панель{% endblock %}
+
+{% block heading %}Документация{% endblock %}
+
+{% block content %}
+<!-- Documents List -->
+<div class="card mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Документы</h5>
+        <a href="{% url 'main:admin_document_edit' %}" class="btn btn-primary btn-sm">
+            <i class="fas fa-plus me-1"></i> Добавить документ
+        </a>
+    </div>
+    
+    <div class="card-body p-0">
+        {% if documents %}
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Название</th>
+                            <th>Категория</th>
+                            <th>Файл</th>
+                            <th>Дата</th>
+                            <th width="100">Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for doc in documents %}
+                            <tr>
+                                <td>{{ doc.title }}</td>
+                                <td>{{ doc.category.name|default:"Без категории" }}</td>
+                                <td>
+                                    {% if doc.file %}
+                                        <a href="{{ doc.file.url }}" target="_blank">
+                                            <i class="fas fa-file-pdf text-danger"></i> {{ doc.filename }}
+                                        </a>
+                                    {% else %}
+                                        <span class="text-muted">Нет файла</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ doc.updated_at|date:"d.m.Y" }}</td>
+                                <td class="text-end">
+                                    <div class="btn-group btn-group-sm">
+                                        <a href="{% url 'main:admin_document_edit' doc.id %}" class="btn btn-outline-primary">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <button type="button" class="btn btn-outline-danger" 
+                                                onclick="if(confirm('Удалить документ?')){document.getElementById('delete-form-{{ doc.id }}').submit();}">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                        <form id="delete-form-{{ doc.id }}" action="{% url 'main:admin_document_delete' doc.id %}" 
+                                              method="post" style="display: none;">
+                                            {% csrf_token %}
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="p-4 text-center text-muted">
+                <i class="fas fa-info-circle fa-2x mb-3"></i>
+                <p class="mb-0">Документы не найдены</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Categories -->
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Категории</h5>
+        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#categoryModal">
+            <i class="fas fa-plus me-1"></i> Добавить
+        </button>
+    </div>
+    
+    <div class="card-body p-0">
+        {% if categories %}
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Название</th>
+                            <th>Документов</th>
+                            <th width="100">Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for cat in categories %}
+                            <tr>
+                                <td>{{ cat.name }}</td>
+                                <td>{{ cat.document_set.count }}</td>
+                                <td class="text-end">
+                                    <div class="btn-group btn-group-sm">
+                                        <button class="btn btn-outline-primary edit-category" 
+                                                data-id="{{ cat.id }}" 
+                                                data-name="{{ cat.name }}">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        {% if cat.document_set.count == 0 %}
+                                            <button class="btn btn-outline-danger"
+                                                    onclick="if(confirm('Удалить категорию?')){document.getElementById('delete-cat-{{ cat.id }}').submit();}">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                            <form id="delete-cat-{{ cat.id }}" 
+                                                  action="{% url 'main:admin_document_category_delete' cat.id %}" 
+                                                  method="post" style="display: none;">
+                                                {% csrf_token %}
+                                            </form>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="p-4 text-center text-muted">
+                <i class="fas fa-info-circle fa-2x mb-3"></i>
+                <p class="mb-0">Категории не найдены</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Category Modal -->
+<div class="modal fade" id="categoryModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="categoryForm" method="post">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h5 class="modal-title">Добавить категорию</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="category_id" id="categoryId">
+                    <div class="mb-3">
+                        <label class="form-label">Название *</label>
+                        <input type="text" class="form-control" name="name" id="categoryName" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Edit category
+    document.querySelectorAll('.edit-category').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const form = document.getElementById('categoryForm');
+            form.action = '{% url "main:admin_document_category_edit" 0 %}'.replace('0', this.dataset.id);
+            document.getElementById('categoryId').value = this.dataset.id;
+            document.getElementById('categoryName').value = this.dataset.name;
+            document.querySelector('#categoryModal .modal-title').textContent = 'Редактировать категорию';
+            new bootstrap.Modal(document.getElementById('categoryModal')).show();
+        });
+    });
+    
+    // Reset form when adding new category
+    document.getElementById('categoryModal').addEventListener('hidden.bs.modal', function() {
+        const form = document.getElementById('categoryForm');
+        form.reset();
+        form.action = '{% url "main:admin_document_category_add" %}';
+        document.querySelector('#categoryModal .modal-title').textContent = 'Добавить категорию';
+    });
+});
+</script>
+{% endblock %}

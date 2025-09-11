@@ -1,0 +1,127 @@
+{% extends 'main/admin/base.html' %}
+{% load static i18n %}
+
+{% block title %}Редактирование FAQ - Админ-панель | ALMAU Adaptation{% endblock %}
+{% block heading %}Редактирование часто задаваемого вопроса{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-edit me-2"></i>Редактировать: {{ faq.question|truncatewords:10 }}
+                </h5>
+                <a href="{% url 'main:admin_faq' %}" class="btn btn-secondary btn-sm">
+                    <i class="fas fa-arrow-left me-2"></i>Назад к списку
+                </a>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="update_faq">
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="category" class="form-label">Категория *</label>
+                                <select class="form-select" id="category" name="category" required>
+                                    <option value="">Выберите категорию</option>
+                                    {% for category in categories %}
+                                        <option value="{{ category.id }}" 
+                                                {% if category.id == faq.category.id %}selected{% endif %}>
+                                            {{ category.name }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Статистика</label>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <small class="text-muted">Просмотров:</small><br>
+                                        <span class="badge bg-info">{{ faq.views_count }}</span>
+                                    </div>
+                                    <div class="col-6">
+                                        <small class="text-muted">Популярный:</small><br>
+                                        {% if faq.is_popular %}
+                                            <span class="badge bg-success">Да</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">Нет</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <hr class="my-4">
+                    <h6 class="mb-3">Вопрос</h6>
+                    
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="question" class="form-label">Вопрос (Русский) *</label>
+                                <textarea class="form-control" id="question" name="question" 
+                                          rows="3" required>{{ faq.question }}</textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="question_en" class="form-label">Вопрос (English)</label>
+                                <textarea class="form-control" id="question_en" name="question_en" 
+                                          rows="3">{{ faq.question_en|default:'' }}</textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="question_kk" class="form-label">Вопрос (Қазақша)</label>
+                                <textarea class="form-control" id="question_kk" name="question_kk" 
+                                          rows="3">{{ faq.question_kk|default:'' }}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <hr class="my-4">
+                    <h6 class="mb-3">Ответ</h6>
+                    
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="answer" class="form-label">Ответ (Русский) *</label>
+                                <textarea class="form-control" id="answer" name="answer" 
+                                          rows="6" required>{{ faq.answer }}</textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="answer_en" class="form-label">Ответ (English)</label>
+                                <textarea class="form-control" id="answer_en" name="answer_en" 
+                                          rows="6">{{ faq.answer_en|default:'' }}</textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="answer_kk" class="form-label">Ответ (Қазақша)</label>
+                                <textarea class="form-control" id="answer_kk" name="answer_kk" 
+                                          rows="6">{{ faq.answer_kk|default:'' }}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>Сохранить изменения
+                        </button>
+                        <a href="{% url 'main:admin_faq' %}" class="btn btn-secondary ms-2">
+                            <i class="fas fa-times me-2"></i>Отмена
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

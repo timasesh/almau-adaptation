@@ -1,0 +1,55 @@
+{% load static i18n %}
+{% extends "admin/base.html" %}
+
+{% block title %}Админ-панель | {{ site_title|default:_('Django site admin') }}{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+    /* Уменьшаем ширину контейнера формы логина */
+    .login #content {
+        max-width: 360px;
+    }
+
+    /* Переносим логотип в левый верхний угол и стилизуем шапку */
+    #header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    #branding {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    #branding .site-logo {
+        height: 36px;
+        width: auto;
+        display: block;
+    }
+
+    /* Чуть компактнее контент внутри логина */
+    .login #content-main form {
+        padding: 16px 18px;
+    }
+
+    .login .submit-row {
+        padding: 8px 0 0 0;
+    }
+</style>
+{% endblock %}
+
+{% block branding %}
+<h1 id="site-name" style="margin: 0;">
+    <a href="/admin/" style="display: inline-flex; align-items: center; gap: 10px; text-decoration: none;">
+        <img src="{% static 'images/logo.png' %}" alt="Logo" class="site-logo">
+        <span>Админ-панель</span>
+    </a>
+    </h1>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}
+
+

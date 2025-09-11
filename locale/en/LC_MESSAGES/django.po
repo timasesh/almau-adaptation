@@ -1,0 +1,290 @@
+# English translations for Django project.
+# Copyright (C) 2024
+# This file is distributed under the same license as the Django project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2024.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-08-06 22:06+0600\n"
+"PO-Revision-Date: 2024-08-06 22:06+0600\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Логин"
+msgstr "Login"
+
+msgid "Пароль"
+msgstr "Password"
+
+msgid "Забыли пароль?"
+msgstr "Forgot password?"
+
+msgid "Продолжить"
+msgstr "Continue"
+
+# Навигация
+msgid "Главная"
+msgstr "Home"
+
+msgid "Об университете"
+msgstr "About the university"
+
+msgid "Документация"
+msgstr "Documentation"
+
+msgid "Процессы и инструкции"
+msgstr "Processes and instructions"
+
+msgid "Контакты и карта"
+msgstr "Contacts and map"
+
+msgid "Обратная связь"
+msgstr "Feedback"
+
+msgid "Часто задаваемые вопросы"
+msgstr "Frequently asked questions"
+
+msgid "Настройки"
+msgstr "Settings"
+
+msgid "Поддержка"
+msgstr "Support"
+
+msgid "Выход"
+msgstr "Exit"
+
+# Приветствие
+msgid "Добро пожаловать"
+msgstr "Welcome"
+
+msgid "Доброе утро"
+msgstr "Good morning"
+
+msgid "Добрый день"
+msgstr "Good afternoon"
+
+msgid "Добрый вечер"
+msgstr "Good evening"
+
+# Поиск
+msgid "Начать поиск"
+msgstr "Start the search"
+
+msgid "Поиск"
+msgstr "Search"
+
+msgid "Ничего не найдено"
+msgstr "Nothing found"
+
+msgid "Попробуйте изменить критерии поиска или выбрать другую категорию."
+msgstr "Try changing your search criteria or selecting a different category."
+
+# FAQ
+msgid "Задайте свой вопрос"
+msgstr "Ask your question"
+
+msgid "Указать теги"
+msgstr "Indicate tags"
+
+msgid "Административные процессы"
+msgstr "Administrative processes"
+
+msgid "IT поддержка"
+msgstr "IT support"
+
+msgid "Кампус и инфраструктура"
+msgstr "Campus and infrastructure"
+
+msgid "Внутренние документы"
+msgstr "Internal documents"
+
+# Процессы и инструкции
+msgid "Узнайте больше о внутренних процессах"
+msgstr "Learn more about internal processes"
+
+msgid "Процессы"
+msgstr "Processes"
+
+msgid "Инструкции"
+msgstr "Instructions"
+
+msgid "Процесс"
+msgstr "Process"
+
+msgid "Инструкция"
+msgstr "Instruction"
+
+# Обратная связь
+msgid "Если у вас есть предложения, замечания по работе сайта или вопросы — отправьте их через форму ниже. Мы ответим как можно быстрее."
+msgstr "If you have any suggestions, comments on the site or questions, please send them through the form below. We will respond as soon as possible."
+
+msgid "Кому направить?"
+msgstr "Who is this message for?"
+
+msgid "HR"
+msgstr "HR"
+
+msgid "IT поддержка"
+msgstr "IT support"
+
+msgid "Тип обращения"
+msgstr "Type of message"
+
+msgid "Предложение"
+msgstr "Suggestions"
+
+msgid "Жалоба"
+msgstr "Complaint"
+
+msgid "Вопрос"
+msgstr "Question"
+
+msgid "Проблема с сайтом"
+msgstr "Issues with website"
+
+msgid "Тема обращения"
+msgstr "Topic of message"
+
+msgid "Введите тему своего обращения"
+msgstr "Enter the topic of your message"
+
+msgid "Сообщение"
+msgstr "Message"
+
+msgid "Опишите ваше обращение как можно подробнее..."
+msgstr "Describe your message in details..."
+
+msgid "Прикрепить файл"
+msgstr "Pin your file"
+
+msgid "Загрузить файл"
+msgstr "Upload your file"
+
+msgid "Ваши контакты"
+msgstr "Your contacts"
+
+msgid "Email"
+msgstr "Email"
+
+msgid "Номер телефона"
+msgstr "Phone number"
+
+msgid "Отправить"
+msgstr "Send"
+
+# Документация
+msgid "Уставы и регламенты"
+msgstr "Charters and regulations"
+
+msgid "Политика безопасности"
+msgstr "Security policy"
+
+msgid "Шаблоны заявлений"
+msgstr "Applications templates"
+
+msgid "Скачать PDF"
+msgstr "Download pdf"
+
+# О университете
+msgid "Университет туралы"
+msgstr "About the university"
+
+msgid "История"
+msgstr "Our History"
+
+msgid "Миссия"
+msgstr "Mission"
+
+msgid "Ценности"
+msgstr "Values"
+
+msgid "Руководство университета"
+msgstr "University leadership"
+
+msgid "Имя президента"
+msgstr "The name of the president"
+
+msgid "Имя вице-президента"
+msgstr "The name of the vice-president"
+
+# Контакты
+msgid "Наш адрес:"
+msgstr "Our Address:"
+
+msgid "Контактный номер:"
+msgstr "Contact phone number:"
+
+msgid "Наш кампус"
+msgstr "Our Campus"
+
+msgid "На главном кампусе AlmaU расположены"
+msgstr "On the main AlmaU campus located"
+
+msgid "Пользователь"
+msgstr "User"
+
+msgid "Язык интерфейса"
+msgstr "Interface Language"
+
+msgid "Выберите язык для отображения интерфейса сайта"
+msgstr "Choose the language for displaying the site interface"
+
+msgid "Сохранить изменения"
+msgstr "Save changes"
+
+msgid "Язык успешно изменен"
+msgstr "Language successfully changed"
+
+msgid "Уроки"
+msgstr "Lessons"
+
+msgid "Изучайте материалы в удобном формате"
+msgstr "Study materials in a convenient format"
+
+msgid "Начинающий"
+msgstr "Beginner"
+
+msgid "Средний"
+msgstr "Intermediate"
+
+msgid "Продвинутый"
+msgstr "Advanced"
+
+msgid "Завершен"
+msgstr "Completed"
+
+msgid "Завершить урок"
+msgstr "Complete lesson"
+
+msgid "Изучите материал для завершения"
+msgstr "Study the material to complete"
+
+msgid "Видео урока"
+msgstr "Lesson video"
+
+msgid "Ваш браузер не поддерживает видео"
+msgstr "Your browser does not support video"
+
+msgid "Презентация урока"
+msgstr "Lesson presentation"
+
+msgid "Скачать оригинальный PDF"
+msgstr "Download original PDF"
+
+msgid "Уроки не найдены"
+msgstr "No lessons found"
+
+msgid "Попробуйте изменить критерии поиска или выбрать другой уровень сложности."
+msgstr "Try changing the search criteria or selecting a different difficulty level."
+
+msgid "Скрыть"
+msgstr "Hide"
+
+msgid "Открыть"
+msgstr "Open"

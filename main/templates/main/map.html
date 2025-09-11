@@ -1,114 +1,150 @@
 {% extends 'main/base.html' %}
 {% load static %}
+{% load i18n %}
+{% load translation_tags %}
 
 {% block title %}Контакты и карта - Adaptation AlmaU{% endblock %}
 
 {% block content %}
 <div class="dashboard-container">
-    <!-- Sidebar -->
-    <div class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <div class="logo-container">
-                <img src="{% static 'images/logo.png' %}" alt="AlmaU" class="logo">
-            </div>
-            <button class="sidebar-toggle" id="sidebarToggle">
-                <i class="fas fa-angle-double-left"></i>
-            </button>
-        </div>
-
-        <nav class="sidebar-nav">
-            <ul class="nav-list">
-                <li class="nav-item">
-                    <a href="{% url 'main:dashboard' %}" class="nav-link"><i class="fas fa-home"></i> <span
-                            class="nav-text">Главная</span></a>
-                </li>
-                <li class="nav-item">
-                    <a href="{% url 'main:about' %}" class="nav-link"><i class="fas fa-university"></i> <span
-                            class="nav-text">Об университете</span></a>
-                </li>
-                <li class="nav-item">
-                    <a href="{% url 'main:documents' %}" class="nav-link"><i class="fas fa-file-alt"></i> <span
-                            class="nav-text">Документация</span></a>
-                </li>
-                <li class="nav-item">
-                    <a href="{% url 'main:processes_instructions' %}" class="nav-link"><i class="fas fa-cogs"></i> <span
-                            class="nav-text">Процессы и инструкции</span></a>
-                </li>
-                <li class="nav-item active">
-                    <a href="{% url 'main:map' %}" class="nav-link active-nav-link"><i
-                            class="fas fa-map-marker-alt"></i> <span class="nav-text">Контакты и карта</span></a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link"><i class="fas fa-comments"></i> <span class="nav-text">Обратная
-                            связь</span></a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link"><i class="fas fa-question-circle"></i> <span class="nav-text">Часто
-                            задаваемые вопросы</span></a>
-                </li>
-            </ul>
-        </nav>
-
-        <div class="sidebar-footer">
-            <div class="user-menu">
-                <button class="settings-btn"><i class="fas fa-cog"></i> <span class="nav-text">Настройки</span></button>
-                <a href="{% url 'main:logout' %}" class="logout-btn"><i class="fas fa-sign-out-alt"></i> <span
-                        class="nav-text">Выход</span></a>
-            </div>
-        </div>
-    </div>
+    <script>
+    // Немедленное применение темы
+    (function() {
+        const savedTheme = localStorage.getItem('selectedTheme') || 'light';
+        if (savedTheme === 'dark') {
+            document.documentElement.classList.add('theme-dark');
+            document.body.classList.add('theme-dark');
+            document.documentElement.style.backgroundColor = '#1a1a1a';
+            document.body.style.backgroundColor = '#1a1a1a';
+        } else {
+            document.documentElement.classList.add('theme-light');
+            document.body.classList.add('theme-light');
+            document.documentElement.style.backgroundColor = '#ffffff';
+            document.body.style.backgroundColor = '#ffffff';
+        }
+    })();
+    </script>
+    {% include 'main/sidebar.html' %}
 
     <!-- Main content -->
     <div class="main-content" id="mainContent">
         <!-- Top right logo -->
-        <span class="user-badge fixed-almau-logo">AlmaUni</span>
+        <span class="user-badge fixed-almau-logo">Almayni</span>
 
-        <h1 class="page-title">Контакты и Карта</h1>
+                        <h1 class="page-title">{% trans "Контакты и карта" %}</h1>
 
-        <div class="grid-container">
-            <!-- Left block: Map + Contact Info -->
-            <div class="left-block">
-                <div class="map-embed">
-                    <iframe
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2908.1522025829113!2d76.8907047096891!3d43.20629688110313!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38836895257e39cb%3A0x28bb8b25d8c43156!2z0JDQu9C80LDRgtGLINCc0LXQvdC10LTQttC80LXQvdGCINCj0L3QuNCy0LXRgNGB0LjRgtC10YI!5e0!3m2!1sru!2skz!4v1753963064704!5m2!1sru!2skz"
-                        width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
-                        referrerpolicy="no-referrer-when-downgrade"></iframe>
-                </div>
-
-                <div class="contact-box">
-                    <h2>Наш Адрес:</h2>
-                    <p>улица Розыбакиева 227, Алматы 050060</p>
-
-                    <h2>Контактный номер:</h2>
-                    <p>+77273133040</p>
+        <!-- Top row: Map + Contact info -->
+        <div class="top-grid">
+            <div class="top-left">
+                <div class="map-card">
+                    <div class="map-embed">
+                        <iframe
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2908.1522025829113!2d76.8907047096891!3d43.20629688110313!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38836895257e39cb%3A0x28bb8b25d8c43156!2z0JDQu9C80LDRgtGLINCc0LXQvdC10LTQttC80LXQvdGCINCj0L3QuNCy0LXRgNGB0LjRgtC10YI!5e0!3m2!1sru!2skz!4v1753963064704!5m2!1sru!2skz"
+                            width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    </div>
                 </div>
             </div>
-
-            <!-- Right block: Campus Info + Image -->
-            <div class="right-block">
-                <div class="campus-box">
-                    <h2>Кампус</h2>
-                    <p>На территории кампуса AlmaU располагаются:</p>
-                    <ul>
-                        <li>Множество аудиторий</li>
-                        <li>Спорт Комплекс</li>
-                        <li>2 кофейни</li>
-                        <li>Библиотека</li>
-                        <li>Коворкинг</li>
-                        <li>Атриум</li>
-                        <li>Парковка</li>
-                        <li>Спортивная площадка</li>
-                    </ul>
-                </div>
-                <div class="campus-image">
-                    <img src="{% static 'images/almau.png' %}" alt="Кампус AlmaU" class="campus-img">
+            <div class="top-right">
+                <div class="contact-card">
+                    {% if contact_info %}
+                        <h2 class="contact-title">{% trans "Наш Адрес" %}:</h2>
+                        <p>{{ address_text }}</p>
+                        <h2 class="contact-title">{% trans "Контактный номер" %}:</h2>
+                        <p>{{ contact_info.phone }}</p>
+                    {% else %}
+                        <h2 class="contact-title">{% trans "Наш Адрес" %}:</h2>
+                        <p>{% trans "Адрес не указан" %}</p>
+                        <h2 class="contact-title">{% trans "Контактный номер" %}:</h2>
+                        <p>{% trans "Телефон не указан" %}</p>
+                    {% endif %}
                 </div>
             </div>
         </div>
+
+        <!-- Bottom row: Campus section -->
+        
+        <div class="campus-grid">
+            
+            <div class="campus-left">
+                
+                <div class="campus-box">
+                    <h2 class="section-title">{% trans "Кампус" %}</h2>
+                    <p>{% trans "На территории кампуса" %} AlmaU {% trans "располагаются" %}:</p>
+                    <ul>
+                        {% if campus_items_list %}
+                            {% for item in campus_items_list %}
+                                <li>{{ item }}</li>
+                            {% endfor %}
+                        {% else %}
+                            <li>{% trans "Учебные корпуса" %}</li>
+                            <li>{% trans "Библиотека" %}</li>
+                            <li>{% trans "Спортивные залы" %}</li>
+                            <li>{% trans "Столовая" %}</li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+            <div class="campus-right">
+                <div class="campus-image">
+                    {% if contact_info.campus_image %}
+                        <img src="{{ contact_info.campus_image.url }}" alt="{% trans "Кампус" %} AlmaU" class="campus-img">
+                    {% else %}
+                        <img src="{% static 'images/almau.png' %}" alt="{% trans "Кампус" %} AlmaU" class="campus-img">
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- 3D кампус кнопка -->
+        {% if contact_info.campus_3d_enabled and contact_info.campus_3d_url %}
+            <div class="campus-3d-section">
+                <div class="campus-3d-container">
+                    <a href="{{ contact_info.campus_3d_url }}" target="_blank" class="campus-3d-btn">
+                        <i class="fas fa-cube me-2"></i>{{ campus_3d_button_text }}
+                    </a>
+                </div>
+            </div>
+        {% endif %}
     </div>
 </div>
 
 <style>
+    /* Шрифт страницы Контакты и карта */
+    @font-face {
+        font-family: 'Helvetica Neue';
+        src: local('Helvetica Neue'), local('HelveticaNeue');
+        font-display: swap;
+    }
+
+    .main-content, .main-content * {
+        font-family: 'Helvetica Neue', Arial, Helvetica, sans-serif !important;
+    }
+    /* Вернем корректный шрифт для иконок Font Awesome,
+       чтобы они не пропадали из-за общего переопределения шрифта */
+    .main-content .fa, 
+    .main-content .fas, 
+    .main-content .far, 
+    .main-content .fab, 
+    .main-content .fa-solid {
+        font-family: "Font Awesome 6 Free" !important;
+        font-weight: 900; /* для solid-иконок */
+    }
+    /* Фиксированный логотип вверху справа (как на странице Документация) */
+    .fixed-almau-logo {
+        position: fixed !important;
+        top: 32px !important;
+        right: 30px !important;
+        z-index: 1000 !important;
+        background: #1976D2 !important;
+        color: white !important;
+        padding: 8px 16px !important;
+        border-radius: 20px !important;
+        font-weight: bold !important;
+        font-size: 14px !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+        white-space: nowrap !important;
+    }
     .almauni-label {
         position: absolute;
         top: 20px;
@@ -129,42 +165,72 @@
         color: #333;
     }
 
-    .grid-container {
-        display: flex;
-        flex-wrap: wrap;
-        padding: 30px;
-        gap: 30px;
+    /* Top row */
+    .top-grid {
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: 32px;
+        padding: 24px 30px 0 30px;
     }
-
-    .left-block,
-    .right-block {
-        flex: 1 1 45%;
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
+    .map-card {
+        background: #fff;
+        border-radius: 18px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+        overflow: hidden;
     }
-
     .map-embed iframe {
         width: 100%;
-        height: 300px;
-        border-radius: 12px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        height: 420px;
+        border: 0;
+        display: block;
+    }
+    .contact-card {
+        background: #fff;
+        border-radius: 18px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+        padding: 24px 28px;
+    }
+    .contact-title {
+        color: #000;
+        font-size: 20px;
+        font-weight: 600;
+        margin: 0 0 8px 0;
+    }
+    .contact-card p {
+        margin: 0 0 16px 0;
+        font-size: 16px;
+        color: #000;
     }
 
-    .contact-box,
+    /* Bottom row */
+    .section-title {
+        margin: 28px 30px 10px;
+        font-size: 22px;
+        font-weight: 700;
+        color: #000;
+    }
+    .campus-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 32px;
+        padding: 0 30px 30px 30px;
+    }
     .campus-box {
-        background-color: #fff;
-        padding: 20px;
-        border-radius: 12px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        margin-top: 20px;
+        background: #fff;
+        border-radius: 18px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+        padding: 20px 24px;
     }
-
     .campus-image img {
+        margin-top: 20px;
         width: 100%;
-        height: 300px;
+        height: 340px;
         object-fit: cover;
-        border-radius: 12px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        border-radius: 18px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+        background: #fff;
+        padding: 0;
     }
 
     h2 {
@@ -173,8 +239,9 @@
         font-size: 18px;
     }
 
-    ul {
-        padding-left: 20px;
+    .campus-box ul {
+        padding: 20px;
+        padding-left: 10px;
     }
 
     ul li {
@@ -182,13 +249,15 @@
     }
 
     @media (max-width: 768px) {
-        .grid-container {
-            flex-direction: column;
+        .top-grid {
+            grid-template-columns: 1fr;
+            gap: 16px;
+            padding: 20px;
         }
-
-        .left-block,
-        .right-block {
-            flex: 1 1 100%;
+        .campus-grid {
+            grid-template-columns: 1fr;
+            gap: 16px;
+            padding: 0 20px 20px 20px;
         }
 
         .almauni-label {
@@ -199,49 +268,187 @@
             display: block;
             width: fit-content;
         }
+        /* Позиционирование фиксированного логотипа на мобильных */
+        .fixed-almau-logo {
+            right: 20px !important;
+            top: 15px !important;
+        }
     }
 
-    .fixed-almau-logo {
-        position: fixed !important;
-        top: 32px !important;
-        right: 30px !important;
-        /* Фиксированная позиция справа сверху */
-        z-index: 1000 !important;
-        background: #1976D2 !important;
+    /* Темная тема */
+    @media (prefers-color-scheme: dark) {
+        .page-title {
+            color: white !important;
+        }
+        
+        .contact-card {
+            background: transparent !important;
+            border: 2px solid white !important;
+            color: white !important;
+        }
+        
+        .contact-title {
+            color: white !important;
+        }
+        
+        .contact-card p {
+            color: white !important;
+        }
+        
+        .campus-box {
+            background: transparent !important;
+            border: 2px solid white !important;
+            color: white !important;
+        }
+        
+        .section-title {
+            color: white !important;
+        }
+        
+        .campus-box h2 {
+            color: white !important;
+        }
+        
+        .campus-box p {
+            color: white !important;
+        }
+        
+        .campus-box ul li {
+            color: white !important;
+        }
+    }
+
+    /* Принудительное переопределение цветов */
+    body.theme-dark .contact-card {
+        background: transparent !important;
+        border: 2px solid white !important;
         color: white !important;
-        padding: 8px 16px !important;
-        border-radius: 20px !important;
-        font-weight: bold !important;
-        font-size: 14px !important;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
-        white-space: nowrap !important;
     }
-
-    .sidebar {
-        width: 250px;
-        /* фиксированная ширина */
-        min-width: 250px;
-        max-width: 250px;
-        transition: all 0.3s ease;
-        overflow-x: hidden;
+    
+    body.theme-dark .contact-title,
+    body.theme-dark .contact-card p {
+        color: white !important;
     }
-
-    .sidebar-nav .nav-link {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        padding-left: 0px;
-        /* Уменьши отступ слева */
-
+    
+    body.theme-dark .campus-box {
+        background: transparent !important;
+        border: 2px solid white !important;
+        color: white !important;
     }
-
-    .sidebar .nav-text {
+    
+    body.theme-dark .section-title,
+    body.theme-dark .campus-box h2,
+    body.theme-dark .campus-box p,
+    body.theme-dark .campus-box ul li {
+        color: white !important;
+    }
+    
+    body.theme-light .contact-card {
+        background: white !important;
+        border: 2px solid #e0e0e0 !important;
+        color: #333333 !important;
+    }
+    
+    body.theme-light .contact-title,
+    body.theme-light .contact-card p {
+        color: #333333 !important;
+    }
+    
+    body.theme-light .campus-box {
+        background: white !important;
+        border: 2px solid #e0e0e0 !important;
+        color: #333333 !important;
+    }
+    
+    body.theme-light .page-title {
+        color: #333333 !important;
+    }
+    
+    body.theme-light .section-title,
+    body.theme-light .campus-box h2,
+    body.theme-light .campus-box p,
+    body.theme-light .campus-box ul li {
+        color: #333333 !important;
+    }
+    
+    /* Темная тема для заголовка страницы */
+    body.theme-dark .page-title {
+        color: #ffffff !important;
+    }
+    
+    /* Стили для 3D кнопки */
+    .campus-3d-section {
+        padding: 30px;
+        text-align: center;
+    }
+    
+    .campus-3d-container {
+        max-width: 400px;
+        margin: 0 auto;
+    }
+    
+    .campus-3d-btn {
         display: inline-block;
-        max-width: 180px;
-        /* ограничение по ширине текста */
-        overflow: hidden;
-        text-overflow: ellipsis;
-        vertical-align: middle;
+        background: linear-gradient(135deg, #1976D2, #1565C0);
+        color: white;
+        text-decoration: none;
+        padding: 15px 30px;
+        border-radius: 12px;
+        font-size: 16px;
+        font-weight: 600;
+        box-shadow: 0 8px 24px rgba(25, 118, 210, 0.3);
+        transition: all 0.3s ease;
+        border: none;
+        min-width: 250px;
     }
+    
+    .campus-3d-btn:hover {
+        background: linear-gradient(135deg, #1565C0, #0d47a1);
+        transform: translateY(-2px);
+        box-shadow: 0 12px 32px rgba(25, 118, 210, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+    
+    .campus-3d-btn:active {
+        transform: translateY(0);
+        box-shadow: 0 6px 20px rgba(25, 118, 210, 0.3);
+    }
+    
+    .campus-3d-btn i {
+        font-size: 18px;
+        margin-right: 8px;
+    }
+    
+    /* Темная тема для 3D кнопки */
+    body.theme-dark .campus-3d-btn {
+        background: linear-gradient(135deg, #64b5f6, #42a5f5);
+        color: #1a1a1a;
+        box-shadow: 0 8px 24px rgba(100, 181, 246, 0.3);
+    }
+    
+    body.theme-dark .campus-3d-btn:hover {
+        background: linear-gradient(135deg, #42a5f5, #2196f3);
+        color: #1a1a1a;
+        box-shadow: 0 12px 32px rgba(100, 181, 246, 0.4);
+    }
+    
+    /* Мобильные стили для 3D кнопки */
+    @media (max-width: 768px) {
+        .campus-3d-section {
+            padding: 20px;
+        }
+        
+        .campus-3d-btn {
+            font-size: 14px;
+            padding: 12px 24px;
+            min-width: 200px;
+        }
+        
+        .campus-3d-btn i {
+            font-size: 16px;
+        }
+    }
+
 </style>
 {% endblock %}

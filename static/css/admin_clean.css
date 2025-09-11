@@ -1,0 +1,264 @@
+/* Чистые стили для админ панели без темной темы */
+
+/* Сброс стилей для админ панели */
+.admin-body {
+    background: #f8f9fa !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+    color: #333 !important;
+    visibility: visible !important;
+}
+
+/* Контейнер входа */
+.admin-login-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 20px;
+}
+
+/* Карточка входа */
+.admin-login-card {
+    background: white;
+    max-width: 450px;
+    width: 100%;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/* Заголовок */
+.admin-login-header {
+    margin-bottom: 40px;
+}
+
+.logo-container {
+    margin-bottom: 30px;
+}
+
+.login-logo {
+    max-width: 180px;
+    height: auto;
+    margin-bottom: 20px;
+}
+
+.admin-login-title {
+    font-size: 32px;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.admin-login-subtitle {
+    font-size: 16px;
+    color: #7f8c8d;
+    text-align: center;
+    line-height: 1.5;
+}
+
+/* Форма */
+.admin-login-form {
+    margin-bottom: 30px;
+}
+
+.form-group {
+    margin-bottom: 25px;
+    text-align: left;
+}
+
+.admin-form-input {
+    width: 100%;
+    padding: 18px 20px;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #495057;
+    background: #f8f9fa;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+.admin-form-input:focus {
+    outline: none;
+    border-color: #667eea;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    transform: translateY(-2px);
+}
+
+.admin-form-input::placeholder {
+    color: #adb5bd;
+}
+
+/* Кнопка входа */
+.admin-login-btn {
+    width: 100%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 18px;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+}
+
+.admin-login-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
+}
+
+.admin-login-btn:active {
+    transform: translateY(-1px);
+}
+
+/* Сообщения */
+.admin-messages {
+    margin-top: 25px;
+}
+
+.admin-message {
+    padding: 15px 20px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    font-weight: 500;
+    text-align: left;
+    border-left: 4px solid;
+}
+
+.admin-message-error {
+    background-color: #fff5f5;
+    color: #c53030;
+    border-left-color: #f56565;
+}
+
+.admin-message-success {
+    background-color: #f0fff4;
+    color: #2f855a;
+    border-left-color: #48bb78;
+}
+
+.admin-message-warning {
+    background-color: #fffbeb;
+    color: #d69e2e;
+    border-left-color: #ed8936;
+}
+
+.admin-message-info {
+    background-color: #ebf8ff;
+    color: #2b6cb0;
+    border-left-color: #4299e1;
+}
+
+/* Футер */
+.admin-login-footer {
+    margin-top: 35px;
+    text-align: center;
+    border-top: 1px solid #e9ecef;
+    padding-top: 25px;
+}
+
+.admin-login-footer p {
+    color: #6c757d;
+    margin-bottom: 20px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.back-to-site {
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 12px 24px;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 2px solid #667eea;
+    background: transparent;
+}
+
+.back-to-site:hover {
+    background: #667eea;
+    color: white;
+    text-decoration: none;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .admin-login-container {
+        padding: 15px;
+    }
+    
+    .admin-login-card {
+        padding: 30px 25px;
+        margin: 10px;
+    }
+    
+    .admin-login-title {
+        font-size: 28px;
+    }
+    
+    .admin-form-input {
+        padding: 16px 18px;
+    }
+    
+    .admin-login-btn {
+        padding: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .admin-login-card {
+        padding: 25px 20px;
+    }
+    
+    .admin-login-title {
+        font-size: 24px;
+    }
+    
+    .admin-login-subtitle {
+        font-size: 14px;
+    }
+}
+
+/* Дополнительные стили для иконок */
+.fas {
+    font-size: 16px;
+}
+
+/* Анимации */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.admin-login-card {
+    animation: fadeIn 0.6s ease-out;
+}

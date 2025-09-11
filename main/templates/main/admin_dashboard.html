@@ -1,0 +1,126 @@
+{% extends 'main/admin_base.html' %}
+{% load static %}
+
+{% block title %}Панель Администратора - AlmaU{% endblock %}
+
+{% block content %}
+<div class="admin-dashboard-container">
+    {% include 'main/admin_sidebar.html' %}
+    
+    <div class="admin-main-content" id="adminMainContent">
+        <!-- Фиксированный логотип (не в потоке документа) -->
+        <span class="admin-user-badge fixed-almau-logo">Admin Panel</span>
+        
+        <div class="admin-content-header">
+            <div class="admin-greeting">
+                <h1>Панель Администратора</h1>
+                <p>Добро пожаловать, {{ user.username }}!</p>
+            </div>
+        </div>
+        
+        <!-- Основная сетка с логотипами -->
+        <div class="admin-dashboard-grid">
+            <a href="#" class="admin-dashboard-link">
+                <img src="{% static 'images/об_университете.png' %}" 
+                     alt="Управление пользователями" 
+                     class="admin-dashboard-img">
+            </a>
+            
+            <a href="#" class="admin-dashboard-link">
+                <img src="{% static 'images/документация.png' %}" 
+                     alt="Редактирование документов" 
+                     class="admin-dashboard-img">
+            </a>
+            
+            <a href="#" class="admin-dashboard-link">
+                <img src="{% static 'images/процессы_и_инструкции.png' %}" 
+                     alt="Процессы и инструкции" 
+                     class="admin-dashboard-img">
+            </a>
+            
+            <a href="#" class="admin-dashboard-link">
+                <img src="{% static 'images/часто_задаваемые_вопросы.png' %}" 
+                     alt="Управление FAQ" 
+                     class="admin-dashboard-img">
+            </a>
+            
+            <a href="#" class="admin-dashboard-link">
+                <img src="{% static 'images/обратная_связь.png' %}" 
+                     alt="Обратная связь" 
+                     class="admin-dashboard-img">
+            </a>
+            
+            <a href="#" class="admin-dashboard-link">
+                <img src="{% static 'images/контакты_и_карта.png' %}" 
+                     alt="Аналитика" 
+                     class="admin-dashboard-img">
+            </a>
+        </div>
+        
+        <!-- Дополнительная информация для админа -->
+        <div class="admin-stats-section">
+            <div class="admin-stats-grid">
+                <div class="admin-stat-card">
+                    <div class="admin-stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="admin-stat-content">
+                        <h3>Пользователи</h3>
+                        <p>Общее количество пользователей в системе</p>
+                        <span class="admin-stat-number">--</span>
+                    </div>
+                </div>
+                
+                <div class="admin-stat-card">
+                    <div class="admin-stat-icon">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <div class="admin-stat-content">
+                        <h3>Документы</h3>
+                        <p>Всего документов в базе</p>
+                        <span class="admin-stat-number">--</span>
+                    </div>
+                </div>
+                
+                <div class="admin-stat-card">
+                    <div class="admin-stat-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <div class="admin-stat-content">
+                        <h3>Обращения</h3>
+                        <p>Новые обращения пользователей</p>
+                        <span class="admin-stat-number">--</span>
+                    </div>
+                </div>
+                
+                <div class="admin-stat-card">
+                    <div class="admin-stat-icon">
+                        <i class="fas fa-question-circle"></i>
+                    </div>
+                    <div class="admin-stat-content">
+                        <h3>FAQ</h3>
+                        <p>Часто задаваемые вопросы</p>
+                        <span class="admin-stat-number">--</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Инициализация админского сайдбара
+document.addEventListener('DOMContentLoaded', function() {
+    const adminSidebarToggle = document.getElementById('adminSidebarToggle');
+    const adminSidebar = document.getElementById('adminSidebar');
+    
+    if (adminSidebarToggle && adminSidebar) {
+        adminSidebarToggle.addEventListener('click', function() {
+            adminSidebar.classList.toggle('collapsed');
+        });
+    }
+});
+</script>
+{% endblock %}

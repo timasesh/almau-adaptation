@@ -1,0 +1,960 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% load i18n %}
+{% load translation_tags %}
+
+{% block title %}Обратная связь - Adaptation AlmaU{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <script>
+    // Немедленное применение темы
+    (function() {
+        const savedTheme = localStorage.getItem('selectedTheme') || 'light';
+        if (savedTheme === 'dark') {
+            document.documentElement.classList.add('theme-dark');
+            document.body.classList.add('theme-dark');
+            document.documentElement.style.backgroundColor = '#1a1a1a';
+            document.body.style.backgroundColor = '#1a1a1a';
+        } else {
+            document.documentElement.classList.add('theme-light');
+            document.body.classList.add('theme-light');
+            document.documentElement.style.backgroundColor = '#ffffff';
+            document.body.style.backgroundColor = '#ffffff';
+        }
+    })();
+    </script>
+    {% include 'main/sidebar.html' %}
+    
+    <!-- Main content -->
+    <div class="main-content" id="mainContent">
+        <!-- Фиксированный логотип (не в потоке документа) -->
+        <span class="user-badge fixed-almau-logo">AlmaUni</span>
+        
+        <div class="content-header">
+            <div class="greeting">
+                <h1>{% trans "Обратная связь" %}</h1>
+            </div>
+        </div>
+        
+        <div class="feedback-content">
+            <div class="feedback-description">
+                <p>{% trans "Если у вас есть предложения, замечания по работе сайта или вопросы — отправьте их через форму ниже. Все обращения направляются в HR отдел университета. Мы ответим как можно быстрее." %}</p>
+                
+                <!-- Кнопка IT поддержки -->
+                {% if contact_info.it_support_enabled and contact_info.it_support_url %}
+                    <div class="it-support-section">
+                        <p>{% trans "По техническим вопросам (проблемы с компьютером, программным обеспечением, доступом к системам) обращайтесь в IT поддержку:" %}</p>
+                        <a href="{{ contact_info.it_support_url }}" target="_blank" class="it-support-btn">
+                            <i class="fas fa-headset me-2"></i>{% trans "IT Поддержка" %}
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Сообщения об ошибках/успехе -->
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="POST" enctype="multipart/form-data" class="feedback-form" id="feedbackForm">
+                {% csrf_token %}
+                
+                <!-- 1. Тип обращения -->
+                <div class="form-group">
+                    <label class="form-label">{% trans "1. Тип обращения" %} <span class="required">*</span></label>
+                    <div class="radio-group">
+                        {% for value, label in type_choices %}
+                            <label class="radio-option">
+                                <input type="radio" name="feedback_type" value="{{ value }}" required>
+                                <span class="radio-text">{{ label }}</span>
+                            </label>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- 2. Тема обращения -->
+                <div class="form-group">
+                    <label class="form-label" for="subject">{% trans "2. Тема обращения" %} <span class="required">*</span></label>
+                    <div class="input-wrapper">
+                        <input type="text" 
+                               id="subject" 
+                               name="subject" 
+                               class="form-input" 
+                               placeholder="{% trans 'Введите тему своего обращения' %}"
+                               required>
+                        <i class="fas fa-edit input-icon"></i>
+                    </div>
+                </div>
+
+                <!-- 3. Сообщение -->
+                <div class="form-group">
+                    <label class="form-label" for="message">{% trans "3. Сообщение" %} <span class="required">*</span></label>
+                    <div class="textarea-wrapper">
+                        <textarea id="message" 
+                                  name="message" 
+                                  class="form-textarea" 
+                                  placeholder="{% trans 'Опишите ваше обращение как можно подробнее...' %}"
+                                  rows="6"
+                                  required></textarea>
+                        <i class="fas fa-edit textarea-icon"></i>
+                    </div>
+                </div>
+
+                <!-- 4. Прикрепить файл -->
+                <div class="form-group">
+                    <label class="form-label">{% trans "4. Прикрепите файл" %}</label>
+                    <div class="file-upload-wrapper">
+                        <input type="file" 
+                               id="file" 
+                               name="file" 
+                               class="file-input" 
+                               accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png">
+                        <label for="file" class="file-upload-btn">
+                            <i class="fas fa-upload"></i>
+                            {% trans "Загрузить файл" %}
+                        </label>
+                        <span class="file-name" id="fileName"></span>
+                    </div>
+                </div>
+
+                <!-- 5. Ваши контакты -->
+                <div class="form-group">
+                    <label class="form-label">{% trans "5. Ваши контакты" %}</label>
+                    <div class="contacts-row">
+                        <div class="contact-input">
+                            <div class="input-wrapper">
+                                <input type="email" 
+                                       id="email" 
+                                       name="email" 
+                                       class="form-input" 
+                                       placeholder="{% trans 'Почта' %}"
+                                       value="{{ user_email }}"
+                                       required>
+                                <i class="fas fa-envelope input-icon"></i>
+                                <span class="required">*</span>
+                            </div>
+                        </div>
+                        <div class="contact-input">
+                            <div class="input-wrapper">
+                                <input type="tel" 
+                                       id="phone" 
+                                       name="phone" 
+                                       class="form-input" 
+                                       placeholder="{% trans 'Номер телефона' %}">
+                                <i class="fas fa-phone input-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Кнопка отправки -->
+                <div class="form-actions">
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-paper-plane"></i>
+                        {% trans "Отправить" %}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+// Немедленное применение темы при загрузке страницы
+document.addEventListener('DOMContentLoaded', function() {
+    const savedTheme = localStorage.getItem('selectedTheme') || 'light';
+    
+    // Применяем тему немедленно
+    if (typeof applyTheme === 'function') {
+        applyTheme(savedTheme);
+    }
+    
+    // Показываем страницу после применения темы
+    setTimeout(() => {
+        document.documentElement.classList.add('theme-loaded');
+    }, 50);
+});
+</script>
+
+<style>
+/* Исправляем позиционирование логотипа AlmaUni справа сверху */
+.content-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    position: relative;
+}
+
+.user-info {
+    position: relative;
+    flex-shrink: 0; /* Не сжимать */
+}
+
+.fixed-almau-logo {
+    position: fixed !important;
+    top: 32px !important;
+    right: 30px !important; /* Фиксированная позиция справа сверху */
+    z-index: 1000 !important;
+    background: #1976D2 !important;
+    color: white !important;
+    padding: 8px 16px !important;
+    border-radius: 20px !important;
+    font-weight: bold !important;
+    font-size: 14px !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+    white-space: nowrap !important;
+}
+
+.sidebar {
+    width: 250px; /* фиксированная ширина */
+    min-width: 250px;
+    max-width: 250px;
+    transition: all 0.3s ease;
+    overflow-x: hidden;
+}
+
+.sidebar-nav .nav-link {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sidebar .nav-text {
+    display: inline-block;
+    max-width: 180px; /* ограничение по ширине текста */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: middle;
+}
+
+/* На мобильных устройствах */
+@media (max-width: 768px) {
+    .fixed-almau-logo {
+        right: 20px !important;
+        top: 15px !important;
+    }
+}
+
+.feedback-content {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.feedback-description {
+    margin-bottom: 40px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 15px;
+    border-left: 4px solid #1976D2;
+}
+
+.feedback-description p {
+    margin: 0 0 15px 0;
+    font-size: 16px;
+    line-height: 1.6;
+    color: #333;
+}
+
+.feedback-description p:last-child {
+    margin: 0;
+}
+
+/* IT поддержка */
+.it-support-section {
+    margin-top: 20px;
+    padding: 20px;
+    background: #e3f2fd;
+    border-radius: 10px;
+    border-left: 4px solid #2196F3;
+}
+
+.it-support-section p {
+    margin: 0 0 15px 0;
+    font-size: 14px;
+    color: #1565C0;
+    font-weight: 500;
+}
+
+.it-support-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    background: linear-gradient(135deg, #2196F3, #1976D2);
+    color: white;
+    text-decoration: none;
+    border-radius: 25px;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+    transition: all 0.3s ease;
+}
+
+.it-support-btn:hover {
+    background: linear-gradient(135deg, #1976D2, #1565C0);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(33, 150, 243, 0.4);
+    color: white;
+    text-decoration: none;
+}
+
+/* Уведомления */
+.alert {
+    padding: 15px 20px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    font-weight: 500;
+}
+
+.alert-success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.alert-error {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* Форма */
+.feedback-form {
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+    margin-bottom: 30px;
+}
+
+.form-label {
+    display: block;
+    font-size: 18px;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.required {
+    color: #e53e3e;
+    font-weight: bold;
+}
+
+/* Радио кнопки */
+.radio-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.radio-option {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding: 12px 20px;
+    background: #f8f9fa;
+    border: 2px solid #e0e0e0;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.radio-option:hover {
+    border-color: #1976D2;
+    background: #e3f2fd;
+}
+
+.radio-option input[type="radio"] {
+    margin-right: 10px;
+    transform: scale(1.2);
+}
+
+.radio-option input[type="radio"]:checked + .radio-text {
+    color: #1976D2;
+}
+
+.radio-option:has(input[type="radio"]:checked) {
+    background: #1976D2;
+    border-color: #1976D2;
+    color: white;
+}
+
+/* Поля ввода */
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.form-input {
+    width: 100%;
+    padding: 15px 20px;
+    padding-right: 50px;
+    border: 2px solid #e0e0e0;
+    border-radius: 30px;
+    font-size: 16px;
+    background: #f8f9fa;
+    transition: all 0.3s ease;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #1976D2;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
+}
+
+.input-icon {
+    position: absolute;
+    right: 20px;
+    color: #999;
+    font-size: 16px;
+    pointer-events: none;
+}
+
+/* Текстовое поле */
+.textarea-wrapper {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+}
+
+.form-textarea {
+    width: 100%;
+    padding: 15px 20px;
+    padding-right: 50px;
+    border: 2px solid #e0e0e0;
+    border-radius: 20px;
+    font-size: 16px;
+    background: #f8f9fa;
+    transition: all 0.3s ease;
+    resize: vertical;
+    min-height: 120px;
+    font-family: inherit;
+}
+
+.form-textarea:focus {
+    outline: none;
+    border-color: #1976D2;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
+}
+
+.textarea-icon {
+    position: absolute;
+    right: 20px;
+    top: 15px;
+    color: #999;
+    font-size: 16px;
+    pointer-events: none;
+}
+
+/* Загрузка файлов */
+.file-upload-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.file-input {
+    display: none;
+}
+
+.file-upload-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 24px;
+    background: #f8f9fa;
+    border: 2px solid #e0e0e0;
+    border-radius: 25px;
+    color: #333;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.file-upload-btn:hover {
+    border-color: #1976D2;
+    background: #e3f2fd;
+    color: #1976D2;
+}
+
+.file-name {
+    font-size: 14px;
+    color: #666;
+    font-style: italic;
+}
+
+/* Контакты */
+.contacts-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.contact-input .input-wrapper .required {
+    position: absolute;
+    right: 50px;
+    color: #e53e3e;
+    font-weight: bold;
+}
+
+/* Кнопка отправки */
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 40px;
+}
+
+.submit-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 15px 35px;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+}
+
+.submit-btn:hover {
+    background: #45a049;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(76, 175, 80, 0.4);
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .feedback-content {
+        padding: 15px;
+    }
+    
+    .feedback-form {
+        padding: 20px;
+    }
+    
+    .radio-group {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .radio-option {
+        justify-content: flex-start;
+    }
+    
+    .contacts-row {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .form-actions {
+        justify-content: center;
+    }
+    
+    .submit-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Темная тема */
+@media (prefers-color-scheme: dark) {
+    .feedback-description {
+        background: transparent !important;
+        border: 2px solid white !important;
+        color: white !important;
+    }
+    
+    .feedback-description p {
+        color: white !important;
+    }
+    
+    .feedback-form {
+        background: transparent !important;
+        border: 2px solid white !important;
+        color: white !important;
+    }
+    
+    .form-label {
+        color: white !important;
+    }
+    
+    .radio-option {
+        background: transparent !important;
+        border: 2px solid white !important;
+        color: white !important;
+    }
+    
+    .radio-option:hover {
+        border-color: white !important;
+        background: rgba(255, 255, 255, 0.1) !important;
+    }
+    
+    .radio-option:has(input[type="radio"]:checked) {
+        background: white !important;
+        border-color: white !important;
+        color: #000 !important;
+    }
+    
+    .form-input {
+        background: transparent !important;
+        border-color: white !important;
+        color: white !important;
+    }
+    
+    .form-input:focus {
+        border-color: white !important;
+        background: rgba(255, 255, 255, 0.1) !important;
+        color: white !important;
+    }
+    
+    .form-textarea {
+        background: transparent !important;
+        border-color: white !important;
+        color: white !important;
+    }
+    
+    .form-textarea:focus {
+        border-color: white !important;
+        background: rgba(255, 255, 255, 0.1) !important;
+        color: white !important;
+    }
+    
+    .file-upload-btn {
+        background: transparent !important;
+        border-color: white !important;
+        color: white !important;
+    }
+    
+    .file-upload-btn:hover {
+        border-color: white !important;
+        background: rgba(255, 255, 255, 0.1) !important;
+        color: white !important;
+    }
+    
+    .file-name {
+        color: white !important;
+    }
+    
+    .input-icon,
+    .textarea-icon {
+        color: white !important;
+    }
+    
+    .it-support-section {
+        background: rgba(33, 150, 243, 0.1) !important;
+        border-color: #2196F3 !important;
+    }
+    
+    .it-support-section p {
+        color: #64b5f6 !important;
+    }
+}
+
+/* Принудительное переопределение цветов */
+body.theme-dark .feedback-description {
+    background: transparent !important;
+    border: 2px solid white !important;
+    color: white !important;
+}
+
+body.theme-dark .feedback-description p {
+    color: white !important;
+}
+
+body.theme-dark .feedback-form {
+    background: transparent !important;
+    border: 2px solid white !important;
+    color: white !important;
+}
+
+body.theme-dark .form-label {
+    color: white !important;
+}
+
+body.theme-dark .radio-option {
+    background: transparent !important;
+    border: 2px solid white !important;
+    color: white !important;
+}
+
+body.theme-dark .radio-option:hover {
+    border-color: white !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+}
+
+body.theme-dark .radio-option:has(input[type="radio"]:checked) {
+    background: white !important;
+    border-color: white !important;
+    color: #000 !important;
+}
+
+body.theme-dark .form-input,
+body.theme-dark .form-textarea {
+    background: transparent !important;
+    border-color: white !important;
+    color: white !important;
+}
+
+body.theme-dark .form-input:focus,
+body.theme-dark .form-textarea:focus {
+    border-color: white !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+    color: white !important;
+}
+
+body.theme-dark .file-upload-btn {
+    background: transparent !important;
+    border-color: white !important;
+    color: white !important;
+}
+
+body.theme-dark .file-upload-btn:hover {
+    border-color: white !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+    color: white !important;
+}
+
+body.theme-dark .file-name,
+body.theme-dark .input-icon,
+body.theme-dark .textarea-icon {
+    color: white !important;
+}
+
+body.theme-light .feedback-description {
+    background: #f8f9fa !important;
+    border: 2px solid #1976D2 !important;
+    color: #333333 !important;
+}
+
+body.theme-light .feedback-description p {
+    color: #333333 !important;
+}
+
+body.theme-light .feedback-form {
+    background: white !important;
+    border: 2px solid #e0e0e0 !important;
+    color: #333333 !important;
+}
+
+body.theme-light .form-label {
+    color: #333333 !important;
+}
+
+body.theme-light .radio-option {
+    background: #f8f9fa !important;
+    border: 2px solid #e0e0e0 !important;
+    color: #333333 !important;
+}
+
+body.theme-light .radio-option:hover {
+    border-color: #1976D2 !important;
+    background: #e3f2fd !important;
+    color: #1976D2 !important;
+}
+
+body.theme-light .form-input,
+body.theme-light .form-textarea {
+    background: white !important;
+    border-color: #e0e0e0 !important;
+    color: #333333 !important;
+}
+
+body.theme-light .form-input:focus,
+body.theme-light .form-textarea:focus {
+    border-color: #1976D2 !important;
+    background: white !important;
+    color: #333333 !important;
+}
+
+body.theme-light .file-upload-btn {
+    background: #f8f9fa !important;
+    border-color: #e0e0e0 !important;
+    color: #333333 !important;
+}
+
+body.theme-light .file-upload-btn:hover {
+    border-color: #1976D2 !important;
+    background: #e3f2fd !important;
+    color: #1976D2 !important;
+}
+
+body.theme-light .file-name,
+body.theme-light .input-icon,
+body.theme-light .textarea-icon {
+    color: #666666 !important;
+}
+
+body.theme-dark .it-support-section {
+    background: rgba(33, 150, 243, 0.1) !important;
+    border-color: #2196F3 !important;
+}
+
+body.theme-dark .it-support-section p {
+    color: #64b5f6 !important;
+}
+
+body.theme-light .it-support-section {
+    background: #e3f2fd !important;
+    border-color: #2196F3 !important;
+}
+
+body.theme-light .it-support-section p {
+    color: #1565C0 !important;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Обработка загрузки файла
+    const fileInput = document.getElementById('file');
+    const fileName = document.getElementById('fileName');
+    
+    if (fileInput && fileName) {
+        fileInput.addEventListener('change', function() {
+            if (this.files && this.files.length > 0) {
+                fileName.textContent = this.files[0].name;
+            } else {
+                fileName.textContent = '';
+            }
+        });
+    }
+    
+    // Валидация формы
+    const form = document.getElementById('feedbackForm');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            const feedbackType = document.querySelector('input[name="feedback_type"]:checked');
+            const subject = document.getElementById('subject').value.trim();
+            const message = document.getElementById('message').value.trim();
+            const email = document.getElementById('email').value.trim();
+            
+            if (!feedbackType || !subject || !message || !email) {
+                e.preventDefault();
+                alert('Пожалуйста, заполните все обязательные поля.');
+                return false;
+            }
+            
+            // Валидация email
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                e.preventDefault();
+                alert('Пожалуйста, введите корректный email адрес.');
+                return false;
+            }
+        });
+    }
+    
+    // Функция для принудительного применения цветов формы обратной связи
+    function applyFeedbackColors() {
+        const body = document.body;
+        const feedbackDescription = document.querySelector('.feedback-description');
+        const feedbackDescriptionP = document.querySelector('.feedback-description p');
+        const feedbackForm = document.querySelector('.feedback-form');
+        const formLabels = document.querySelectorAll('.form-label');
+        const radioOptions = document.querySelectorAll('.radio-option');
+        const formInputs = document.querySelectorAll('.form-input, .form-textarea');
+        const fileUploadBtn = document.querySelector('.file-upload-btn');
+        const fileName = document.querySelector('.file-name');
+        const inputIcons = document.querySelectorAll('.input-icon, .textarea-icon');
+        
+        if (body.classList.contains('theme-dark')) {
+            if (feedbackDescription) {
+                feedbackDescription.style.background = 'transparent';
+                feedbackDescription.style.border = '2px solid white';
+                feedbackDescription.style.color = 'white';
+            }
+            if (feedbackDescriptionP) feedbackDescriptionP.style.color = 'white';
+            if (feedbackForm) {
+                feedbackForm.style.background = 'transparent';
+                feedbackForm.style.border = '2px solid white';
+                feedbackForm.style.color = 'white';
+            }
+            formLabels.forEach(label => label.style.color = 'white');
+            radioOptions.forEach(option => {
+                option.style.background = 'transparent';
+                option.style.border = '2px solid white';
+                option.style.color = 'white';
+            });
+            formInputs.forEach(input => {
+                input.style.background = 'transparent';
+                input.style.borderColor = 'white';
+                input.style.color = 'white';
+            });
+            if (fileUploadBtn) {
+                fileUploadBtn.style.background = 'transparent';
+                fileUploadBtn.style.borderColor = 'white';
+                fileUploadBtn.style.color = 'white';
+            }
+            if (fileName) fileName.style.color = 'white';
+            inputIcons.forEach(icon => icon.style.color = 'white');
+        } else {
+            if (feedbackDescription) {
+                feedbackDescription.style.background = '#f8f9fa';
+                feedbackDescription.style.border = '2px solid #1976D2';
+                feedbackDescription.style.color = '#333333';
+            }
+            if (feedbackDescriptionP) feedbackDescriptionP.style.color = '#333333';
+            if (feedbackForm) {
+                feedbackForm.style.background = 'white';
+                feedbackForm.style.border = '2px solid #e0e0e0';
+                feedbackForm.style.color = '#333333';
+            }
+            formLabels.forEach(label => label.style.color = '#333333');
+            radioOptions.forEach(option => {
+                option.style.background = '#f8f9fa';
+                option.style.border = '2px solid #e0e0e0';
+                option.style.color = '#333333';
+            });
+            formInputs.forEach(input => {
+                input.style.background = 'white';
+                input.style.borderColor = '#e0e0e0';
+                input.style.color = '#333333';
+            });
+            if (fileUploadBtn) {
+                fileUploadBtn.style.background = '#f8f9fa';
+                fileUploadBtn.style.borderColor = '#e0e0e0';
+                fileUploadBtn.style.color = '#333333';
+            }
+            if (fileName) fileName.style.color = '#666666';
+            inputIcons.forEach(icon => icon.style.color = '#666666');
+        }
+    }
+    
+    // Применяем цвета сразу при загрузке
+    applyFeedbackColors();
+    
+    // Применяем цвета при изменении темы
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                setTimeout(applyFeedbackColors, 100);
+            }
+        });
+    });
+    
+    observer.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class']
+    });
+});
+</script>
+{% endblock %}

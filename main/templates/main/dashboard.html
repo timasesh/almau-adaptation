@@ -1,116 +1,81 @@
 {% extends 'main/base.html' %}
 {% load static %}
+{% load i18n %}
+{% load translation_tags %}
 
 {% block title %}Главная - Adaptation AlmaU{% endblock %}
 
 {% block content %}
-<div class="dashboard-container">
-    <!-- Sidebar -->
-    <div class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <div class="logo-container">
-                <img src="{% static 'images/logo.png' %}" alt="AlmaU" class="logo">
-            </div>
-            <button class="sidebar-toggle" id="sidebarToggle">
-                <i class="fas fa-angle-double-left"></i>
-            </button>
-        </div>
-        
-        <nav class="sidebar-nav">
-            <ul class="nav-list">
-                <li class="nav-item active">
-                    <a href="{% url 'main:dashboard' %}" class="nav-link active-nav-link" onclick="return handleActiveNavClick(event, this);">
-                        <i class="fas fa-home"></i>
-                        <span class="nav-text">Главная</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{% url 'main:about' %}" class="nav-link">
-                        <i class="fas fa-university"></i>
-                        <span class="nav-text">Об университете</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{% url 'main:documents' %}" class="nav-link">
-                        <i class="fas fa-file-alt"></i>
-                        <span class="nav-text">Документация</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{% url 'main:processes_instructions' %}" class="nav-link">
-                        <i class="fas fa-cogs"></i>
-                        <span class="nav-text">Процессы и инструкции</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{% url 'main:map' %}" class="nav-link">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <span class="nav-text">Контакты и карта</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="fas fa-comments"></i>
-                        <span class="nav-text">Обратная связь</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="fas fa-question-circle"></i>
-                        <span class="nav-text">Часто задаваемые вопросы</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
-        
-        <div class="sidebar-footer">
-            <div class="user-menu">
-                <button class="settings-btn">
-                    <i class="fas fa-cog"></i>
-                    <span class="nav-text">Настройки</span>
-                </button>
-                <a href="{% url 'main:logout' %}" class="logout-btn">
-                    <i class="fas fa-sign-out-alt"></i>
-                    <span class="nav-text">Выход</span>
-                </a>
-            </div>
-        </div>
-    </div>
+<div class="dashboard-container dashboard-page">
+    {% include 'main/sidebar.html' %}
     
     <!-- Main content -->
     <div class="main-content" id="mainContent">
-        <!-- Фиксированный логотип (не в потоке документа) -->
-        <span class="user-badge fixed-almau-logo">AlmaUni</span>
-        
         <div class="content-header">
             <div class="greeting">
-                <h1>Добрый день, {{ user_name }}!</h1>
+                <h1>{{ greeting }}, {{ user_name }}!</h1>
             </div>
         </div>
         
         <div class="dashboard-grid">
             <a href="{% url 'main:about' %}" class="dashboard-link">
-                <img src="{% static 'images/об_университете.png' %}" alt="Об университете" class="dashboard-img">
+                {% if current_language == 'en' %}
+                    <img src="{% static 'images/об_университете-eng.png' %}" alt="{% trans 'Об университете' %}" class="dashboard-img">
+                {% elif current_language == 'kk' %}
+                    <img src="{% static 'images/об_университете-kaz.png' %}" alt="{% trans 'Об университете' %}" class="dashboard-img">
+                {% else %}
+                    <img src="{% static 'images/об_университете.png' %}" alt="{% trans 'Об университете' %}" class="dashboard-img">
+                {% endif %}
             </a>
 
             <a href="{% url 'main:documents' %}" class="dashboard-link">
-                <img src="{% static 'images/документация.png' %}" alt="Документация" class="dashboard-img">
+                {% if current_language == 'en' %}
+                    <img src="{% static 'images/документация-eng.png' %}" alt="{% trans 'Документация' %}" class="dashboard-img">
+                {% elif current_language == 'kk' %}
+                    <img src="{% static 'images/документация-kaz.png' %}" alt="{% trans 'Документация' %}" class="dashboard-img">
+                {% else %}
+                    <img src="{% static 'images/документация.png' %}" alt="{% trans 'Документация' %}" class="dashboard-img">
+                {% endif %}
             </a>
 
-            <a href="{% url 'main:processes_instructions' %}" class="dashboard-link">
-                <img src="{% static 'images/процессы_и_инструкции.png' %}" alt="Процессы и инструкции" class="dashboard-img">
+            <a href="{% url 'main:lessons' %}" class="dashboard-link">
+                {% if current_language == 'en' %}
+                    <img src="{% static 'images/уроки-eng.png' %}" alt="{% trans 'Уроки' %}" class="dashboard-img">
+                {% elif current_language == 'kk' %}
+                    <img src="{% static 'images/уроки-kaz.png' %}" alt="{% trans 'Уроки' %}" class="dashboard-img">
+                {% else %}
+                    <img src="{% static 'images/уроки.png' %}" alt="{% trans 'Уроки' %}" class="dashboard-img">
+                {% endif %}
             </a>
 
             <a href="{% url 'main:map' %}" class="dashboard-link">
-                <img src="{% static 'images/контакты_и_карта.png' %}" alt="Контакты и карта" class="dashboard-img">
+                {% if current_language == 'en' %}
+                    <img src="{% static 'images/контакты_и_карта-eng.png' %}" alt="{% trans 'Контакты и карта' %}" class="dashboard-img">
+                {% elif current_language == 'kk' %}
+                    <img src="{% static 'images/контакты_и_карта-kaz.png' %}" alt="{% trans 'Контакты и карта' %}" class="dashboard-img">
+                {% else %}
+                    <img src="{% static 'images/контакты_и_карта.png' %}" alt="{% trans 'Контакты и карта' %}" class="dashboard-img">
+                {% endif %}
             </a>
 
-            <a href="#" class="dashboard-link">
-                <img src="{% static 'images/обратная_связь.png' %}" alt="Обратная связь" class="dashboard-img">
+            <a href="{% url 'main:feedback' %}" class="dashboard-link">
+                {% if current_language == 'en' %}
+                    <img src="{% static 'images/обратная_связь-eng.png' %}" alt="{% trans 'Обратная связь' %}" class="dashboard-img">
+                {% elif current_language == 'kk' %}
+                    <img src="{% static 'images/обратная_связь-kaz.png' %}" alt="{% trans 'Обратная связь' %}" class="dashboard-img">
+                {% else %}
+                    <img src="{% static 'images/обратная_связь.png' %}" alt="{% trans 'Обратная связь' %}" class="dashboard-img">
+                {% endif %}
             </a>
 
-            <a href="#" class="dashboard-link">
-                <img src="{% static 'images/часто_задаваемые_вопросы.png' %}" alt="Часто задаваемые вопросы" class="dashboard-img">
+            <a href="{% url 'main:faq' %}" class="dashboard-link">
+                {% if current_language == 'en' %}
+                    <img src="{% static 'images/часто_задаваемые_вопросы-eng.png' %}" alt="{% trans 'Часто задаваемые вопросы' %}" class="dashboard-img">
+                {% elif current_language == 'kk' %}
+                    <img src="{% static 'images/часто_задаваемые_вопросы-kaz.png' %}" alt="{% trans 'Часто задаваемые вопросы' %}" class="dashboard-img">
+                {% else %}
+                    <img src="{% static 'images/часто_задаваемые_вопросы.png' %}" alt="{% trans 'Часто задаваемые вопросы' %}" class="dashboard-img">
+                {% endif %}
             </a>
         </div>
 
@@ -119,51 +84,133 @@
     <!-- Background decorative elements -->
 </div>
 
-<style>
-/* Фиксированный логотип AlmaUni */
-.fixed-almau-logo {
-    position: fixed !important;
-    top: 32px !important;
-    right: 30px !important; /* Фиксированная позиция справа сверху */
-    z-index: 1000 !important;
-    background: #1976D2 !important;
-    color: white !important;
-    padding: 8px 16px !important;
-    border-radius: 20px !important;
-    font-weight: bold !important;
-    font-size: 14px !important;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
-    white-space: nowrap !important;
-}
-
-/* На мобильных устройствах */
-@media (max-width: 768px) {
-    .fixed-almau-logo {
-        right: 20px !important;
-        top: 15px !important;
+<script>
+// Немедленное применение темы к изображениям
+(function() {
+    const savedTheme = localStorage.getItem('selectedTheme') || 'light';
+    if (savedTheme === 'dark') {
+        // Применяем темную тему к изображениям немедленно
+        setTimeout(() => {
+            updateDashboardImages('dark');
+        }, 10);
     }
-}
-.sidebar {
-    width: 250px; /* фиксированная ширина */
-    min-width: 250px;
-    max-width: 250px;
-    transition: all 0.3s ease;
-    overflow-x: hidden;
+})();
+
+// Функция для обновления изображений в зависимости от темы
+function updateDashboardImages(theme) {
+    const dashboardImages = document.querySelectorAll('.dashboard-img');
+    
+    dashboardImages.forEach(img => {
+        const currentSrc = img.src;
+        let newSrc = currentSrc;
+        
+        if (theme === 'dark') {
+            // Добавляем суффикс "-t" для темной темы
+            if (currentSrc.includes('-eng.png')) {
+                newSrc = currentSrc.replace('-eng.png', '-eng-t.png');
+            } else if (currentSrc.includes('-kaz.png')) {
+                newSrc = currentSrc.replace('-kaz.png', '-kaz-t.png');
+            } else if (currentSrc.includes('.png') && !currentSrc.includes('-eng') && !currentSrc.includes('-kaz') && !currentSrc.includes('-t')) {
+                newSrc = currentSrc.replace('.png', '-t.png');
+            }
+        } else {
+            // Убираем суффикс "-t" для светлой темы
+            if (currentSrc.includes('-eng-t.png')) {
+                newSrc = currentSrc.replace('-eng-t.png', '-eng.png');
+            } else if (currentSrc.includes('-kaz-t.png')) {
+                newSrc = currentSrc.replace('-kaz-t.png', '-kaz.png');
+            } else if (currentSrc.includes('-t.png')) {
+                newSrc = currentSrc.replace('-t.png', '.png');
+            }
+        }
+        
+        // Обновляем источник изображения
+        if (newSrc !== currentSrc) {
+            // Сохраняем оригинальный источник для fallback
+            const originalSrc = img.src;
+            
+            // Добавляем обработчик ошибок
+            img.onerror = function() {
+                this.src = originalSrc;
+                this.onerror = null; // Убираем обработчик ошибок
+            };
+            
+            img.src = newSrc;
+        }
+    });
 }
 
-.sidebar-nav .nav-link {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+// Функция для применения темы к изображениям
+function applyThemeToImages(theme) {
+    updateDashboardImages(theme);
 }
 
-.sidebar .nav-text {
-    display: inline-block;
-    max-width: 180px; /* ограничение по ширине текста */
-    overflow: hidden;
-    text-overflow: ellipsis;
-    vertical-align: middle;
+// Слушаем изменения темы
+document.addEventListener('DOMContentLoaded', function() {
+    const savedTheme = localStorage.getItem('selectedTheme') || 'light';
+    
+    // Предзагружаем изображения темной темы
+    preloadDarkThemeImages();
+    
+    // Применяем тему к изображениям при загрузке
+    setTimeout(() => {
+        applyThemeToImages(savedTheme);
+    }, 100);
+    
+    // Слушаем изменения темы
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                const body = document.body;
+                if (body.classList.contains('theme-dark')) {
+                    applyThemeToImages('dark');
+                } else if (body.classList.contains('theme-light')) {
+                    applyThemeToImages('light');
+                }
+            }
+        });
+    });
+    
+    // Начинаем наблюдение за изменениями классов body
+    observer.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class']
+    });
+});
+
+// Функция для предзагрузки изображений темной темы
+function preloadDarkThemeImages() {
+    const dashboardImages = document.querySelectorAll('.dashboard-img');
+    const darkImages = [];
+    
+    dashboardImages.forEach(img => {
+        const currentSrc = img.src;
+        let darkSrc = currentSrc;
+        
+        if (currentSrc.includes('-eng.png')) {
+            darkSrc = currentSrc.replace('-eng.png', '-eng-t.png');
+        } else if (currentSrc.includes('-kaz.png')) {
+            darkSrc = currentSrc.replace('-kaz.png', '-kaz-t.png');
+        } else if (currentSrc.includes('.png') && !currentSrc.includes('-eng') && !currentSrc.includes('-kaz') && !currentSrc.includes('-t')) {
+            darkSrc = currentSrc.replace('.png', '-t.png');
+        }
+        
+        if (darkSrc !== currentSrc) {
+            darkImages.push(darkSrc);
+        }
+    });
+    
+    // Предзагружаем изображения
+    darkImages.forEach(src => {
+        const img = new Image();
+        img.src = src;
+    });
 }
 
-</style>
+// Делаем функции глобально доступными
+window.applyThemeToImages = applyThemeToImages;
+window.preloadDarkThemeImages = preloadDarkThemeImages;
+</script>
+
+
 {% endblock %}

@@ -1,81 +1,31 @@
 {% extends 'main/base.html' %}
 {% load static %}
+{% load i18n %}
+{% load translation_tags %}
+{% load document_filters %}
 
 {% block title %}Документация - Adaptation AlmaU{% endblock %}
 
 {% block content %}
 <div class="dashboard-container">
-    <!-- Sidebar -->
-    <div class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <div class="logo-container">
-                <img src="{% static 'images/logo.png' %}" alt="AlmaU" class="logo">
-            </div>
-            <button class="sidebar-toggle" id="sidebarToggle">
-                <i class="fas fa-angle-double-left"></i>
-            </button>
-        </div>
-        
-        <nav class="sidebar-nav">
-            <ul class="nav-list">
-                <li class="nav-item">
-                    <a href="{% url 'main:dashboard' %}" class="nav-link">
-                        <i class="fas fa-home"></i>
-                        <span class="nav-text">Главная</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{% url 'main:about' %}" class="nav-link">
-                        <i class="fas fa-university"></i>
-                        <span class="nav-text">Об университете</span>
-                    </a>
-                </li>
-                <li class="nav-item active">
-                    <a href="{% url 'main:documents' %}" class="nav-link">
-                        <i class="fas fa-file-alt"></i>
-                        <span class="nav-text">Документация</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{% url 'main:processes_instructions' %}" class="nav-link">
-                        <i class="fas fa-cogs"></i>
-                        <span class="nav-text">Процессы и инструкции</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{% url 'main:map' %}" class="nav-link">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <span class="nav-text">Контакты и карта</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="fas fa-comments"></i>
-                        <span class="nav-text">Обратная связь</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="fas fa-question-circle"></i>
-                        <span class="nav-text">Часто задаваемые вопросы</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
-        
-        <div class="sidebar-footer">
-            <div class="user-menu">
-                <button class="settings-btn">
-                    <i class="fas fa-cog"></i>
-                    <span class="nav-text">Настройки</span>
-                </button>
-                <a href="{% url 'main:logout' %}" class="logout-btn">
-                    <i class="fas fa-sign-out-alt"></i>
-                    <span class="nav-text">Выход</span>
-                </a>
-            </div>
-        </div>
-    </div>
+    <script>
+    // Немедленное применение темы
+    (function() {
+        const savedTheme = localStorage.getItem('selectedTheme') || 'light';
+        if (savedTheme === 'dark') {
+            document.documentElement.classList.add('theme-dark');
+            document.body.classList.add('theme-dark');
+            document.documentElement.style.backgroundColor = '#1a1a1a';
+            document.body.style.backgroundColor = '#1a1a1a';
+        } else {
+            document.documentElement.classList.add('theme-light');
+            document.body.classList.add('theme-light');
+            document.documentElement.style.backgroundColor = '#ffffff';
+            document.body.style.backgroundColor = '#ffffff';
+        }
+    })();
+    </script>
+    {% include 'main/sidebar.html' %}
     
     <!-- Main content -->
     <div class="main-content" id="mainContent">
@@ -117,9 +67,9 @@
                         <i class="fas fa-times"></i>
                     </a>
                     {% for category in categories %}
-                        <a href="{% url 'main:documents' %}?category={{ category.name }}{% if search_query %}&search={{ search_query }}{% endif %}" 
-                           class="filter-tab {% if current_category == category.name %}active{% endif %}">
-                            {{ category.name }}
+                        <a href="{% url 'main:documents' %}?category={{ category.id }}{% if search_query %}&search={{ search_query }}{% endif %}" 
+                           class="filter-tab {% if current_category|stringformat:'s' == category.id|stringformat:'s' %}active{% endif %}">
+                            {{ category|get_category_name:current_language }}
                         </a>
                     {% endfor %}
                 </div>
@@ -132,6 +82,23 @@
         </div>
     </div>
 </div>
+
+<script>
+// Немедленное применение темы при загрузке страницы
+document.addEventListener('DOMContentLoaded', function() {
+    const savedTheme = localStorage.getItem('selectedTheme') || 'light';
+    
+    // Применяем тему немедленно
+    if (typeof applyTheme === 'function') {
+        applyTheme(savedTheme);
+    }
+    
+    // Показываем страницу после применения темы
+    setTimeout(() => {
+        document.documentElement.classList.add('theme-loaded');
+    }, 50);
+});
+</script>
 
 <style>
 /* Исправляем позиционирование логотипа AlmaUni справа сверху */
@@ -282,7 +249,7 @@
     text-decoration: none;
     color: #000;
     background: #f8f9fa;
-    border: 2px solid #e0e0e0;
+    border: none;
     border-radius: 25px;
     transition: all 0.3s ease;
     font-weight: 500;
@@ -295,14 +262,15 @@
 
 .filter-tab:hover {
     color: #1976D2;
-    border-color: #1976D2;
     background: #e3f2fd;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .filter-tab.active {
     color: white;
     background: #1976D2;
-    border-color: #1976D2;
+    border: none;
 }
 
 .filter-tab i {
@@ -415,8 +383,6 @@
 
 .no-documents p {
     font-size: 16px;
-    max-width: 400px;
-    margin: 0 auto;
 }
 
 /* Адаптивность */
@@ -459,6 +425,39 @@
         font-size: 15px;
     }
 }
+
+/* Темная тема */
+@media (prefers-color-scheme: dark) {
+    .document-title {
+        color: white !important;
+    }
+    
+    .document-date {
+        color: white !important;
+    }
+}
+
+/* Светлая тема */
+@media (prefers-color-scheme: light) {
+    .document-title {
+        color: #000000 !important;
+    }
+    
+    .document-date {
+        color: #000000 !important;
+    }
+}
+
+/* Принудительное переопределение цветов */
+body.theme-dark .document-title,
+body.theme-dark .document-date {
+    color: white !important;
+}
+
+body.theme-light .document-title,
+body.theme-light .document-date {
+    color: #000000 !important;
+}
 </style>
 
 <script>
@@ -476,6 +475,13 @@ document.addEventListener('DOMContentLoaded', function() {
         const currentCategory = document.getElementById('categoryInput') ? 
             document.getElementById('categoryInput').value : '';
         
+        // Отладочная информация
+        console.log('Выполняем поиск:', {
+            search: searchValue,
+            category: currentCategory,
+            categoryInputExists: !!document.getElementById('categoryInput')
+        });
+        
         // Строим URL для API запроса
         let apiUrl = new URL('/api/documents/search/', window.location.origin);
         
@@ -487,6 +493,8 @@ document.addEventListener('DOMContentLoaded', function() {
             apiUrl.searchParams.set('category', currentCategory);
         }
         
+        console.log('API URL:', apiUrl.toString());
+        
         // Показываем индикатор загрузки
         documentsList.style.opacity = '0.6';
         
@@ -494,6 +502,7 @@ document.addEventListener('DOMContentLoaded', function() {
         fetch(apiUrl.toString())
             .then(response => response.json())
             .then(data => {
+                console.log('API ответ:', data);
                 if (data.success) {
                     // Обновляем список документов без перезагрузки страницы
                     documentsList.innerHTML = data.html;
@@ -561,6 +570,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 categoryInput.value = category;
             } else {
+                // Если категория не указана (сброс фильтра), удаляем поле
                 if (categoryInput) {
                     categoryInput.remove();
                 }
@@ -580,6 +590,45 @@ document.addEventListener('DOMContentLoaded', function() {
             this.classList.add('active');
         });
     });
+    
+    // Функция для принудительного применения цветов документов
+    function applyDocumentColors() {
+        const body = document.body;
+        const documentTitles = document.querySelectorAll('.document-title');
+        const documentDates = document.querySelectorAll('.document-date');
+        
+        if (body.classList.contains('theme-dark')) {
+            documentTitles.forEach(title => title.style.color = 'white');
+            documentDates.forEach(date => date.style.color = 'white');
+        } else {
+            documentTitles.forEach(title => title.style.color = '#000000');
+            documentDates.forEach(date => date.style.color = '#000000');
+        }
+    }
+    
+    // Применяем цвета сразу при загрузке
+    applyDocumentColors();
+    
+    // Применяем цвета при изменении темы
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                setTimeout(applyDocumentColors, 100);
+            }
+        });
+    });
+    
+    observer.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class']
+    });
+    
+    // Применяем цвета после AJAX обновления списка документов
+    const originalPerformSearch = performSearch;
+    performSearch = function() {
+        originalPerformSearch.call(this);
+        setTimeout(applyDocumentColors, 200);
+    };
 });
 </script>
 {% endblock %}

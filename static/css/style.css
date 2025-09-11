@@ -1,3 +1,697 @@
+/* Reset all elements */
+* {
+    box-sizing: border-box;
+}
+
+/* Prevent flash of unstyled content during theme loading */
+html {
+    visibility: visible;
+    background-color: #ffffff;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Немедленное применение светлой темы до загрузки JavaScript */
+html.theme-light,
+body.theme-light {
+    background-color: #ffffff !important;
+    color: #333333 !important;
+}
+
+html.theme-dark,
+body.theme-dark {
+    background-color: #1a1a1a !important;
+    color: #ffffff !important;
+}
+
+html.theme-loaded {
+    visibility: visible;
+}
+
+/* Ensure body has proper background during loading */
+body {
+    background-color: #ffffff; /* Default light background */
+    transition: background-color 0.3s ease;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    overflow-x: hidden;
+}
+
+body.theme-dark {
+    background-color: #1a1a1a;
+}
+
+/* Prevent sidebar flash during page transitions */
+#sidebar {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transition: all 0.3s ease !important;
+}
+
+/* Ensure sidebar is always visible during theme changes */
+.dashboard-container {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* CSS Variables for theming */
+:root {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8f9fa;
+    --text-primary: #333333;
+    --text-secondary: #666666;
+    --border-color: #dee2e6;
+    --accent-color: #1976D2;
+    --accent-hover: #1565C0;
+    --sidebar-bg: #ffffff;
+    --sidebar-text: #333333;
+    --sidebar-hover: #f8f9fa;
+    --card-bg: #ffffff;
+    --card-border: #e9ecef;
+    --shadow: 0 2px 10px rgba(0,0,0,0.1);
+    --input-bg: #ffffff;
+    --input-border: #ced4da;
+    --input-text: #495057;
+    --button-bg: #1976D2;
+    --button-text: #ffffff;
+    --button-hover: #1565C0;
+    --link-color: #1976D2;
+    --link-hover: #1565C0;
+    --success-color: #28a745;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+    --info-color: #17a2b8;
+}
+
+/* Dark theme variables */
+.theme-dark {
+    --bg-primary: #1a1a1a;
+    --bg-secondary: #2d2d2d;
+    --text-primary: #ffffff;
+    --text-secondary: #b0b0b0;
+    --border-color: #404040;
+    --accent-color: #64b5f6;
+    --accent-hover: #42a5f5;
+    --sidebar-bg: #2d2d2d;
+    --sidebar-text: #ffffff;
+    --sidebar-hover: #404040;
+    --card-bg: #2d2d2d;
+    --card-border: #404040;
+    --shadow: 0 2px 10px rgba(0,0,0,0.3);
+    --input-bg: #404040;
+    --input-border: #555555;
+    --input-text: #ffffff;
+    --button-bg: #64b5f6;
+    --button-text: #ffffff;
+    --button-hover: #42a5f5;
+    --link-color: #64b5f6;
+    --link-hover: #42a5f5;
+    --success-color: #4caf50;
+    --warning-color: #ff9800;
+    --danger-color: #f44336;
+    --info-color: #2196f3;
+}
+
+/* Apply theme variables to all elements */
+body {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    transition: background-color 0.3s ease, color 0.3s ease;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    overflow-x: hidden;
+}
+
+/* Sidebar styles */
+.sidebar {
+    width: 250px;
+    min-width: 250px;
+    max-width: 250px;
+    background: var(--sidebar-bg);
+    color: var(--sidebar-text);
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    transition: all 0.3s ease;
+    overflow: hidden; /* Убираем все слайдеры */
+    flex-shrink: 0;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar.collapsed {
+    width: 60px;
+    min-width: 60px;
+    max-width: 60px;
+}
+
+/* Sidebar header */
+.sidebar-header {
+    padding: 12px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+}
+
+.sidebar.collapsed .sidebar-header {
+    padding: 12px 8px;
+    justify-content: center;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+}
+
+.logo {
+    height: 40px;
+    width: auto;
+}
+
+.sidebar.collapsed .logo {
+    height: 30px;
+}
+
+.sidebar-toggle {
+    background: none;
+    border: none;
+    color: var(--sidebar-text);
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.sidebar-toggle:hover {
+    background: var(--sidebar-hover);
+}
+
+.sidebar.collapsed .sidebar-toggle {
+    padding: 4px;
+}
+
+/* Sidebar navigation */
+.sidebar-nav {
+    flex: 1;
+    overflow: hidden; /* Убираем вертикальный слайдер */
+    padding: 12px 0;
+}
+
+.sidebar.collapsed .sidebar-nav {
+    padding: 8px 0;
+}
+
+.nav-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-item {
+    margin: 0;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    color: var(--sidebar-text);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border-left: 3px solid transparent;
+    position: relative;
+}
+
+.sidebar.collapsed .nav-link {
+    padding: 12px 16px; /* Сохраняем одинаковые отступы для иконок */
+    justify-content: center;
+}
+
+.nav-link:hover {
+    background: var(--sidebar-hover);
+    border-left-color: var(--accent-color);
+}
+
+.nav-link.active-nav-link {
+    background: var(--sidebar-hover);
+    border-left-color: var(--accent-color);
+    color: var(--accent-color);
+}
+
+.nav-link i {
+    width: 14px;
+    height: 14px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 8px;
+    flex-shrink: 0;
+}
+
+.sidebar.collapsed .nav-link i {
+    margin-right: 0; /* Убираем отступ справа при свернутом состоянии */
+    width: 18px;
+    height: 18px;
+    font-size: 16px;
+}
+
+.nav-text {
+    flex: 1;
+    font-weight: 500;
+    white-space: nowrap;
+    font-size: 13px;
+}
+
+.sidebar.collapsed .nav-text {
+    display: none;
+}
+
+/* Sidebar footer */
+.sidebar-footer {
+    border-top: 1px solid var(--border-color);
+    padding: 12px;
+    flex-shrink: 0;
+}
+
+.sidebar.collapsed .sidebar-footer {
+    padding: 12px 8px;
+}
+
+.user-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.sidebar.collapsed .user-menu {
+    align-items: center;
+}
+
+.settings-btn, .logout-btn {
+    display: flex;
+    align-items: center;
+    padding: 10px 12px;
+    color: var(--sidebar-text);
+    text-decoration: none;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+}
+
+.sidebar.collapsed .settings-btn, 
+.sidebar.collapsed .logout-btn {
+    padding: 10px;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+}
+
+.settings-btn:hover, .logout-btn:hover {
+    background: var(--sidebar-hover);
+    border-color: var(--border-color);
+}
+
+.settings-btn i, .logout-btn i {
+    width: 18px;
+    height: 18px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+    flex-shrink: 0;
+}
+
+.sidebar.collapsed .settings-btn i, 
+.sidebar.collapsed .logout-btn i {
+    margin-right: 0;
+    width: 18px;
+    height: 18px;
+    font-size: 14px;
+}
+
+.sidebar.collapsed .settings-btn .nav-text,
+.sidebar.collapsed .logout-btn .nav-text {
+    display: none;
+}
+
+/* Ensure main content adjusts properly */
+
+.sidebar.collapsed + .main-content {
+    margin-left: 60px;
+    width: calc(100% - 60px);
+}
+
+/* Dashboard container */
+.dashboard-container {
+    display: flex;
+    min-height: 100vh;
+    background: var(--bg-primary);
+    width: 100%;
+    box-sizing: border-box;
+    overflow-x: hidden;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%);
+        z-index: 1001;
+        transition: transform 0.3s ease;
+    }
+    
+    .sidebar.mobile-open {
+        transform: translateX(0);
+    }
+    
+    .main-content {
+        margin-left: 0;
+        width: 100%;
+    }
+    
+    .sidebar.collapsed + .main-content {
+        margin-left: 0;
+        width: 100%;
+    }
+    
+    /* Мобильный оверлей для сайдбара */
+    .sidebar::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: -1;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    
+    .sidebar.mobile-open::before {
+        opacity: 1;
+    }
+}
+
+/* Card styles */
+.card {
+    background-color: var(--card-bg);
+    border-color: var(--card-border);
+    box-shadow: var(--shadow);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+}
+
+/* Form elements */
+.form-control, .form-select {
+    background-color: var(--input-bg);
+    border-color: var(--input-border);
+    color: var(--input-text);
+    transition: all 0.3s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    background-color: var(--input-bg);
+    border-color: var(--accent-color);
+    color: var(--input-text);
+    box-shadow: 0 0 0 0.2rem rgba(100, 181, 246, 0.25);
+}
+
+.form-control::placeholder {
+    color: var(--text-secondary);
+}
+
+/* Button styles */
+.btn {
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background-color: var(--button-bg);
+    border-color: var(--button-bg);
+    color: var(--button-text);
+}
+
+.btn-primary:hover {
+    background-color: var(--button-hover);
+    border-color: var(--button-hover);
+}
+
+.btn-secondary {
+    background-color: var(--text-secondary);
+    border-color: var(--text-secondary);
+    color: var(--bg-primary);
+}
+
+.btn-secondary:hover {
+    background-color: var(--text-primary);
+    border-color: var(--text-primary);
+}
+
+/* Link styles */
+a {
+    color: var(--link-color);
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: var(--link-hover);
+    text-decoration: none;
+}
+
+/* Text colors */
+.text-muted {
+    color: var(--text-secondary) !important;
+}
+
+.text-primary {
+    color: var(--accent-color) !important;
+}
+
+.text-success {
+    color: var(--success-color) !important;
+}
+
+.text-warning {
+    color: var(--warning-color) !important;
+}
+
+.text-danger {
+    color: var(--danger-color) !important;
+}
+
+.text-info {
+    color: var(--info-color) !important;
+}
+
+/* Badge styles */
+.badge {
+    transition: all 0.3s ease;
+}
+
+.badge.bg-primary {
+    background-color: var(--accent-color) !important;
+}
+
+.badge.bg-secondary {
+    background-color: var(--text-secondary) !important;
+}
+
+.badge.bg-success {
+    background-color: var(--success-color) !important;
+}
+
+.badge.bg-warning {
+    background-color: var(--warning-color) !important;
+}
+
+.badge.bg-danger {
+    background-color: var(--danger-color) !important;
+}
+
+.badge.bg-info {
+    background-color: var(--info-color) !important;
+}
+
+/* Table styles */
+.table {
+    color: var(--text-primary);
+}
+
+.table th {
+    background-color: var(--bg-secondary);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+.table td {
+    border-color: var(--border-color);
+}
+
+.table-hover tbody tr:hover {
+    background-color: var(--bg-secondary);
+}
+
+/* Modal styles */
+.modal-content {
+    background-color: var(--card-bg);
+    border-color: var(--card-border);
+}
+
+.modal-header {
+    border-bottom-color: var(--border-color);
+}
+
+.modal-footer {
+    border-top-color: var(--border-color);
+}
+
+/* Dropdown styles */
+.dropdown-menu {
+    background-color: var(--card-bg);
+    border-color: var(--card-border);
+    box-shadow: var(--shadow);
+}
+
+.dropdown-item {
+    color: var(--text-primary);
+}
+
+.dropdown-item:hover {
+    background-color: var(--sidebar-hover);
+    color: var(--text-primary);
+}
+
+/* Alert styles */
+.alert {
+    background-color: var(--card-bg);
+    border-color: var(--card-border);
+    color: var(--text-primary);
+}
+
+.alert-success {
+    background-color: rgba(76, 175, 80, 0.1);
+    border-color: var(--success-color);
+    color: var(--success-color);
+}
+
+.alert-warning {
+    background-color: rgba(255, 152, 0, 0.1);
+    border-color: var(--warning-color);
+    color: var(--warning-color);
+}
+
+.alert-danger {
+    background-color: rgba(244, 67, 54, 0.1);
+    border-color: var(--danger-color);
+    color: var(--danger-color);
+}
+
+.alert-info {
+    background-color: rgba(33, 150, 243, 0.1);
+    border-color: var(--info-color);
+    color: var(--info-color);
+}
+
+/* Navigation tabs */
+.nav-tabs {
+    border-bottom-color: var(--border-color);
+}
+
+.nav-tabs .nav-link {
+    color: var(--text-secondary);
+    border-color: transparent;
+}
+
+.nav-tabs .nav-link:hover {
+    color: var(--text-primary);
+    border-color: transparent;
+}
+
+.nav-tabs .nav-link.active {
+    color: var(--accent-color);
+    border-color: var(--accent-color);
+    background-color: var(--bg-primary);
+}
+
+/* Pagination */
+.pagination .page-link {
+    background-color: var(--card-bg);
+    border-color: var(--border-color);
+    color: var(--link-color);
+}
+
+.pagination .page-link:hover {
+    background-color: var(--sidebar-hover);
+    border-color: var(--border-color);
+    color: var(--link-hover);
+}
+
+.pagination .page-item.active .page-link {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+    color: var(--button-text);
+}
+
+/* Custom scrollbar for dark theme */
+.theme-dark ::-webkit-scrollbar {
+    width: 8px;
+}
+
+.theme-dark ::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+}
+
+.theme-dark ::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 4px;
+}
+
+.theme-dark ::-webkit-scrollbar-thumb:hover {
+    background: var(--text-secondary);
+}
+
+/* Dark theme sidebar adjustments */
+.theme-dark .sidebar {
+    border-right: 1px solid var(--border-color);
+}
+
+.theme-dark .sidebar-header {
+    border-bottom-color: var(--border-color);
+}
+
+.theme-dark .sidebar-footer {
+    border-top-color: var(--border-color);
+}
+
+.theme-dark .nav-link:hover {
+    background: var(--sidebar-hover);
+}
+
+.theme-dark .nav-link.active-nav-link {
+    background: rgba(100, 181, 246, 0.1);
+    color: var(--accent-color);
+    border-left-color: var(--accent-color);
+}
+
 /* Reset and base styles */
 * {
     margin: 0;
@@ -7,8 +701,8 @@
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background-color: #f5f5f5;
-    color: #333;
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
     overflow-x: hidden;
 }
 
@@ -24,7 +718,7 @@ body {
 
 
 .login-card {
-    background: white;
+    background: var(--card-bg);
     border-radius: 70px; /* более круглые углы */
     padding: 40px;
     box-shadow: 0 10px 60px rgba(0, 0, 0, 0.3); /* более насыщённая тень */
@@ -57,7 +751,7 @@ body {
 .login-title {
     font-size: 24px;
     font-weight: 600;
-    color: #333;
+    color: var(--text-primary);
     margin-bottom: 10px;
 }
 
@@ -68,8 +762,8 @@ body {
 }
 
 .lang-btn {
-    background: #1976D2;
-    color: white;
+    background: var(--accent-color);
+    color: var(--button-text);
     padding: 8px 16px;
     border-radius: 20px;
     font-size: 12px;
@@ -90,7 +784,7 @@ body {
 .form-input {
     width: 100%;
     padding: 15px 20px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color);
     border-radius: 8px;
     font-size: 16px;
     transition: border-color 0.3s ease;
@@ -98,13 +792,13 @@ body {
 
 .form-input:focus {
     outline: none;
-    border-color: #1976D2;
+    border-color: var(--accent-color);
 }
 
 .login-btn {
     width: 100%;
-    background: #1976D2;
-    color: white;
+    background: var(--accent-color);
+    color: var(--button-text);
     padding: 15px;
     border: none;
     border-radius: 8px;
@@ -115,7 +809,7 @@ body {
 }
 
 .login-btn:hover {
-    background: #1565C0;
+    background: var(--accent-hover);
 }
 
 .messages {
@@ -129,15 +823,15 @@ body {
 }
 
 .message.success {
-    background-color: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
+    background-color: var(--success-color);
+    color: var(--button-text);
+    border: 1px solid var(--success-color);
 }
 
 .message.error {
-    background-color: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
+    background-color: var(--danger-color);
+    color: var(--button-text);
+    border: 1px solid var(--danger-color);
 }
 
 /* Dashboard styles */
@@ -148,105 +842,284 @@ body {
 }
 
 .sidebar {
-    width: 280px;
-    background: white;
-    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    width: 250px;
+    min-width: 250px;
+    max-width: 250px;
+    background: var(--sidebar-bg);
+    box-shadow: 2px 0 10px rgba(0, 0, 0.1);
     transition: width 0.3s ease;
-    position: relative;
-    z-index: 100;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 1000;
     display: flex;
     flex-direction: column;
     height: 100vh;
+    border-radius: 0 20px 20px 0;
+    box-sizing: border-box;
+    overflow: hidden;
+    flex-shrink: 0;
 }
 
 .sidebar.collapsed {
-    width: 70px;
+    width: 60px;
+    min-width: 60px;
+    max-width: 60px;
 }
 
 .sidebar.collapsed .logo-container {
-    display: none;
+    opacity: 0;
+    visibility: hidden;
+    height: 0;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.sidebar.collapsed .sidebar-toggle {
+    right: 15px;
+    transform: translateY(-50%);
+    background: rgba(100, 181, 246, 0.1);
+    padding: 10px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
 }
 
 .sidebar.collapsed .sidebar-toggle i {
     transform: rotate(180deg);
+    transition: transform 0.3s ease;
+}
+
+.sidebar.collapsed .sidebar-toggle:hover {
+    background: rgba(100, 181, 246, 0.2);
+    transform: translateY(-50%) scale(1.1);
+    transition: all 0.3s ease;
+}
+
+.sidebar.collapsed .nav-text {
+    opacity: 0;
+    visibility: hidden;
+    width: 0;
+    margin-left: 0;
+    transition: all 0.3s ease;
+}
+
+.sidebar.collapsed .settings-btn .nav-text,
+.sidebar.collapsed .logout-btn .nav-text {
+    opacity: 0;
+    visibility: hidden;
+    width: 0;
+    margin-left: 0;
+    transition: all 0.3s ease;
+}
+
+
+
+.sidebar.collapsed .sidebar-header {
+    padding: 15px 10px;
+    justify-content: center;
+    min-height: 60px;
+    transition: all 0.3s ease;
+}
+
+.sidebar.collapsed .sidebar-nav {
+    padding: 10px 0;
+    flex: 1;
+    transition: all 0.3s ease;
+}
+
+.sidebar.collapsed .sidebar-footer {
+    padding: 15px 10px;
+    justify-content: center;
+    transition: all 0.3s ease;
 }
 
 .sidebar-header {
     padding: 20px;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--border-color);
     display: flex;
     align-items: center;
     justify-content: space-between;
+    position: relative;
+}
+
+.logo-container {
+    transition: all 0.3s ease;
+    transform-origin: left center;
+}
+
+.logo {
+    height: 40px;
+    width: auto;
 }
 
 .sidebar-toggle {
     background: none;
     border: none;
-    color: #1976D2;
+    color: var(--accent-color);
     cursor: pointer;
-    padding: 5px;
-    border-radius: 4px;
+    padding: 8px;
+    border-radius: 6px;
     transition: all 0.3s ease;
-    font-size: 16px;
+    font-size: 18px;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 101;
+}
+
+.sidebar-toggle i {
+    transition: transform 0.3s ease;
+}
+
+/* Убираем дублирующийся стиль */
+
+.sidebar.collapsed .sidebar-toggle {
+    right: 15px;
+    background: rgba(100, 181, 246, 0.1);
+    padding: 10px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.sidebar.collapsed .sidebar-toggle:hover {
+    background: rgba(25, 118, 210, 0.2);
+    transform: translateY(-50%) scale(1.1);
+    transition: all 0.3s ease;
 }
 
 .sidebar-toggle:hover {
-    background: rgba(25, 118, 210, 0.1);
-    color: #1565C0;
+    background: rgba(25, 118, 210, 0.15);
+    color: var(--accent-hover);
+    transform: translateY(-50%) scale(1.1);
+    transition: all 0.3s ease;
 }
 
 .sidebar-nav {
     padding: 20px 0;
     flex: 1;
     overflow-y: auto;
+    /* Фиксируем позицию навигации */
+    position: relative;
 }
 
 .nav-list {
     list-style: none;
+    position: relative;
 }
 
 .nav-item {
     margin-bottom: 5px;
+    position: relative;
 }
 
 .nav-link {
     display: flex;
     align-items: center;
     padding: 15px 20px;
-    color: #666;
+    color: var(--text-secondary);
     text-decoration: none;
     transition: all 0.3s ease;
     position: relative;
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    overflow: hidden;
 }
 
 .nav-link:hover {
-    background: #f8f9fa;
-    color: #1976D2;
+    background: var(--sidebar-hover);
+    color: var(--accent-color);
+    transform: translateX(0);
 }
 
 .nav-item.active .nav-link {
-    background: #e3f2fd;
-    color: #1976D2;
-    border-right: 3px solid #1976D2;
+    background: var(--accent-color);
+    color: var(--button-text);
+    border-right: 3px solid var(--accent-color);
+    box-sizing: border-box;
+    margin-right: -3px;
 }
 
 .nav-link i {
     width: 20px;
     margin-right: 15px;
     text-align: center;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+    /* Фиксируем позицию иконки */
+    position: relative;
+    left: 0;
 }
 
-.sidebar.collapsed .nav-text {
-    display: none;
+.nav-text {
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    overflow: hidden;
+    flex: 1;
+    min-width: 0;
+    /* Фиксируем позицию текста */
+    position: relative;
+    left: 0;
+    /* Плавное исчезновение */
+    opacity: 1;
+    visibility: visible;
+    width: auto;
 }
 
-.sidebar.collapsed .settings-btn span,
-.sidebar.collapsed .logout-btn span {
-    display: none;
+.settings-btn,
+.logout-btn {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    background: none;
+    border: none;
+    width: 100%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+.settings-btn:hover,
+.logout-btn:hover {
+    background: var(--bg-secondary);
+    color: var(--accent-color);
+}
+
+.settings-btn i,
+.logout-btn i {
+    width: 20px;
+    margin-right: 15px;
+    text-align: center;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+    /* Фиксируем позицию иконки */
+    position: relative;
+    left: 0;
+}
+
+.settings-btn .nav-text,
+.logout-btn .nav-text {
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    overflow: hidden;
+    flex: 1;
+    min-width: 0;
+    /* Фиксируем позицию текста */
+    position: relative;
+    left: 0;
+    /* Плавное исчезновение */
+    opacity: 1;
+    visibility: visible;
+    width: auto;
 }
 
 .sidebar-footer {
-    border-top: 1px solid #eee;
+    border-top: 1px solid var(--border-color);
     padding: 20px;
     margin-top: auto;
     flex-shrink: 0;
@@ -255,7 +1128,7 @@ body {
 .user-menu {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
 }
 
 .settings-btn,
@@ -265,7 +1138,7 @@ body {
     padding: 10px;
     background: none;
     border: none;
-    color: #666;
+    color: var(--text-secondary);
     text-decoration: none;
     cursor: pointer;
     border-radius: 5px;
@@ -274,7 +1147,7 @@ body {
 
 .settings-btn:hover,
 .logout-btn:hover {
-    background: #f0f0f0;
+    background: var(--bg-secondary);
 }
 
 .settings-btn i,
@@ -286,7 +1159,21 @@ body {
 .main-content {
     flex: 1;
     padding: 30px;
+    margin-left: 250px;
     transition: margin-left 0.3s ease;
+    min-height: 100vh;
+    width: calc(100% - 250px);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    position: relative;
+    box-sizing: border-box;
+    overflow-x: hidden;
+}
+
+/* Когда sidebar свернут */
+body.sidebar-collapsed .main-content {
+    margin-left: 60px;
+    width: calc(100% - 60px);
 }
 
 .content-header {
@@ -299,12 +1186,12 @@ body {
 .greeting h1 {
     font-size: 28px;
     font-weight: 600;
-    color: #333;
+    color: var(--text-primary);
 }
 
 .user-badge {
-    background: #1976D2;
-    color: white;
+    background: var(--accent-color);
+    color: var(--button-text);
     padding: 8px 16px;
     border-radius: 20px;
     font-size: 14px;
@@ -315,12 +1202,15 @@ body {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(2, auto);
-    gap: 5px;
+    gap: 25px;
     height: auto;
-    max-width: 930px;
-    padding: 20px;
+    max-width: 900px;
+    padding: 30px;
     margin: 0 auto;
     justify-items: center;
+    align-items: center;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 
@@ -338,22 +1228,22 @@ body {
 /* Responsive design */
 @media (max-width: 1200px) {
     .dashboard-grid {
-        grid-template-columns: repeat(2, 1fr);
-        grid-template-rows: repeat(3, auto);
-        gap: 5px;
-        max-width: 620px;
-        padding: 15px;
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: repeat(2, auto);
+        gap: 20px;
+        max-width: 800px;
+        padding: 25px;
     }
     
     .dashboard-link {
-        width: 280px;
-        height: 220px;
+        width: 220px;
+        height: 180px;
     }
 }
 
 @media (max-width: 768px) {
     .sidebar {
-        width: 70px;
+        width: 60px;
     }
     
     .sidebar .nav-text {
@@ -370,21 +1260,53 @@ body {
     }
     
     .main-content {
-        padding: 20px;
+        padding: 4px !important;
+        margin: 0 !important;
+        width: 100%;
+        box-sizing: border-box;
     }
     
     .dashboard-grid {
-        grid-template-columns: 1fr;
-        grid-template-rows: repeat(6, auto);
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: auto;
         height: auto;
-        gap: 5px;
-        padding: 15px;
-        max-width: 320px;
+        gap: 2px !important;
+        padding: 2px !important;
+        max-width: 100%;
+        width: 100%;
     }
     
     .dashboard-link {
-        width: 280px;
-        height: 200px;
+        width: 100%;
+        height: 60px;
+        min-width: 0;
+        font-size: 12px;
+    }
+    
+    .dashboard-img {
+        max-width: 80%;
+        max-height: 80%;
+    }
+    
+    /* Для очень маленьких экранов */
+    @media (max-width: 480px) {
+        .dashboard-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1px !important;
+            padding: 1px !important;
+            max-width: 100%;
+        }
+        
+        .dashboard-link {
+            width: 100%;
+            height: 50px;
+            font-size: 11px;
+        }
+        
+        .dashboard-img {
+            max-width: 70%;
+            max-height: 70%;
+        }
     }
     
 
@@ -411,8 +1333,9 @@ body {
 .dashboard-link {
   display: block;
   text-decoration: none;
-  width: 300px;
-  height: 250px;
+  width: 250px;
+  height: 200px;
+  text-align: center;
 }
 
 .dashboard-img {
@@ -421,25 +1344,41 @@ body {
   object-fit: contain;
   transition: transform 0.2s ease;
   display: block;
+  margin: 0 auto;
 }
 
 .dashboard-img:hover {
   transform: scale(1.05);
 }
 
-.page-logo-container {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    z-index: 10;
+/* Логотип на странице входа - только для десктопа */
+.desktop-login .page-logo-container {
+    position: fixed;
+    top: 30px;
+    left: 30px;
+    z-index: 9999;
+    pointer-events: auto;
+    display: block;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
-/* Логотип на странице входа */
 .page-logo-container .logo {
-    width: 140px;
+    width: 120px;
     height: auto;
     object-fit: contain;
-    padding: 10px;
+    padding: 0;
+    display: block;
+    margin: 0;
+}
+
+/* Скрываем логотип на мобильных устройствах */
+@media (max-width: 767px) {
+    .desktop-login .page-logo-container {
+        display: none !important;
+    }
 }
 
 
@@ -480,13 +1419,13 @@ body {
 
 .forgot-password a {
     font-size: 15px;
-    color: #1976D2;
+    color: var(--accent-color);
     text-decoration: none;
     transition: color 0.3s ease;
 }
 
 .forgot-password a:hover {
-    color: #0d47a1;
+    color: var(--accent-hover);
     text-decoration: underline;
 }
 
@@ -530,4 +1469,1477 @@ body {
     position: absolute;
     top: -7px;
     right: 3px;
+}
+
+/* Responsive sidebar styles */
+@media (max-width: 768px) {
+    .dashboard-container {
+        flex-direction: column;
+        width: 100%;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-sizing: border-box;
+    }
+    
+    .sidebar {
+        width: 60px;
+        position: fixed;
+        left: 0;
+        top: 0;
+        z-index: 1000;
+        border-radius: 0 10px 10px 0;
+    }
+    
+    .sidebar.collapsed {
+        width: 60px;
+        height: 100vh;
+    }
+    
+    .sidebar .nav-text {
+        display: none;
+    }
+    
+    .sidebar .logo-container {
+        display: none;
+    }
+    
+    .sidebar .settings-btn span,
+    .sidebar .logout-btn span {
+        display: none;
+    }
+    
+    .sidebar .nav-link {
+        justify-content: center;
+        padding: 15px 8px;
+    }
+    
+    .sidebar .nav-link i {
+        margin-right: 0;
+        font-size: 18px;
+    }
+    
+    .sidebar .settings-btn,
+    .sidebar .logout-btn {
+        justify-content: center;
+        padding: 12px 8px;
+    }
+    
+    .sidebar .settings-btn i,
+    .sidebar .logout-btn i {
+        margin-right: 0;
+        font-size: 16px;
+    }
+    
+    .main-content {
+        width: 100%;
+        margin-left: 60px;
+        padding: 10px;
+        box-sizing: border-box;
+    }
+    
+    .fixed-almau-logo {
+        right: 20px !important;
+        top: 15px !important;
+    }
+    
+    .sidebar-toggle {
+        display: none;
+    }
+}
+
+/* Fixes for text width issues */
+.about-content {
+    max-width: 1200px !important;
+    margin: 0 auto !important;
+    padding: 20px !important;
+    overflow-x: hidden !important;
+}
+
+.history-content {
+    display: flex !important;
+    gap: 40px !important;
+    align-items: flex-start !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+}
+
+.history-text {
+    flex: 1 !important;
+    max-width: 60% !important;
+    min-width: 0 !important; /* Allow flex item to shrink */
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    overflow-x: hidden !important;
+}
+
+.history-text p {
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+    white-space: normal !important;
+}
+
+.history-image {
+    flex: 0 0 400px !important;
+    max-width: 400px !important;
+    min-width: 0 !important;
+}
+
+.history-image img {
+    width: 100% !important;
+    height: 250px !important;
+    object-fit: cover !important;
+    border-radius: 15px !important;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1) !important;
+    max-width: 100% !important;
+}
+
+/* Mission and values text control */
+.mission-values {
+    display: flex !important;
+    gap: 60px !important;
+    margin-bottom: 80px !important;
+    justify-content: center !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+}
+
+.mission-card, .values-card {
+    text-align: center !important;
+    max-width: 400px !important;
+    min-width: 0 !important;
+    flex: 1 !important;
+}
+
+.mission-card p, .values-card p {
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+    white-space: normal !important;
+}
+
+/* Admin form field width control */
+.form-control, .form-select, textarea.form-control {
+    max-width: 100% !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    resize: vertical !important;
+}
+
+textarea.form-control {
+    min-height: 100px !important;
+    max-height: 300px !important;
+}
+
+/* Prevent admin page horizontal scroll */
+.form-section {
+    overflow-x: hidden !important;
+}
+
+.container-fluid {
+    max-width: 1400px !important;
+    margin: 0 auto !important;
+}
+
+/* Custom icons for mission and values */
+.circle-icon {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    color: white;
+    font-size: 40px;
+    overflow: hidden;
+    border: none;
+}
+
+.custom-icon {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Иконки для светлой и темной темы */
+.light-theme-icon {
+    display: block;
+}
+
+.dark-theme-icon {
+    display: none;
+}
+
+/* Темная тема */
+[data-theme="dark"] .light-theme-icon {
+    display: none;
+}
+
+[data-theme="dark"] .dark-theme-icon {
+    display: block;
+}
+
+/* Responsive text handling */
+@media (max-width: 768px) {
+    .history-text {
+        max-width: 100% !important;
+    }
+    
+    .history-content {
+        flex-direction: column !important;
+    }
+    
+    .history-image {
+        flex: none !important;
+        width: 100% !important;
+    }
+}
+
+/* Admin panel specific fixes */
+.admin-panel {
+    overflow-x: hidden !important;
+    max-width: 100vw !important;
+}
+
+.admin-panel .container-fluid {
+    max-width: 1400px !important;
+    margin: 0 auto !important;
+    overflow-x: hidden !important;
+}
+
+.admin-panel .form-section {
+    overflow-x: hidden !important;
+    max-width: 100% !important;
+}
+
+.admin-panel textarea {
+    max-width: 100% !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    resize: vertical !important;
+    min-height: 100px !important;
+    max-height: 300px !important;
+}
+
+.admin-panel .form-control {
+    max-width: 100% !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+}
+
+/* Summernote editor width control */
+.note-editor {
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+}
+
+.note-editor .note-editing-area {
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+}
+
+.note-editor .note-editable {
+    max-width: 100% !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+}
+
+/* Additional Summernote editor fixes */
+.note-editor.note-frame {
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+}
+
+.note-editor.note-frame .note-editing-area {
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+}
+
+.note-editor.note-frame .note-editable {
+    max-width: 100% !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    white-space: pre-wrap !important;
+}
+
+.note-editor.note-frame .note-status-output {
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+}
+
+.note-editor.note-frame .note-resizebar {
+    max-width: 100% !important;
+}
+
+/* Form field container fixes */
+.form-group {
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+}
+
+.form-control:focus {
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+}
+
+/* Tab content fixes */
+.tab-content {
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+}
+
+.tab-pane {
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+}
+
+/* Responsive design for about page */
+@media (max-width: 768px) {
+    .about-content {
+        padding: 15px !important;
+        max-width: 100% !important;
+    }
+    
+    .history-content {
+        flex-direction: column !important;
+        gap: 20px !important;
+    }
+    
+    .history-text {
+        max-width: 100% !important;
+        order: 2 !important; /* Text below image on mobile */
+    }
+    
+    .history-image {
+        flex: none !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        order: 1 !important; /* Image above text on mobile */
+    }
+    
+    .history-image img {
+        width: 100% !important;
+        height: 200px !important;
+    }
+    
+    .mission-values {
+        flex-direction: column !important;
+        gap: 40px !important;
+    }
+    
+    .mission-card, .values-card {
+        max-width: 100% !important;
+    }
+    
+    .leadership-cards {
+        flex-direction: column !important;
+        gap: 40px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .about-content {
+        padding: 10px !important;
+    }
+    
+    .history-section h2,
+    .leadership-section h2 {
+        font-size: 20px !important;
+    }
+    
+    .mission-card h3, 
+    .values-card h3 {
+        font-size: 24px !important;
+    }
+}
+
+/* Feedback admin page styles */
+.feedback-subject {
+    max-width: 300px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.feedback-message {
+    max-width: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: pre-wrap;
+}
+
+.status-select {
+    min-width: 120px;
+}
+
+.avatar-sm {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Table responsive fixes */
+.table-responsive {
+    overflow-x: auto;
+    max-width: 100%;
+}
+
+.table th, .table td {
+    vertical-align: middle;
+    word-wrap: break-word;
+    max-width: 200px;
+}
+
+/* Modal fixes */
+.modal-body {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+.modal-body .row {
+    margin: 0;
+}
+
+.modal-body .col-md-6,
+.modal-body .col-12 {
+    padding: 0 15px;
+}
+
+/* Badge improvements */
+.badge {
+    font-size: 0.75em;
+    padding: 0.35em 0.65em;
+}
+
+/* Button improvements */
+.btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}
+
+.sidebar.collapsed .nav-link {
+    justify-content: flex-start;
+    padding: 15px 20px;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.sidebar.collapsed .nav-link i {
+    margin-right: 0;
+    width: 20px;
+    text-align: center;
+    transition: all 0.3s ease;
+    /* Иконка остается на своем месте */
+    position: relative;
+    left: 0;
+}
+
+.sidebar.collapsed .settings-btn,
+.sidebar.collapsed .logout-btn {
+    justify-content: flex-start;
+    padding: 15px 20px;
+    transition: all 0.3s ease;
+}
+
+.sidebar.collapsed .settings-btn i,
+.sidebar.collapsed .logout-btn i {
+    margin-right: 0;
+    width: 20px;
+    text-align: center;
+    transition: all 0.3s ease;
+    /* Иконка остается на своем месте */
+    position: relative;
+    left: 0;
+}
+
+.sidebar.collapsed .nav-item {
+    margin-bottom: 1px;
+}
+
+.sidebar.collapsed .nav-link {
+    justify-content: flex-start;
+    padding: 10px 15px;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.sidebar.collapsed .settings-btn,
+.sidebar.collapsed .logout-btn {
+    justify-content: flex-start;
+    padding: 10px 15px;
+    transition: all 0.3s ease;
+}
+
+/* Dark theme logo override */
+.theme-dark .sidebar .logo {
+    filter: brightness(0) invert(1); /* Делаем логотип белым */
+}
+
+/* Light theme logo (обычное состояние) */
+.sidebar .logo {
+    filter: none;
+}
+
+/* Dark theme styles for About page */
+.theme-dark .about-content {
+    color: var(--text-primary);
+}
+
+.theme-dark .history-content {
+    color: var(--text-primary);
+}
+
+.theme-dark .history-text {
+    color: var(--text-primary);
+}
+
+.theme-dark .history-text p {
+    color: var(--text-primary);
+}
+
+.theme-dark .mission-values {
+    color: var(--text-primary);
+}
+
+.theme-dark .mission-card h3,
+.theme-dark .values-card h3 {
+    color: var(--text-primary);
+}
+
+.theme-dark .mission-card p,
+.theme-dark .values-card p {
+    color: var(--text-primary);
+}
+
+.theme-dark .leadership-cards {
+    color: var(--text-primary);
+}
+
+/* Dark theme styles for Documents and Processes pages */
+.theme-dark .search-input {
+    background: transparent !important;
+    border: 2px solid var(--text-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+.theme-dark .search-input::placeholder {
+    color: var(--text-secondary) !important;
+}
+
+.theme-dark .filter-tab {
+    background: transparent !important;
+    border: 2px solid var(--text-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+.theme-dark .filter-tab:hover,
+.theme-dark .filter-tab.active {
+    background: var(--accent-color) !important;
+    color: var(--button-text) !important;
+    border-color: var(--accent-color) !important;
+}
+
+.theme-dark .document-card,
+.theme-dark .process-item {
+    background: transparent !important;
+    border: 2px solid var(--text-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+.theme-dark .document-card:hover,
+.theme-dark .process-item:hover {
+    border-color: var(--accent-color) !important;
+    box-shadow: 0 4px 20px rgba(100, 181, 246, 0.3) !important;
+}
+
+.theme-dark .document-card h5,
+.theme-dark .process-item h5 {
+    color: var(--text-primary) !important;
+}
+
+.theme-dark .document-card p,
+.theme-dark .process-item p {
+    color: var(--text-primary) !important;
+}
+
+.theme-dark .document-card .text-muted,
+.theme-dark .process-item .text-muted {
+    color: var(--text-secondary) !important;
+}
+
+.theme-dark .document-card .badge,
+.theme-dark .process-item .badge {
+    color: var(--text-primary) !important;
+}
+
+.theme-dark .document-card .btn,
+.theme-dark .process-item .btn {
+    color: var(--text-primary) !important;
+}
+
+.theme-dark .category-filters {
+    background: transparent !important;
+    border: none !important;
+}
+
+.theme-dark .category-filters .btn {
+    background: transparent !important;
+    border: 1px solid var(--text-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+.theme-dark .category-filters .btn:hover,
+.theme-dark .category-filters .btn.active {
+    background: var(--accent-color) !important;
+    border-color: var(--accent-color) !important;
+    color: var(--button-text) !important;
+}
+
+/* Мобильные стили - убираем рамки категорий */
+@media (max-width: 768px) {
+    .category-filters {
+        border: none !important;
+        background: transparent !important;
+    }
+    
+    .theme-dark .category-filters {
+        border: none !important;
+        background: transparent !important;
+    }
+    
+    /* Мобильная кнопка "Назад" */
+    .mobile-back-btn {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        z-index: 1001;
+        background: #ffffff;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        border: 1px solid #e0e0e0;
+        pointer-events: auto;
+    }
+    
+    /* Центрируем заголовки на мобильных устройствах */
+    .content-header {
+        text-align: center !important;
+        padding-top: 80px !important; /* Увеличенный отступ сверху для кнопки "Назад" */
+        margin-top: 0 !important;
+    }
+    
+    .content-header h1,
+    .content-header .greeting h1,
+    .content-header .page-title,
+    .content-header .greeting {
+        margin: 0 auto !important;
+        text-align: center !important;
+        width: 100% !important;
+    }
+    
+    /* Убираем flex-позиционирование на мобильных */
+    .content-header {
+        display: block !important;
+        justify-content: center !important;
+        align-items: center !important;
+        flex-direction: column !important;
+    }
+    
+    /* Переопределяем все возможные стили content-header на мобильных */
+    .content-header * {
+        text-align: center !important;
+    }
+    
+    /* Убираем user-info на мобильных, чтобы не мешало центрированию */
+    .user-info {
+        display: none !important;
+    }
+    
+    /* Убеждаемся, что основной контент не сдвигается */
+    .main-content {
+        padding-left: 0 !important;
+        margin-left: 0 !important;
+        position: relative !important;
+    }
+    
+    /* Убираем любые отступы слева, которые могут сдвигать контент */
+    .dashboard-container,
+    .main-content,
+    .content-header {
+        margin-left: 0 !important;
+        padding-left: 0 !important;
+    }
+    
+    .mobile-back-btn .back-link {
+        color: #333333;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+    }
+    
+    .mobile-back-btn i {
+        font-size: 18px;
+    }
+    
+    /* Темная тема для кнопки "Назад" */
+    .theme-dark .mobile-back-btn {
+        background: #ffffff !important;
+        border-color: #404040 !important;
+    }
+    
+    .theme-dark .mobile-back-btn .back-link {
+        color: #333333 !important;
+    }
+    
+    /* Мобильные кнопки внизу */
+    .mobile-bottom-buttons {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1001;
+        display: flex;
+        gap: 10px;
+        padding: 0 20px;
+    }
+    
+    .mobile-btn {
+        background: var(--accent-color);
+        color: white;
+        text-decoration: none;
+        padding: 10px 16px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-weight: 500;
+        font-size: 13px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        transition: all 0.3s ease;
+        white-space: nowrap;
+    }
+    
+    .mobile-btn:hover {
+        background: var(--accent-hover);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+    
+    .mobile-btn i {
+        font-size: 14px;
+    }
+    
+    /* Скрываем кнопку "Назад" на главной странице */
+    .dashboard-page .mobile-back-btn {
+        display: none !important;
+    }
+    
+    /* На dashboard кнопки располагаются по 2 в ряд */
+    .dashboard-page .mobile-bottom-buttons {
+        flex-wrap: wrap;
+        justify-content: center;
+        max-width: 300px;
+    }
+    
+    .dashboard-page .mobile-btn {
+        flex: 1;
+        min-width: 120px;
+        max-width: 140px;
+    }
+    
+    /* Темная тема для мобильных кнопок */
+    .theme-dark .mobile-back-btn {
+        background: var(--accent-color) !important;
+    }
+    
+    .theme-dark .mobile-btn {
+        background: var(--accent-color) !important;
+        color: white !important;
+    }
+    
+    .theme-dark .mobile-btn:hover {
+        background: var(--accent-hover) !important;
+    }
+}
+
+/* Dark theme styles for Contacts and Map page */
+.theme-dark .map-content {
+    color: var(--text-primary);
+}
+
+.theme-dark .contact-info {
+    background: transparent !important;
+    border: 2px solid var(--text-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+.theme-dark .contact-info h3,
+.theme-dark .contact-info h4 {
+    color: var(--text-primary) !important;
+    font-weight: bold !important;
+}
+
+.theme-dark .contact-info p,
+.theme-dark .contact-info li {
+    color: var(--text-primary) !important;
+}
+
+.theme-dark .contact-info a {
+    color: var(--accent-color) !important;
+}
+
+.theme-dark .contact-info a:hover {
+    color: var(--accent-hover) !important;
+}
+
+.theme-dark .map-container {
+    background: transparent !important;
+    border: 2px solid var(--text-primary) !important;
+}
+
+.theme-dark .address-info {
+    background: transparent !important;
+    border: 2px solid var(--text-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+.theme-dark .address-info h4 {
+    color: var(--text-primary) !important;
+    font-weight: bold !important;
+}
+
+.theme-dark .address-info p {
+    color: var(--text-primary) !important;
+}
+
+/* Additional contact page elements */
+.theme-dark .contact-section {
+    background: transparent !important;
+    color: var(--text-primary) !important;
+}
+
+.theme-dark .contact-section h2,
+.theme-dark .contact-section h3 {
+    color: var(--text-primary) !important;
+    font-weight: bold !important;
+}
+
+.theme-dark .contact-section p {
+    color: var(--text-primary) !important;
+}
+
+.theme-dark .map-section {
+    background: transparent !important;
+    border: 2px solid var(--text-primary) !important;
+}
+
+.theme-dark .map-section h3 {
+    color: var(--text-primary) !important;
+    font-weight: bold !important;
+}
+
+.theme-dark .map-section p {
+    color: var(--text-primary) !important;
+}
+
+.theme-dark .contact-details {
+    background: transparent !important;
+    border: 2px solid var(--text-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+.theme-dark .contact-details h4 {
+    color: var(--text-primary) !important;
+    font-weight: bold !important;
+}
+
+.theme-dark .contact-details p,
+.theme-dark .contact-details li {
+    color: var(--text-primary) !important;
+}
+
+/* Dark theme styles for Feedback and FAQ pages */
+.theme-dark .feedback-form {
+    background: transparent !important;
+    border: 2px solid var(--text-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+.theme-dark .feedback-form h3 {
+    color: var(--text-primary) !important;
+    font-weight: bold !important;
+}
+
+.theme-dark .feedback-form label {
+    color: var(--text-primary) !important;
+    font-weight: bold !important;
+}
+
+.theme-dark .feedback-form .form-control {
+    background: transparent !important;
+    border: 2px solid var(--text-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+.theme-dark .feedback-form .form-control::placeholder {
+    color: var(--text-secondary) !important;
+}
+
+.theme-dark .feedback-form .btn {
+    background: var(--accent-color) !important;
+    border-color: var(--accent-color) !important;
+    color: var(--button-text) !important;
+}
+
+.theme-dark .feedback-form .btn:hover {
+    background: var(--accent-hover) !important;
+    border-color: var(--accent-hover) !important;
+}
+
+.theme-dark .feedback-list {
+    background: transparent !important;
+    border: 2px solid var(--text-primary) !important;
+}
+
+.theme-dark .feedback-item {
+    background: transparent !important;
+    border: 1px solid var(--text-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+.theme-dark .feedback-item h5 {
+    color: var(--text-primary) !important;
+    font-weight: bold !important;
+}
+
+.theme-dark .feedback-item p {
+    color: var(--text-secondary) !important;
+}
+
+.theme-dark .faq-content {
+    color: var(--text-primary);
+}
+
+.theme-dark .faq-item {
+    background: transparent !important;
+    border: 2px solid var(--text-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+.theme-dark .faq-item h4 {
+    color: var(--text-primary) !important;
+    font-weight: bold !important;
+}
+
+.theme-dark .faq-item p {
+    color: var(--text-secondary) !important;
+}
+
+.theme-dark .faq-filters {
+    background: transparent !important;
+    border: 2px solid var(--text-primary) !important;
+}
+
+.theme-dark .faq-filters .btn {
+    background: transparent !important;
+    border: 1px solid var(--text-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+.theme-dark .faq-filters .btn:hover,
+.theme-dark .faq-filters .btn.active {
+    background: var(--accent-color) !important;
+    border-color: var(--accent-color) !important;
+    color: var(--button-text) !important;
+}
+
+/* General dark theme styles for all pages */
+.theme-dark .page-content {
+    color: var(--text-primary);
+}
+
+.theme-dark .page-header h1,
+.theme-dark .page-header h2 {
+    color: var(--text-primary) !important;
+    font-weight: bold !important;
+}
+
+.theme-dark .page-header p {
+    color: var(--text-secondary) !important;
+}
+
+.theme-dark .container,
+.theme-dark .container-fluid {
+    color: var(--text-primary);
+}
+
+.theme-dark .row {
+    color: var(--text-primary);
+}
+
+.theme-dark .col,
+.theme-dark .col-md-6,
+.theme-dark .col-lg-4,
+.theme-dark .col-xl-3 {
+    color: var(--text-primary);
+}
+
+.theme-dark .card {
+    background: transparent !important;
+    border: 2px solid var(--text-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+.theme-dark .card-header {
+    background: transparent !important;
+    border-bottom: 1px solid var(--text-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+.theme-dark .card-body {
+    background: transparent !important;
+    color: var(--text-primary) !important;
+}
+
+.theme-dark .card-footer {
+    background: transparent !important;
+    border-top: 1px solid var(--text-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+.theme-dark .table {
+    color: var(--text-primary) !important;
+}
+
+.theme-dark .table th {
+    color: var(--text-primary) !important;
+    border-color: var(--border-color) !important;
+}
+
+.theme-dark .table td {
+    color: var(--text-primary) !important;
+    border-color: var(--border-color) !important;
+}
+
+.theme-dark .modal-content {
+    background: var(--card-bg) !important;
+    border: 2px solid var(--text-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+.theme-dark .modal-header {
+    background: transparent !important;
+    border-bottom: 1px solid var(--text-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+.theme-dark .modal-body {
+    background: transparent !important;
+    color: var(--text-primary) !important;
+}
+
+.theme-dark .modal-footer {
+    background: transparent !important;
+    border-top: 1px solid var(--text-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Dark theme styles for Processes page specific elements */
+.theme-dark .processes-header h1,
+.theme-dark .processes-header h2,
+.theme-dark .processes-header p {
+    color: var(--text-primary) !important;
+}
+
+.theme-dark .processes-description {
+    color: var(--text-primary) !important;
+}
+
+.theme-dark .processes-description p {
+    color: var(--text-primary) !important;
+}
+
+.theme-dark .processes-content {
+    color: var(--text-primary) !important;
+}
+
+.theme-dark .processes-content h3,
+.theme-dark .processes-content h4 {
+    color: var(--text-primary) !important;
+}
+
+.theme-dark .processes-content p {
+    color: var(--text-primary) !important;
+}
+
+/* Override any white backgrounds for process containers */
+.theme-dark .process-container {
+    background: transparent !important;
+    border: 2px solid var(--text-primary) !important;
+}
+
+.theme-dark .process-wrapper {
+    background: transparent !important;
+}
+
+.theme-dark .process-section {
+    background: transparent !important;
+}
+
+/* Aggressive dark theme overrides to ensure no white backgrounds */
+.theme-dark .bg-white,
+.theme-dark .bg-light {
+    background-color: transparent !important;
+}
+
+.theme-dark [style*="background: white"],
+.theme-dark [style*="background-color: white"],
+.theme-dark [style*="background: #fff"],
+.theme-dark [style*="background-color: #fff"],
+.theme-dark [style*="background: #ffffff"],
+.theme-dark [style*="background-color: #ffffff"] {
+    background: transparent !important;
+    background-color: transparent !important;
+}
+
+/* Override any specific text colors */
+.theme-dark .text-dark,
+.theme-dark .text-black {
+    color: var(--text-primary) !important;
+}
+
+.theme-dark .text-muted {
+    color: var(--text-secondary) !important;
+}
+
+/* Sidebar navigation styles */
+.sidebar .nav-link {
+    color: var(--sidebar-text);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    text-decoration: none;
+    border-radius: 8px;
+    margin: 2px 8px;
+}
+
+.sidebar .nav-link:hover {
+    background-color: var(--sidebar-hover);
+    color: var(--accent-color);
+}
+
+.sidebar .nav-link.active {
+    background-color: var(--accent-color);
+    color: var(--button-text);
+}
+
+.sidebar .nav-link.active:hover {
+    background-color: var(--accent-hover);
+}
+
+.sidebar .nav-link i {
+    width: 20px;
+    height: 20px;
+    font-size: 18px;
+    margin-right: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.sidebar .nav-link span {
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+/* Sidebar sections */
+.sidebar-section {
+    padding: 16px 8px 8px 8px;
+}
+
+.sidebar-section h6 {
+    color: var(--sidebar-text);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+    padding-left: 8px;
+    opacity: 0.7;
+}
+
+/* Dark theme specific overrides for main elements */
+.theme-dark body {
+    background-color: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+.theme-dark .main-content {
+    background-color: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+.theme-dark .dashboard-container {
+    background-color: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+.theme-dark .sidebar {
+    background-color: var(--sidebar-bg) !important;
+    color: var(--sidebar-text) !important;
+}
+
+/* Dark theme for specific page elements */
+.theme-dark .content-header h1,
+.theme-dark .content-header h2,
+.theme-dark .content-header h3,
+.theme-dark .page-title {
+    color: var(--text-primary) !important;
+}
+
+.theme-dark .settings-content h2,
+.theme-dark .settings-content h3 {
+    color: var(--text-primary) !important;
+}
+
+.theme-dark .settings-content p {
+    color: var(--text-primary) !important;
+}
+
+.theme-dark .processes-header h1,
+.theme-dark .processes-header h2,
+.theme-dark .processes-header p {
+    color: var(--text-primary) !important;
+}
+
+.theme-dark .processes-description {
+    color: var(--text-primary) !important;
+}
+
+.theme-dark .processes-description p {
+    color: var(--text-primary) !important;
+}
+
+.theme-dark .processes-content {
+    color: var(--text-primary) !important;
+}
+
+.theme-dark .processes-content h3,
+.theme-dark .processes-content h4 {
+    color: var(--text-primary) !important;
+}
+
+.theme-dark .processes-content p {
+    color: var(--text-primary) !important;
+}
+
+/* Override any white backgrounds for process containers */
+.theme-dark .process-container {
+    background: transparent !important;
+    border: 2px solid var(--text-primary) !important;
+}
+
+.theme-dark .process-wrapper {
+    background: transparent !important;
+}
+
+.theme-dark .process-section {
+    background: transparent !important;
+}
+
+/* Test area for dark theme debugging */
+.test-dark-theme {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    border: 2px solid var(--border-color);
+    padding: 20px;
+    margin: 20px;
+    border-radius: 8px;
+}
+
+.test-dark-theme h1 {
+    color: var(--text-primary);
+}
+
+.test-dark-theme p {
+    color: var(--text-primary);
+}
+
+.test-dark-theme .test-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    color: var(--text-primary);
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 5px;
+}
+
+.test-dark-theme .test-input {
+    background: var(--input-bg);
+    border: 1px solid var(--input-border);
+    color: var(--input-text);
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 4px;
+    width: 200px;
+}
+
+/* Dark theme styles for Settings page */
+.theme-dark .settings-content {
+    background: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+.theme-dark .settings-section {
+    background: transparent !important;
+    color: var(--text-primary) !important;
+}
+
+.theme-dark .settings-card {
+    background: var(--card-bg) !important;
+    border: 2px solid var(--border-color) !important;
+    color: var(--text-primary) !important;
+    box-shadow: var(--shadow) !important;
+}
+
+.theme-dark .settings-header h2 {
+    color: var(--text-primary) !important;
+}
+
+.theme-dark .settings-header p {
+    color: var(--text-secondary) !important;
+}
+
+.theme-dark .language-label {
+    background: var(--card-bg) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+.theme-dark .language-label:hover {
+    border-color: var(--accent-color) !important;
+    background: var(--bg-secondary) !important;
+}
+
+.theme-dark .language-option input[type="radio"]:checked + .language-label {
+    border-color: var(--accent-color) !important;
+    background: var(--bg-secondary) !important;
+}
+
+.theme-dark .language-name {
+    color: var(--text-primary) !important;
+}
+
+.theme-dark .language-code {
+    color: var(--text-secondary) !important;
+}
+
+.theme-dark .language-check {
+    color: var(--accent-color) !important;
+}
+
+.theme-dark .theme-option {
+    background: var(--card-bg) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+.theme-dark .theme-option:hover {
+    border-color: var(--accent-color) !important;
+    background: var(--bg-secondary) !important;
+}
+
+.theme-dark .theme-option.active {
+    border-color: var(--accent-color) !important;
+    background: var(--bg-secondary) !important;
+}
+
+.theme-dark .theme-name {
+    color: var(--text-primary) !important;
+}
+
+.theme-dark .theme-description {
+    color: var(--text-secondary) !important;
+}
+
+.theme-dark .theme-check {
+    color: var(--accent-color) !important;
+    background: var(--card-bg) !important;
+}
+
+/* Fix for sidebar flash during theme switching */
+.sidebar {
+    transition: all 0.3s ease, background-color 0.3s ease !important;
+    background-color: var(--sidebar-bg) !important;
+    color: var(--sidebar-text) !important;
+    /* Предотвращаем мигание при загрузке */
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+.theme-dark .sidebar {
+    background-color: var(--sidebar-bg) !important;
+    color: var(--sidebar-text) !important;
+    transition: all 0.3s ease, background-color 0.3s ease !important;
+}
+
+/* Дополнительные стили для предотвращения мигания */
+.dashboard-container {
+    transition: all 0.3s ease !important;
+}
+
+.main-content {
+    transition: all 0.3s ease !important;
+}
+
+/* Ensure smooth transitions for all theme-related elements */
+* {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease !important;
+}
+
+/* Additional fixes for settings page */
+.theme-dark .content-header h1 {
+    color: #ffffff !important;
+    font-weight: bold !important;
+}
+
+.theme-dark .content-header h2 {
+    color: #ffffff !important;
+    font-weight: bold !important;
+}
+
+.theme-dark .content-header h3 {
+    color: #ffffff !important;
+    font-weight: bold !important;
+}
+
+/* Fix for messages in dark theme */
+.theme-dark .message {
+    background: transparent !important;
+    border: 2px solid var(--text-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+.theme-dark .message-success {
+    background: rgba(76, 175, 80, 0.1) !important;
+    border-color: #4caf50 !important;
+    color: #4caf50 !important;
+}
+
+.theme-dark .message i {
+    color: inherit !important;
 }

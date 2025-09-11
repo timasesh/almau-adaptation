@@ -1,0 +1,280 @@
+{% extends 'main/admin/base.html' %}
+{% load static %}
+
+{% block title %}Управление руководством - Админ-панель | ALMAU Adaptation{% endblock %}
+{% block heading %}Управление руководством университета{% endblock %}
+
+{% block extra_css %}
+<style>
+    .form-section {
+        background: white;
+        border-radius: 10px;
+        padding: 25px;
+        margin-bottom: 25px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        border: 1px solid #e9ecef;
+    }
+    
+    .form-section h3 {
+        color: #2c3e50;
+        border-bottom: 2px solid #3498db;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+    }
+    
+    .form-group {
+        margin-bottom: 20px;
+    }
+    
+    .form-label {
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 8px;
+    }
+    
+    .form-control, .form-select {
+        border: 1px solid #ced4da;
+        border-radius: 8px;
+        padding: 12px 15px;
+        transition: all 0.3s ease;
+    }
+    
+    .form-control:focus, .form-select:focus {
+        border-color: #3498db;
+        box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+    }
+    
+    .btn-primary {
+        background: #3498db;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-primary:hover {
+        background: #2980b9;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+    }
+    
+    .leader-card {
+        transition: all 0.3s ease;
+        border: 1px solid #e9ecef;
+    }
+    
+    .leader-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    
+    .leader-photo {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 3px solid #e9ecef;
+    }
+    
+    .leader-placeholder {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background: #6c757d;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 2rem;
+        border: 3px solid #e9ecef;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <!-- Форма добавления нового руководителя -->
+        <div class="form-section">
+            <h3><i class="fas fa-user-plus me-2"></i>Добавить нового руководителя</h3>
+            
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="add_leader">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="role" class="form-label">Должность *</label>
+                            <select name="role" id="role" class="form-select" required>
+                                <option value="">Выберите должность</option>
+                                <option value="rector">Ректор</option>
+                                <option value="prorector">Проректор</option>
+                                <option value="other">Другое</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="full_name" class="form-label">ФИО *</label>
+                            <input type="text" name="full_name" id="full_name" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="photo" class="form-label">Фотография</label>
+                            <input type="file" name="photo" id="photo" class="form-control" accept="image/*">
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label for="order" class="form-label">Порядок</label>
+                            <input type="number" name="order" id="order" class="form-control" value="1" min="1">
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-plus me-1"></i>Добавить руководителя
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Список существующих руководителей -->
+        <div class="form-section">
+            <h3><i class="fas fa-users me-2"></i>Существующие руководители</h3>
+            
+            {% if leaders %}
+                <div class="row">
+                    {% for leader in leaders %}
+                        <div class="col-md-6 col-lg-4 mb-4">
+                            <div class="card leader-card h-100">
+                                <div class="card-body text-center">
+                                    {% if leader.photo %}
+                                        <img src="{{ leader.photo.url }}" alt="{{ leader.full_name }}" 
+                                             class="leader-photo mb-3">
+                                    {% else %}
+                                        <div class="leader-placeholder mb-3 mx-auto">
+                                            <i class="fas fa-user"></i>
+                                        </div>
+                                    {% endif %}
+                                    
+                                    <h6 class="card-title text-primary">{{ leader.get_role_display }}</h6>
+                                    <p class="card-text fw-bold">{{ leader.full_name }}</p>
+                                    
+                                    {% if not leader.is_active %}
+                                        <span class="badge bg-warning text-dark mb-2">Неактивен</span>
+                                    {% endif %}
+                                    
+                                    <div class="d-flex justify-content-center gap-2">
+                                        <button type="button" class="btn btn-sm btn-outline-primary" 
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#editLeaderModal{{ leader.id }}">
+                                            <i class="fas fa-edit"></i> Редактировать
+                                        </button>
+                                        <form method="post" class="d-inline" 
+                                              onsubmit="return confirm('Вы уверены, что хотите удалить руководителя {{ leader.full_name }}?')">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="action" value="delete_leader">
+                                            <input type="hidden" name="leader_id" value="{{ leader.id }}">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                <i class="fas fa-trash"></i> Удалить
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center py-5">
+                    <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                    <h5 class="text-muted">Руководители отсутствуют</h5>
+                    <p class="text-muted">Добавьте первого руководителя университета</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Модальные окна для редактирования руководителей -->
+{% for leader in leaders %}
+    <div class="modal fade" id="editLeaderModal{{ leader.id }}" tabindex="-1" aria-labelledby="editLeaderModalLabel{{ leader.id }}" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editLeaderModalLabel{{ leader.id }}">
+                        <i class="fas fa-edit me-2"></i>Редактировать руководителя
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="update_leader">
+                    <input type="hidden" name="leader_id" value="{{ leader.id }}">
+                    
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="edit_role_{{ leader.id }}" class="form-label">Должность *</label>
+                                    <select name="role" id="edit_role_{{ leader.id }}" class="form-select" required>
+                                        <option value="rector" {% if leader.role == 'rector' %}selected{% endif %}>Ректор</option>
+                                        <option value="prorector" {% if leader.role == 'prorector' %}selected{% endif %}>Проректор</option>
+                                        <option value="other" {% if leader.role == 'other' %}selected{% endif %}>Другое</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="edit_order_{{ leader.id }}" class="form-label">Порядок сортировки</label>
+                                    <input type="number" name="order" id="edit_order_{{ leader.id }}" 
+                                           class="form-control" value="{{ leader.order }}" min="1">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group mt-3">
+                            <label for="edit_full_name_{{ leader.id }}" class="form-label">ФИО *</label>
+                            <input type="text" name="full_name" id="edit_full_name_{{ leader.id }}" 
+                                   class="form-control" value="{{ leader.full_name }}" required>
+                        </div>
+                        
+                        <div class="form-group mt-3">
+                            <label for="edit_photo_{{ leader.id }}" class="form-label">Фотография</label>
+                            <input type="file" name="photo" id="edit_photo_{{ leader.id }}" 
+                                   class="form-control" accept="image/*">
+                            {% if leader.photo %}
+                                <div class="mt-2">
+                                    <small class="text-muted">Текущая фотография:</small><br>
+                                    <img src="{{ leader.photo.url }}" alt="Текущая фотография" 
+                                         style="max-width: 100px; max-height: 100px; border-radius: 8px;">
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-check mt-3">
+                            <input type="checkbox" name="is_active" id="edit_is_active_{{ leader.id }}" 
+                                   class="form-check-input" {% if leader.is_active %}checked{% endif %}>
+                            <label for="edit_is_active_{{ leader.id }}" class="form-check-label">
+                                <strong>Активен</strong> (отображается на сайте)
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="fas fa-times me-1"></i>Отмена
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-1"></i>Сохранить изменения
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endfor %}
+{% endblock %}

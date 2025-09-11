@@ -1,9 +1,30 @@
 <!DOCTYPE html>
-<html lang="ru">
+{% load static %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+<html lang="{{ LANGUAGE_CODE }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Adaptation AlmaU{% endblock %}</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{% static 'images/logo.png' %}">
+    
+    <!-- Немедленное применение темы до загрузки CSS -->
+    <script>
+    (function() {
+        const savedTheme = localStorage.getItem('selectedTheme') || 'light';
+        if (savedTheme === 'dark') {
+            document.documentElement.classList.add('theme-dark');
+            document.documentElement.style.backgroundColor = '#1a1a1a';
+        } else {
+            document.documentElement.classList.add('theme-light');
+            document.documentElement.style.backgroundColor = '#ffffff';
+        }
+    })();
+    </script>
+    
     {% load static %}
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -12,7 +33,283 @@
 <body>
     {% block content %}{% endblock %}
     
+    <!-- Подключаем скрипты в правильном порядке -->
+    <script src="{% static 'js/sidebar.js' %}"></script>
     <script src="{% static 'js/main.js' %}"></script>
-    {% block extra_js %}{% endblock %}
+    
+    <!-- Мобильная кнопка "Назад" -->
+    <div class="mobile-back-btn" id="mobileBackBtn" style="display: none;">
+        <a href="{% url 'main:dashboard' %}" class="back-link">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+    </div>
+    
+    <!-- Мобильные кнопки внизу -->
+    <div class="mobile-bottom-buttons" id="mobileBottomButtons" style="display: none;">
+        <a href="{% url 'main:settings' %}" class="mobile-btn settings-btn">
+            <i class="fas fa-cog"></i>
+            <span>Настройки</span>
+        </a>
+        <a href="{% url 'account_logout' %}" class="mobile-btn logout-btn">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Выйти</span>
+        </a>
+    </div>
+    
+    <script>
+    // Применяем тему немедленно - до загрузки DOM
+    (function() {
+        const savedTheme = localStorage.getItem('selectedTheme') || 'light';
+        if (savedTheme === 'dark') {
+            document.documentElement.classList.add('theme-dark');
+            document.body.classList.add('theme-dark');
+            document.documentElement.style.backgroundColor = '#1a1a1a';
+            document.body.style.backgroundColor = '#1a1a1a';
+        } else {
+            document.documentElement.classList.add('theme-light');
+            document.body.classList.add('theme-light');
+            document.documentElement.style.backgroundColor = '#ffffff';
+            document.body.style.backgroundColor = '#ffffff';
+        }
+    })();
+    
+    // Автоматическое применение темы при загрузке страницы
+    document.addEventListener('DOMContentLoaded', function() {
+        const savedTheme = localStorage.getItem('selectedTheme') || 'light';
+        
+        // Применяем тему немедленно
+        applyTheme(savedTheme);
+        
+        // Показываем страницу после применения темы
+        setTimeout(() => {
+            document.documentElement.classList.add('theme-loaded');
+        }, 10);
+    });
+    
+    // Глобальная функция применения темы
+    function applyTheme(theme) {
+        const body = document.body;
+        const html = document.documentElement;
+        const sidebar = document.getElementById('sidebar');
+        
+        // Сначала обновляем CSS переменные, чтобы избежать мигания
+        if (theme === 'dark') {
+            document.documentElement.style.setProperty('--bg-primary', '#1a1a1a');
+            document.documentElement.style.setProperty('--bg-secondary', '#2d2d2d');
+            document.documentElement.style.setProperty('--text-primary', '#ffffff');
+            document.documentElement.style.setProperty('--text-secondary', '#b0b0b0');
+            document.documentElement.style.setProperty('--border-color', '#404040');
+            document.documentElement.style.setProperty('--accent-color', '#64b5f6');
+            document.documentElement.style.setProperty('--accent-hover', '#42a5f5');
+            document.documentElement.style.setProperty('--sidebar-bg', '#2d2d2d');
+            document.documentElement.style.setProperty('--sidebar-text', '#ffffff');
+            document.documentElement.style.setProperty('--sidebar-hover', '#404040');
+            document.documentElement.style.setProperty('--card-bg', '#2d2d2d');
+            document.documentElement.style.setProperty('--card-border', '#404040');
+            document.documentElement.style.setProperty('--shadow', '0 2px 10px rgba(0,0,0,0.3)');
+            document.documentElement.style.setProperty('--input-bg', '#404040');
+            document.documentElement.style.setProperty('--input-border', '#555555');
+            document.documentElement.style.setProperty('--input-text', '#ffffff');
+            document.documentElement.style.setProperty('--button-bg', '#64b5f6');
+            document.documentElement.style.setProperty('--button-text', '#ffffff');
+            document.documentElement.style.setProperty('--button-hover', '#42a5f5');
+            document.documentElement.style.setProperty('--link-color', '#64b5f6');
+            document.documentElement.style.setProperty('--link-hover', '#42a5f5');
+        } else {
+            document.documentElement.style.setProperty('--bg-primary', '#ffffff');
+            document.documentElement.style.setProperty('--bg-secondary', '#f8f9fa');
+            document.documentElement.style.setProperty('--text-primary', '#333333');
+            document.documentElement.style.setProperty('--text-secondary', '#666666');
+            document.documentElement.style.setProperty('--border-color', '#dee2e6');
+            document.documentElement.style.setProperty('--accent-color', '#1976D2');
+            document.documentElement.style.setProperty('--accent-hover', '#1565C0');
+            document.documentElement.style.setProperty('--sidebar-bg', '#ffffff');
+            document.documentElement.style.setProperty('--sidebar-text', '#333333');
+            document.documentElement.style.setProperty('--sidebar-hover', '#f8f9fa');
+            document.documentElement.style.setProperty('--card-bg', '#ffffff');
+            document.documentElement.style.setProperty('--card-border', '#e9ecef');
+            document.documentElement.style.setProperty('--shadow', '0 2px 10px rgba(0,0,0,0.1)');
+            document.documentElement.style.setProperty('--input-bg', '#ffffff');
+            document.documentElement.style.setProperty('--input-border', '#ced4da');
+            document.documentElement.style.setProperty('--input-text', '#495057');
+            document.documentElement.style.setProperty('--button-bg', '#1976D2');
+            document.documentElement.style.setProperty('--button-text', '#ffffff');
+            document.documentElement.style.setProperty('--button-hover', '#1565C0');
+            document.documentElement.style.setProperty('--link-color', '#1976D2');
+            document.documentElement.style.setProperty('--link-hover', '#1565C0');
+        }
+        
+        // Применяем тему к сайдбару немедленно, чтобы избежать мигания
+        if (sidebar) {
+            sidebar.classList.remove('theme-light', 'theme-dark');
+            sidebar.classList.add(`theme-${theme}`);
+            sidebar.style.backgroundColor = theme === 'dark' ? '#2d2d2d' : '#ffffff';
+            sidebar.style.color = theme === 'dark' ? '#ffffff' : '#333333';
+        }
+        
+        // Убираем все классы тем
+        body.classList.remove('theme-light', 'theme-dark');
+        html.classList.remove('theme-light', 'theme-dark');
+        
+        // Добавляем класс выбранной темы
+        body.classList.add(`theme-${theme}`);
+        html.classList.add(`theme-${theme}`);
+        
+        // Устанавливаем фон body в зависимости от темы
+        if (theme === 'dark') {
+            body.style.backgroundColor = '#1a1a1a';
+        } else {
+            body.style.backgroundColor = '#ffffff';
+        }
+        
+        // Применяем тему ко всем элементам на странице
+        applyThemeToElements(theme);
+        
+        // Обновляем изображения на главной странице
+        if (typeof applyThemeToImages === 'function') {
+            applyThemeToImages(theme);
+        }
+        
+        // Показываем страницу после применения темы
+        document.documentElement.classList.add('theme-loaded');
+        
+        console.log('Тема применена:', theme);
+        console.log('Классы body:', body.className);
+        console.log('Классы html:', html.className);
+    }
+    
+    // Функция применения темы ко всем элементам
+    function applyThemeToElements(theme) {
+        // Применяем тему к основным контейнерам
+        const containers = document.querySelectorAll('.dashboard-container, .main-content, .admin-panel');
+        containers.forEach(container => {
+            container.classList.remove('theme-light', 'theme-dark');
+            container.classList.add(`theme-${theme}`);
+        });
+        
+        // Применяем тему к сайдбару отдельно для лучшего контроля
+        const sidebar = document.getElementById('sidebar');
+        if (sidebar) {
+            sidebar.classList.remove('theme-light', 'theme-dark');
+            sidebar.classList.add(`theme-${theme}`);
+            // Устанавливаем стили напрямую для мгновенного применения
+            sidebar.style.backgroundColor = theme === 'dark' ? '#2d2d2d' : '#ffffff';
+            sidebar.style.color = theme === 'dark' ? '#ffffff' : '#333333';
+            // Предотвращаем мигание
+            sidebar.style.opacity = '1';
+            sidebar.style.visibility = 'visible';
+        }
+        
+        // Применяем тему к карточкам
+        const cards = document.querySelectorAll('.card, .settings-card, .process-item, .document-card, .test-card, .test-form, .theme-controls');
+        cards.forEach(card => {
+            card.classList.remove('theme-light', 'theme-dark');
+            card.classList.add(`theme-${theme}`);
+        });
+        
+        // Применяем тему к формам
+        const forms = document.querySelectorAll('form');
+        forms.forEach(form => {
+            form.classList.remove('theme-light', 'theme-dark');
+            form.classList.add(`theme-${theme}`);
+        });
+        
+        // Применяем тему к инпутам
+        const inputs = document.querySelectorAll('.form-control, .form-select, .search-input');
+        inputs.forEach(input => {
+            input.classList.remove('theme-light', 'theme-dark');
+            input.classList.add(`theme-${theme}`);
+        });
+        
+        // Применяем тему к кнопкам
+        const buttons = document.querySelectorAll('.btn');
+        buttons.forEach(button => {
+            button.classList.remove('theme-light', 'theme-dark');
+            button.classList.add(`theme-${theme}`);
+        });
+        
+        // Применяем тему к навигации
+        const navs = document.querySelectorAll('.nav-link');
+        navs.forEach(nav => {
+            nav.classList.remove('theme-light', 'theme-dark');
+            nav.classList.add(`theme-${theme}`);
+        });
+        
+        // Применяем тему к таблицам
+        const tables = document.querySelectorAll('.table');
+        tables.forEach(table => {
+            table.classList.remove('theme-light', 'theme-dark');
+            table.classList.add(`theme-${theme}`);
+        });
+        
+        // Применяем тему к спискам
+        const lists = document.querySelectorAll('.list-group-item');
+        lists.forEach(list => {
+            list.classList.remove('theme-light', 'theme-dark');
+            list.classList.add(`theme-${theme}`);
+        });
+        
+        // Применяем тему к фильтрам
+        const filters = document.querySelectorAll('.filter-tab, .category-filters');
+        filters.forEach(filter => {
+            filter.classList.remove('theme-light', 'theme-dark');
+            filter.classList.add(`theme-${theme}`);
+        });
+        
+        // Применяем тему к контенту
+        const contentAreas = document.querySelectorAll('.processes-content, .documents-content, .settings-content, .test-content');
+        contentAreas.forEach(area => {
+            area.classList.remove('theme-light', 'theme-dark');
+            area.classList.add(`theme-${theme}`);
+        });
+        
+        // Применяем тему к элементам настроек
+        const settingsElements = document.querySelectorAll('.settings-section, .language-option, .theme-option, .language-label, .theme-info');
+        settingsElements.forEach(element => {
+            element.classList.remove('theme-light', 'theme-dark');
+            element.classList.add(`theme-${theme}`);
+        });
+        
+        console.log(`Тема ${theme} применена ко всем элементам на странице`);
+    }
+    
+    // Добавляем глобальную функцию для тестирования
+    window.testTheme = function(theme) {
+        console.log('Тестируем тему:', theme);
+        applyTheme(theme);
+    };
+    
+    // Функция для управления мобильными кнопками
+    function manageMobileButtons() {
+        const mobileBackBtn = document.getElementById('mobileBackBtn');
+        const mobileBottomButtons = document.getElementById('mobileBottomButtons');
+        const isMobile = window.innerWidth <= 768;
+        const isDashboard = window.location.pathname === '/' || 
+                           window.location.pathname.includes('dashboard') || 
+                           document.querySelector('.dashboard-page');
+        
+        if (mobileBackBtn && mobileBottomButtons) {
+            if (isMobile) {
+                if (isDashboard) {
+                    // На dashboard показываем только кнопки внизу
+                    mobileBackBtn.style.display = 'none';
+                    mobileBottomButtons.style.display = 'flex';
+                } else {
+                    // На других страницах показываем только кнопку "Назад"
+                    mobileBackBtn.style.display = 'block';
+                    mobileBottomButtons.style.display = 'none';
+                }
+            } else {
+                // На десктопе скрываем все кнопки
+                mobileBackBtn.style.display = 'none';
+                mobileBottomButtons.style.display = 'none';
+            }
+        }
+    }
+    
+    // Вызываем функцию при загрузке и изменении размера окна
+    document.addEventListener('DOMContentLoaded', manageMobileButtons);
+    window.addEventListener('resize', manageMobileButtons);
+    </script>
 </body>
 </html>

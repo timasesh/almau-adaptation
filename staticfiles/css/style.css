@@ -1,3 +1,355 @@
+/* CSS Variables for theming */
+:root {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8f9fa;
+    --text-primary: #333333;
+    --text-secondary: #666666;
+    --border-color: #dee2e6;
+    --accent-color: #1976D2;
+    --accent-hover: #1565C0;
+    --sidebar-bg: #ffffff;
+    --sidebar-text: #333333;
+    --sidebar-hover: #f8f9fa;
+    --card-bg: #ffffff;
+    --card-border: #e9ecef;
+    --shadow: 0 2px 10px rgba(0,0,0,0.1);
+    --input-bg: #ffffff;
+    --input-border: #ced4da;
+    --input-text: #495057;
+    --button-bg: #1976D2;
+    --button-text: #ffffff;
+    --button-hover: #1565C0;
+    --link-color: #1976D2;
+    --link-hover: #1565C0;
+    --success-color: #28a745;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+    --info-color: #17a2b8;
+}
+
+/* Dark theme variables */
+.theme-dark {
+    --bg-primary: #1a1a1a;
+    --bg-secondary: #2d2d2d;
+    --text-primary: #ffffff;
+    --text-secondary: #b0b0b0;
+    --border-color: #404040;
+    --accent-color: #64b5f6;
+    --accent-hover: #42a5f5;
+    --sidebar-bg: #2d2d2d;
+    --sidebar-text: #ffffff;
+    --sidebar-hover: #404040;
+    --card-bg: #2d2d2d;
+    --card-border: #404040;
+    --shadow: 0 2px 10px rgba(0,0,0,0.3);
+    --input-bg: #404040;
+    --input-border: #555555;
+    --input-text: #ffffff;
+    --button-bg: #64b5f6;
+    --button-text: #ffffff;
+    --button-hover: #42a5f5;
+    --link-color: #64b5f6;
+    --link-hover: #42a5f5;
+    --success-color: #4caf50;
+    --warning-color: #ff9800;
+    --danger-color: #f44336;
+    --info-color: #2196f3;
+}
+
+/* Apply theme variables to all elements */
+body {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Sidebar styles */
+.sidebar {
+    background-color: var(--sidebar-bg);
+    border-right: 1px solid var(--border-color);
+    transition: background-color 0.3s ease;
+}
+
+.sidebar .nav-link {
+    color: var(--sidebar-text);
+    transition: all 0.3s ease;
+}
+
+.sidebar .nav-link:hover {
+    background-color: var(--sidebar-hover);
+    color: var(--accent-color);
+}
+
+.sidebar .nav-link.active {
+    background-color: var(--accent-color);
+    color: var(--button-text);
+}
+
+.sidebar .nav-link.active:hover {
+    background-color: var(--accent-hover);
+}
+
+/* Card styles */
+.card {
+    background-color: var(--card-bg);
+    border-color: var(--card-border);
+    box-shadow: var(--shadow);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+}
+
+/* Form elements */
+.form-control, .form-select {
+    background-color: var(--input-bg);
+    border-color: var(--input-border);
+    color: var(--input-text);
+    transition: all 0.3s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    background-color: var(--input-bg);
+    border-color: var(--accent-color);
+    color: var(--input-text);
+    box-shadow: 0 0 0 0.2rem rgba(100, 181, 246, 0.25);
+}
+
+.form-control::placeholder {
+    color: var(--text-secondary);
+}
+
+/* Button styles */
+.btn {
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background-color: var(--button-bg);
+    border-color: var(--button-bg);
+    color: var(--button-text);
+}
+
+.btn-primary:hover {
+    background-color: var(--button-hover);
+    border-color: var(--button-hover);
+}
+
+.btn-secondary {
+    background-color: var(--text-secondary);
+    border-color: var(--text-secondary);
+    color: var(--bg-primary);
+}
+
+.btn-secondary:hover {
+    background-color: var(--text-primary);
+    border-color: var(--text-primary);
+}
+
+/* Link styles */
+a {
+    color: var(--link-color);
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: var(--link-hover);
+    text-decoration: none;
+}
+
+/* Text colors */
+.text-muted {
+    color: var(--text-secondary) !important;
+}
+
+.text-primary {
+    color: var(--accent-color) !important;
+}
+
+.text-success {
+    color: var(--success-color) !important;
+}
+
+.text-warning {
+    color: var(--warning-color) !important;
+}
+
+.text-danger {
+    color: var(--danger-color) !important;
+}
+
+.text-info {
+    color: var(--info-color) !important;
+}
+
+/* Badge styles */
+.badge {
+    transition: all 0.3s ease;
+}
+
+.badge.bg-primary {
+    background-color: var(--accent-color) !important;
+}
+
+.badge.bg-secondary {
+    background-color: var(--text-secondary) !important;
+}
+
+.badge.bg-success {
+    background-color: var(--success-color) !important;
+}
+
+.badge.bg-warning {
+    background-color: var(--warning-color) !important;
+}
+
+.badge.bg-danger {
+    background-color: var(--danger-color) !important;
+}
+
+.badge.bg-info {
+    background-color: var(--info-color) !important;
+}
+
+/* Table styles */
+.table {
+    color: var(--text-primary);
+}
+
+.table th {
+    background-color: var(--bg-secondary);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+.table td {
+    border-color: var(--border-color);
+}
+
+.table-hover tbody tr:hover {
+    background-color: var(--bg-secondary);
+}
+
+/* Modal styles */
+.modal-content {
+    background-color: var(--card-bg);
+    border-color: var(--card-border);
+}
+
+.modal-header {
+    border-bottom-color: var(--border-color);
+}
+
+.modal-footer {
+    border-top-color: var(--border-color);
+}
+
+/* Dropdown styles */
+.dropdown-menu {
+    background-color: var(--card-bg);
+    border-color: var(--card-border);
+    box-shadow: var(--shadow);
+}
+
+.dropdown-item {
+    color: var(--text-primary);
+}
+
+.dropdown-item:hover {
+    background-color: var(--sidebar-hover);
+    color: var(--text-primary);
+}
+
+/* Alert styles */
+.alert {
+    background-color: var(--card-bg);
+    border-color: var(--card-border);
+    color: var(--text-primary);
+}
+
+.alert-success {
+    background-color: rgba(76, 175, 80, 0.1);
+    border-color: var(--success-color);
+    color: var(--success-color);
+}
+
+.alert-warning {
+    background-color: rgba(255, 152, 0, 0.1);
+    border-color: var(--warning-color);
+    color: var(--warning-color);
+}
+
+.alert-danger {
+    background-color: rgba(244, 67, 54, 0.1);
+    border-color: var(--danger-color);
+    color: var(--danger-color);
+}
+
+.alert-info {
+    background-color: rgba(33, 150, 243, 0.1);
+    border-color: var(--info-color);
+    color: var(--info-color);
+}
+
+/* Navigation tabs */
+.nav-tabs {
+    border-bottom-color: var(--border-color);
+}
+
+.nav-tabs .nav-link {
+    color: var(--text-secondary);
+    border-color: transparent;
+}
+
+.nav-tabs .nav-link:hover {
+    color: var(--text-primary);
+    border-color: transparent;
+}
+
+.nav-tabs .nav-link.active {
+    color: var(--accent-color);
+    border-color: var(--accent-color);
+    background-color: var(--bg-primary);
+}
+
+/* Pagination */
+.pagination .page-link {
+    background-color: var(--card-bg);
+    border-color: var(--border-color);
+    color: var(--link-color);
+}
+
+.pagination .page-link:hover {
+    background-color: var(--sidebar-hover);
+    border-color: var(--border-color);
+    color: var(--link-hover);
+}
+
+.pagination .page-item.active .page-link {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+    color: var(--button-text);
+}
+
+/* Custom scrollbar for dark theme */
+.theme-dark ::-webkit-scrollbar {
+    width: 8px;
+}
+
+.theme-dark ::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+}
+
+.theme-dark ::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 4px;
+}
+
+.theme-dark ::-webkit-scrollbar-thumb:hover {
+    background: var(--text-secondary);
+}
+
 /* Reset and base styles */
 * {
     margin: 0;
@@ -148,27 +500,97 @@ body {
 }
 
 .sidebar {
-    width: 280px;
+    width: 250px;
+    min-width: 250px;
+    max-width: 250px;
     background: white;
-    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 2px 0 10px rgba(0, 0, 0.1);
     transition: width 0.3s ease;
-    position: relative;
-    z-index: 100;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 1000;
     display: flex;
     flex-direction: column;
     height: 100vh;
+    border-radius: 0 20px 20px 0;
+    box-sizing: border-box;
+    overflow: hidden;
+    flex-shrink: 0;
 }
 
 .sidebar.collapsed {
-    width: 70px;
+    width: 60px;
+    min-width: 60px;
+    max-width: 60px;
 }
 
 .sidebar.collapsed .logo-container {
-    display: none;
+    opacity: 0;
+    visibility: hidden;
+    height: 0;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.sidebar.collapsed .sidebar-toggle {
+    right: 15px;
+    transform: translateY(-50%);
+    background: rgba(25, 118, 210, 0.1);
+    padding: 10px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
 }
 
 .sidebar.collapsed .sidebar-toggle i {
     transform: rotate(180deg);
+    transition: transform 0.3s ease;
+}
+
+.sidebar.collapsed .sidebar-toggle:hover {
+    background: rgba(25, 118, 210, 0.2);
+    transform: translateY(-50%) scale(1.1);
+    transition: all 0.3s ease;
+}
+
+.sidebar.collapsed .nav-text {
+    opacity: 0;
+    visibility: hidden;
+    width: 0;
+    margin-left: 0;
+    transition: all 0.3s ease;
+}
+
+.sidebar.collapsed .settings-btn .nav-text,
+.sidebar.collapsed .logout-btn .nav-text {
+    opacity: 0;
+    visibility: hidden;
+    width: 0;
+    margin-left: 0;
+    transition: all 0.3s ease;
+}
+
+
+
+.sidebar.collapsed .sidebar-header {
+    padding: 15px 10px;
+    justify-content: center;
+    min-height: 60px;
+    transition: all 0.3s ease;
+}
+
+.sidebar.collapsed .sidebar-nav {
+    padding: 10px 0;
+    flex: 1;
+    transition: all 0.3s ease;
+}
+
+.sidebar.collapsed .sidebar-footer {
+    padding: 15px 10px;
+    justify-content: center;
+    transition: all 0.3s ease;
 }
 
 .sidebar-header {
@@ -177,6 +599,17 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    position: relative;
+}
+
+.logo-container {
+    transition: all 0.3s ease;
+    transform-origin: left center;
+}
+
+.logo {
+    height: 40px;
+    width: auto;
 }
 
 .sidebar-toggle {
@@ -184,29 +617,65 @@ body {
     border: none;
     color: #1976D2;
     cursor: pointer;
-    padding: 5px;
-    border-radius: 4px;
+    padding: 8px;
+    border-radius: 6px;
     transition: all 0.3s ease;
-    font-size: 16px;
+    font-size: 18px;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 101;
+}
+
+.sidebar-toggle i {
+    transition: transform 0.3s ease;
 }
 
 .sidebar-toggle:hover {
-    background: rgba(25, 118, 210, 0.1);
+    background: rgba(25, 118, 210, 0.15);
     color: #1565C0;
+    transform: translateY(-50%) scale(1.1);
+    transition: all 0.3s ease;
+}
+
+.sidebar.collapsed .sidebar-toggle {
+    right: 15px;
+    background: rgba(25, 118, 210, 0.1);
+    padding: 10px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.sidebar.collapsed .sidebar-toggle:hover {
+    background: rgba(25, 118, 210, 0.2);
+    transform: translateY(-50%) scale(1.1);
+    transition: all 0.3s ease;
+}
+
+.sidebar-toggle:hover {
+    background: rgba(25, 118, 210, 0.15);
+    color: #1565C0;
+    transform: translateY(-50%) scale(1.1);
+    transition: all 0.3s ease;
 }
 
 .sidebar-nav {
     padding: 20px 0;
     flex: 1;
     overflow-y: auto;
+    /* Фиксируем позицию навигации */
+    position: relative;
 }
 
 .nav-list {
     list-style: none;
+    position: relative;
 }
 
 .nav-item {
     margin-bottom: 5px;
+    position: relative;
 }
 
 .nav-link {
@@ -217,32 +686,99 @@ body {
     text-decoration: none;
     transition: all 0.3s ease;
     position: relative;
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    overflow: hidden;
 }
 
 .nav-link:hover {
     background: #f8f9fa;
     color: #1976D2;
+    transform: translateX(0);
 }
 
 .nav-item.active .nav-link {
     background: #e3f2fd;
     color: #1976D2;
     border-right: 3px solid #1976D2;
+    box-sizing: border-box;
+    margin-right: -3px;
 }
 
 .nav-link i {
     width: 20px;
     margin-right: 15px;
     text-align: center;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+    /* Фиксируем позицию иконки */
+    position: relative;
+    left: 0;
 }
 
-.sidebar.collapsed .nav-text {
-    display: none;
+.nav-text {
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    overflow: hidden;
+    flex: 1;
+    min-width: 0;
+    /* Фиксируем позицию текста */
+    position: relative;
+    left: 0;
+    /* Плавное исчезновение */
+    opacity: 1;
+    visibility: visible;
+    width: auto;
 }
 
-.sidebar.collapsed .settings-btn span,
-.sidebar.collapsed .logout-btn span {
-    display: none;
+.settings-btn,
+.logout-btn {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    color: #666;
+    text-decoration: none;
+    background: none;
+    border: none;
+    width: 100%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+.settings-btn:hover,
+.logout-btn:hover {
+    background: #f8f9fa;
+    color: #1976D2;
+}
+
+.settings-btn i,
+.logout-btn i {
+    width: 20px;
+    margin-right: 15px;
+    text-align: center;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+    /* Фиксируем позицию иконки */
+    position: relative;
+    left: 0;
+}
+
+.settings-btn .nav-text,
+.logout-btn .nav-text {
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    overflow: hidden;
+    flex: 1;
+    min-width: 0;
+    /* Фиксируем позицию текста */
+    position: relative;
+    left: 0;
+    /* Плавное исчезновение */
+    opacity: 1;
+    visibility: visible;
+    width: auto;
 }
 
 .sidebar-footer {
@@ -286,7 +822,16 @@ body {
 .main-content {
     flex: 1;
     padding: 30px;
+    margin-left: 250px;
     transition: margin-left 0.3s ease;
+    min-height: 100vh;
+    width: calc(100% - 250px);
+}
+
+/* Когда sidebar свернут */
+body.sidebar-collapsed .main-content {
+    margin-left: 60px;
+    width: calc(100% - 60px);
 }
 
 .content-header {
@@ -353,7 +898,7 @@ body {
 
 @media (max-width: 768px) {
     .sidebar {
-        width: 70px;
+        width: 60px;
     }
     
     .sidebar .nav-text {
@@ -530,4 +1075,463 @@ body {
     position: absolute;
     top: -7px;
     right: 3px;
+}
+
+/* Responsive sidebar styles */
+@media (max-width: 768px) {
+    .dashboard-container {
+        flex-direction: column;
+    }
+    
+    .sidebar {
+        width: 60px;
+        position: fixed;
+        left: 0;
+        top: 0;
+        z-index: 1000;
+        border-radius: 0 10px 10px 0;
+    }
+    
+    .sidebar.collapsed {
+        width: 60px;
+        height: 100vh;
+    }
+    
+    .sidebar .nav-text {
+        display: none;
+    }
+    
+    .sidebar .logo-container {
+        display: none;
+    }
+    
+    .sidebar .settings-btn span,
+    .sidebar .logout-btn span {
+        display: none;
+    }
+    
+    .sidebar .nav-link {
+        justify-content: center;
+        padding: 15px 8px;
+    }
+    
+    .sidebar .nav-link i {
+        margin-right: 0;
+        font-size: 18px;
+    }
+    
+    .sidebar .settings-btn,
+    .sidebar .logout-btn {
+        justify-content: center;
+        padding: 12px 8px;
+    }
+    
+    .sidebar .settings-btn i,
+    .sidebar .logout-btn i {
+        margin-right: 0;
+        font-size: 16px;
+    }
+    
+    .main-content {
+        width: 100%;
+        margin-left: 60px;
+        padding: 20px;
+    }
+    
+    .fixed-almau-logo {
+        right: 20px !important;
+        top: 15px !important;
+    }
+    
+    .sidebar-toggle {
+        display: none;
+    }
+}
+
+/* Fixes for text width issues */
+.about-content {
+    max-width: 1200px !important;
+    margin: 0 auto !important;
+    padding: 20px !important;
+    overflow-x: hidden !important;
+}
+
+.history-content {
+    display: flex !important;
+    gap: 40px !important;
+    align-items: flex-start !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+}
+
+.history-text {
+    flex: 1 !important;
+    max-width: 60% !important;
+    min-width: 0 !important; /* Allow flex item to shrink */
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    overflow-x: hidden !important;
+}
+
+.history-text p {
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+    white-space: normal !important;
+}
+
+.history-image {
+    flex: 0 0 400px !important;
+    max-width: 400px !important;
+    min-width: 0 !important;
+}
+
+.history-image img {
+    width: 100% !important;
+    height: 250px !important;
+    object-fit: cover !important;
+    border-radius: 15px !important;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1) !important;
+    max-width: 100% !important;
+}
+
+/* Mission and values text control */
+.mission-values {
+    display: flex !important;
+    gap: 60px !important;
+    margin-bottom: 80px !important;
+    justify-content: center !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+}
+
+.mission-card, .values-card {
+    text-align: center !important;
+    max-width: 400px !important;
+    min-width: 0 !important;
+    flex: 1 !important;
+}
+
+.mission-card p, .values-card p {
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+    white-space: normal !important;
+}
+
+/* Admin form field width control */
+.form-control, .form-select, textarea.form-control {
+    max-width: 100% !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    resize: vertical !important;
+}
+
+textarea.form-control {
+    min-height: 100px !important;
+    max-height: 300px !important;
+}
+
+/* Prevent admin page horizontal scroll */
+.form-section {
+    overflow-x: hidden !important;
+}
+
+.container-fluid {
+    max-width: 1400px !important;
+    margin: 0 auto !important;
+}
+
+/* Responsive text handling */
+@media (max-width: 768px) {
+    .history-text {
+        max-width: 100% !important;
+    }
+    
+    .history-content {
+        flex-direction: column !important;
+    }
+    
+    .history-image {
+        flex: none !important;
+        width: 100% !important;
+    }
+}
+
+/* Admin panel specific fixes */
+.admin-panel {
+    overflow-x: hidden !important;
+    max-width: 100vw !important;
+}
+
+.admin-panel .container-fluid {
+    max-width: 1400px !important;
+    margin: 0 auto !important;
+    overflow-x: hidden !important;
+}
+
+.admin-panel .form-section {
+    overflow-x: hidden !important;
+    max-width: 100% !important;
+}
+
+.admin-panel textarea {
+    max-width: 100% !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    resize: vertical !important;
+    min-height: 100px !important;
+    max-height: 300px !important;
+}
+
+.admin-panel .form-control {
+    max-width: 100% !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+}
+
+/* Summernote editor width control */
+.note-editor {
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+}
+
+.note-editor .note-editing-area {
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+}
+
+.note-editor .note-editable {
+    max-width: 100% !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+}
+
+/* Additional Summernote editor fixes */
+.note-editor.note-frame {
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+}
+
+.note-editor.note-frame .note-editing-area {
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+}
+
+.note-editor.note-frame .note-editable {
+    max-width: 100% !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    white-space: pre-wrap !important;
+}
+
+.note-editor.note-frame .note-status-output {
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+}
+
+.note-editor.note-frame .note-resizebar {
+    max-width: 100% !important;
+}
+
+/* Form field container fixes */
+.form-group {
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+}
+
+.form-control:focus {
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+}
+
+/* Tab content fixes */
+.tab-content {
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+}
+
+.tab-pane {
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+}
+
+/* Responsive design for about page */
+@media (max-width: 768px) {
+    .about-content {
+        padding: 15px !important;
+        max-width: 100% !important;
+    }
+    
+    .history-content {
+        flex-direction: column !important;
+        gap: 20px !important;
+    }
+    
+    .history-text {
+        max-width: 100% !important;
+        order: 2 !important; /* Text below image on mobile */
+    }
+    
+    .history-image {
+        flex: none !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        order: 1 !important; /* Image above text on mobile */
+    }
+    
+    .history-image img {
+        width: 100% !important;
+        height: 200px !important;
+    }
+    
+    .mission-values {
+        flex-direction: column !important;
+        gap: 40px !important;
+    }
+    
+    .mission-card, .values-card {
+        max-width: 100% !important;
+    }
+    
+    .leadership-cards {
+        flex-direction: column !important;
+        gap: 40px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .about-content {
+        padding: 10px !important;
+    }
+    
+    .history-section h2,
+    .leadership-section h2 {
+        font-size: 20px !important;
+    }
+    
+    .mission-card h3, 
+    .values-card h3 {
+        font-size: 24px !important;
+    }
+}
+
+/* Feedback admin page styles */
+.feedback-subject {
+    max-width: 300px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.feedback-message {
+    max-width: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: pre-wrap;
+}
+
+.status-select {
+    min-width: 120px;
+}
+
+.avatar-sm {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Table responsive fixes */
+.table-responsive {
+    overflow-x: auto;
+    max-width: 100%;
+}
+
+.table th, .table td {
+    vertical-align: middle;
+    word-wrap: break-word;
+    max-width: 200px;
+}
+
+/* Modal fixes */
+.modal-body {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+.modal-body .row {
+    margin: 0;
+}
+
+.modal-body .col-md-6,
+.modal-body .col-12 {
+    padding: 0 15px;
+}
+
+/* Badge improvements */
+.badge {
+    font-size: 0.75em;
+    padding: 0.35em 0.65em;
+}
+
+/* Button improvements */
+.btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}
+
+.sidebar.collapsed .nav-link {
+    justify-content: flex-start;
+    padding: 15px 20px;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.sidebar.collapsed .nav-link i {
+    margin-right: 0;
+    width: 20px;
+    text-align: center;
+    transition: all 0.3s ease;
+    /* Иконка остается на своем месте */
+    position: relative;
+    left: 0;
+}
+
+.sidebar.collapsed .settings-btn,
+.sidebar.collapsed .logout-btn {
+    justify-content: flex-start;
+    padding: 15px 20px;
+    transition: all 0.3s ease;
+}
+
+.sidebar.collapsed .settings-btn i,
+.sidebar.collapsed .logout-btn i {
+    margin-right: 0;
+    width: 20px;
+    text-align: center;
+    transition: all 0.3s ease;
+    /* Иконка остается на своем месте */
+    position: relative;
+    left: 0;
+}
+
+.sidebar.collapsed .nav-item {
+    margin-bottom: 1px;
+}
+
+.sidebar.collapsed .nav-link {
+    justify-content: flex-start;
+    padding: 10px 15px;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.sidebar.collapsed .settings-btn,
+.sidebar.collapsed .logout-btn {
+    justify-content: flex-start;
+    padding: 10px 15px;
+    transition: all 0.3s ease;
 }

@@ -1,15 +1,16 @@
+{% load document_filters %}
+{% load i18n %}
 {% for document in documents %}
-    <div class="document-card">
+    <div class="document-card" style="border-radius: 15px;">
         <div class="document-info">
-            <h3 class="document-title">{{ document.title }}</h3>
-            <p class="document-category">{{ document.category.name }}</p>
+            <h3 class="document-title">{{ document|get_title:current_language }}</h3>
         </div>
         <div class="document-meta">
             <span class="document-date">{{ document.created_at|date:"d.m.Y" }}</span>
             <a href="{% url 'main:download_document' document.id %}" 
                class="download-btn" 
                target="_blank">
-                Скачать PDF
+                {% trans "Скачать PDF" %}
                 <i class="fas fa-download"></i>
             </a>
         </div>
@@ -17,11 +18,11 @@
 {% empty %}
     <div class="no-documents">
         <i class="fas fa-file-alt"></i>
-        <h3>Документы не найдены</h3>
+        <h3>{% trans "Документы не найдены" %}</h3>
         <p>{% if search_query or current_category %}
-            Попробуйте изменить критерии поиска или очистить фильтры.
+            {% trans "Попробуйте изменить критерии поиска" %} или очистить фильтры.
         {% else %}
-            В данный момент документы отсутствуют.
+            {% trans "В данный момент документы отсутствуют" %}.
         {% endif %}</p>
     </div>
 {% endfor %} 

@@ -1,0 +1,50 @@
+{% extends 'main/admin/base.html' %}
+{% load static %}
+{% block title %}Админ-панель: Процессы и инструкции{% endblock %}
+
+{% block content %}
+<div class="processes-content">
+    <div class="processes-description">
+        <h2>Редактирование процессов и инструкций</h2>
+        <p>Добавляйте, изменяйте или удаляйте процессы и инструкции для сайта адаптации.</p>
+    </div>
+    <div class="button-group">
+        <a href="{% url 'main:add_process' %}" class="btn btn-primary">Добавить процесс</a>
+        <a href="{% url 'main:add_instruction' %}" class="btn btn-primary">Добавить инструкцию</a>
+    </div>
+
+    <div class="section-block">
+        <h3>Процессы</h3>
+        {% if processes %}
+            {% for process in processes %}
+                <div class="item-entry">
+                    <p>{{ process.title }}</p>
+                    <div class="item-actions">
+                        <a href="{% url 'main:edit_process' process.id %}" class="btn btn-edit">Редактировать</a>
+                        <a href="{% url 'main:delete_process' process.id %}" class="btn btn-delete">Удалить</a>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>Нет доступных процессов.</p>
+        {% endif %}
+    </div>
+
+    <div class="section-block">
+        <h3>Инструкции</h3>
+        {% if instructions %}
+            {% for instruction in instructions %}
+                <div class="item-entry">
+                    <p>{{ instruction.title }}</p>
+                    <div class="item-actions">
+                        <a href="{% url 'main:edit_instruction' instruction.id %}" class="btn btn-edit">Редактировать</a>
+                        <a href="{% url 'main:delete_instruction' instruction.id %}" class="btn btn-delete">Удалить</a>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>Нет доступных инструкций.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

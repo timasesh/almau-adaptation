@@ -1,0 +1,238 @@
+{% extends 'main/admin/base.html' %}
+{% load static %}
+
+{% block title %}{{ title }} - Админ панель{% endblock %}
+
+{% block heading %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-body">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <!-- Document Info -->
+            <div class="row mb-4">
+                <div class="col-md-8">
+                    <div class="mb-3">
+                        <label class="form-label">Название документа *</label>
+                        {{ form.title }}
+                        {{ form.title.errors }}
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Категория</label>
+                                {{ form.category }}
+                                {{ form.category.errors }}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Язык</label>
+                                {{ form.language }}
+                                {{ form.language.errors }}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-check form-switch mb-3">
+                        {{ form.is_active }}
+                        <label class="form-check-label">Активно</label>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            Файл документа
+                        </div>
+                        <div class="card-body text-center">
+                            {% if form.instance.file %}
+                                <div class="mb-3">
+                                    <i class="fas fa-file-pdf fa-3x text-danger"></i>
+                                    <div class="mt-2">
+                                        <a href="{{ form.instance.file.url }}" target="_blank" class="d-block">
+                                            {{ form.instance.filename }}
+                                        </a>
+                                        <small class="text-muted">
+                                            {{ form.instance.file.size|filesizeformat }}
+                                        </small>
+                                    </div>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="clear_file" name="clear_file">
+                                    <label class="form-check-label" for="clear_file">
+                                        Удалить файл
+                                    </label>
+                                </div>
+                            {% else %}
+                                <div class="mb-3">
+                                    <i class="fas fa-upload fa-3x text-muted"></i>
+                                    <p class="mt-2 mb-1">Загрузите файл</p>
+                                    <small class="text-muted d-block mb-2">Поддерживаемые форматы: PDF, DOC, DOCX, XLS, XLSX</small>
+                                </div>
+                            {% endif %}
+                            
+                            <div class="form-file">
+                                {{ form.file }}
+                                {{ form.file.errors }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <hr class="my-4">
+            
+            <!-- Language Versions -->
+            <h5 class="mb-3">Языковые версии</h5>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <div class="card-header">Русский</div>
+                        <div class="card-body">
+                            <div class="form-check form-switch mb-3">
+                                <input class="form-check-input" type="checkbox" checked disabled>
+                                <label class="form-check-label">Основной язык</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <div class="card-header">English</div>
+                        <div class="card-body">
+                            <div class="form-check form-switch mb-3">
+                                <input class="form-check-input" type="checkbox" id="has_english" name="has_english" 
+                                       {% if form.instance.file_en %}checked{% endif %}>
+                                <label class="form-check-label" for="has_english">Добавить версию</label>
+                            </div>
+                            {% if form.instance.file_en %}
+                                <div id="englishFileInfo">
+                                    <a href="{{ form.instance.file_en.url }}" target="_blank" class="d-block mb-2">
+                                        <i class="fas fa-file-pdf text-danger"></i> {{ form.instance.filename_en }}
+                                    </a>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="clear_file_en" name="clear_file_en">
+                                        <label class="form-check-label" for="clear_file_en">
+                                            Удалить файл
+                                        </label>
+                                    </div>
+                                </div>
+                            {% endif %}
+                            <div id="englishFileUpload" class="mt-2" {% if not form.instance.file_en %}style="display: none;"{% endif %}>
+                                <label class="form-label small mb-1">Файл на английском</label>
+                                <input type="file" name="file_en" class="form-control form-control-sm">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <div class="card-header">Қазақша</div>
+                        <div class="card-body">
+                            <div class="form-check form-switch mb-3">
+                                <input class="form-check-input" type="checkbox" id="has_kazakh" name="has_kazakh"
+                                       {% if form.instance.file_kk %}checked{% endif %}>
+                                <label class="form-check-label" for="has_kazakh">Добавить версию</label>
+                            </div>
+                            {% if form.instance.file_kk %}
+                                <div id="kazakhFileInfo">
+                                    <a href="{{ form.instance.file_kk.url }}" target="_blank" class="d-block mb-2">
+                                        <i class="fas fa-file-pdf text-danger"></i> {{ form.instance.filename_kk }}
+                                    </a>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="clear_file_kk" name="clear_file_kk">
+                                        <label class="form-check-label" for="clear_file_kk">
+                                            Удалить файл
+                                        </label>
+                                    </div>
+                                </div>
+                            {% endif %}
+                            <div id="kazakhFileUpload" class="mt-2" {% if not form.instance.file_kk %}style="display: none;"{% endif %}>
+                                <label class="form-label small mb-1">Файл на казахском</label>
+                                <input type="file" name="file_kk" class="form-control form-control-sm">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="d-flex justify-content-between mt-4">
+                <a href="{% url 'main:admin_documents' %}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-1"></i> Назад к списку
+                </a>
+                <div>
+                    {% if form.instance.id %}
+                        <a href="{% url 'main:admin_document_delete' form.instance.id %}" 
+                           class="btn btn-outline-danger me-2"
+                           onclick="return confirm('Вы уверены, что хотите удалить этот документ?');">
+                            <i class="fas fa-trash me-1"></i> Удалить
+                        </a>
+                    {% endif %}
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-1"></i> Сохранить
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Toggle English file upload
+    const hasEnglish = document.getElementById('has_english');
+    const englishUpload = document.getElementById('englishFileUpload');
+    const englishFileInfo = document.getElementById('englishFileInfo');
+    
+    if (hasEnglish) {
+        hasEnglish.addEventListener('change', function() {
+            if (this.checked) {
+                englishUpload.style.display = 'block';
+                if (englishFileInfo) englishFileInfo.style.display = 'block';
+            } else {
+                englishUpload.style.display = 'none';
+                if (englishFileInfo) englishFileInfo.style.display = 'none';
+                document.querySelector('input[name="clear_file_en"]').checked = true;
+            }
+        });
+    }
+    
+    // Toggle Kazakh file upload
+    const hasKazakh = document.getElementById('has_kazakh');
+    const kazakhUpload = document.getElementById('kazakhFileUpload');
+    const kazakhFileInfo = document.getElementById('kazakhFileInfo');
+    
+    if (hasKazakh) {
+        hasKazakh.addEventListener('change', function() {
+            if (this.checked) {
+                kazakhUpload.style.display = 'block';
+                if (kazakhFileInfo) kazakhFileInfo.style.display = 'block';
+            } else {
+                kazakhUpload.style.display = 'none';
+                if (kazakhFileInfo) kazakhFileInfo.style.display = 'none';
+                document.querySelector('input[name="clear_file_kk"]').checked = true;
+            }
+        });
+    }
+    
+    // Show file name when selected
+    document.querySelectorAll('.form-file-input').forEach(input => {
+        input.addEventListener('change', function() {
+            const fileName = this.files[0]?.name || 'Файл не выбран';
+            const label = this.nextElementSibling;
+            if (label && label.classList.contains('form-file-label')) {
+                label.textContent = fileName;
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

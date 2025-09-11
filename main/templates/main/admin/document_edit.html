@@ -1,0 +1,176 @@
+{% extends 'main/admin/base.html' %}
+{% load static %}
+
+{% block heading %}Редактирование документа{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-edit me-2"></i>Редактировать документ: {{ document.title }}
+                </h5>
+                <a href="{% url 'main:admin_documents' %}" class="btn btn-secondary btn-sm">
+                    <i class="fas fa-arrow-left me-2"></i>Назад к списку
+                </a>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="update_document">
+                    
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="title" class="form-label">Название документа (Русский) *</label>
+                                <input type="text" class="form-control" id="title" name="title" 
+                                       value="{{ document.title }}" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="title_en" class="form-label">Название документа (English)</label>
+                                <input type="text" class="form-control" id="title_en" name="title_en" 
+                                       value="{{ document.title_en|default:'' }}">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="title_kk" class="form-label">Название документа (Қазақша)</label>
+                                <input type="text" class="form-control" id="title_kk" name="title_kk" 
+                                       value="{{ document.title_kk|default:'' }}">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="description" class="form-label">Описание (Русский)</label>
+                                <textarea class="form-control" id="description" name="description" 
+                                          rows="3">{{ document.description|default:'' }}</textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="description_en" class="form-label">Описание (English)</label>
+                                <textarea class="form-control" id="description_en" name="description_en" 
+                                          rows="3">{{ document.description_en|default:'' }}</textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="description_kk" class="form-label">Описание (Қазақша)</label>
+                                <textarea class="form-control" id="description_kk" name="description_kk" 
+                                          rows="3">{{ document.description_kk|default:'' }}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="category" class="form-label">Категория *</label>
+                                <select class="form-select" id="category" name="category" required>
+                                    <option value="">Выберите категорию</option>
+                                    {% for category in categories %}
+                                        <option value="{{ category.id }}" 
+                                                {% if category.id == document.category.id %}selected{% endif %}>
+                                            {{ category.name }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Дата создания</label>
+                                <input type="text" class="form-control" value="{{ document.created_at|date:'d.m.Y H:i' }}" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <hr class="my-4">
+                    <h6 class="mb-3">Файлы документа</h6>
+                    
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="file" class="form-label">Файл (Русский)</label>
+                                {% if document.file %}
+                                    <div class="mb-2">
+                                        <small class="text-muted">Текущий файл:</small><br>
+                                        <a href="{{ document.file.url }}" target="_blank" class="text-primary">
+                                            <i class="fas fa-file me-1"></i>{{ document.file.name|slice:"19:" }}
+                                        </a>
+                                    </div>
+                                {% endif %}
+                                <input type="file" class="form-control" id="file" name="file" accept=".pdf,.doc,.docx">
+                                <small class="form-text text-muted">Оставьте пустым, чтобы сохранить текущий файл</small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="file_en" class="form-label">Файл (English)</label>
+                                {% if document.file_en %}
+                                    <div class="mb-2">
+                                        <small class="text-muted">Текущий файл:</small><br>
+                                        <a href="{{ document.file_en.url }}" target="_blank" class="text-primary">
+                                            <i class="fas fa-file me-1"></i>{{ document.file_en.name|slice:"19:" }}
+                                        </a>
+                                    </div>
+                                {% endif %}
+                                <input type="file" class="form-control" id="file_en" name="file_en" accept=".pdf,.doc,.docx">
+                                <small class="form-text text-muted">Оставьте пустым, чтобы сохранить текущий файл</small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="file_kk" class="form-label">Файл (Қазақша)</label>
+                                {% if document.file_kk %}
+                                    <div class="mb-2">
+                                        <small class="text-muted">Текущий файл:</small><br>
+                                        <a href="{{ document.file_kk.url }}" target="_blank" class="text-primary">
+                                            <i class="fas fa-file me-1"></i>{{ document.file_kk.name|slice:"19:" }}
+                                        </a>
+                                    </div>
+                                {% endif %}
+                                <input type="file" class="form-control" id="file_kk" name="file_kk" accept=".pdf,.doc,.docx">
+                                <small class="form-text text-muted">Оставьте пустым, чтобы сохранить текущий файл</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Статистика</label>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <small class="text-muted">Скачиваний:</small><br>
+                                        <span class="badge bg-info">{{ document.download_count }}</span>
+                                    </div>
+                                    <div class="col-6">
+                                        <small class="text-muted">Загружен:</small><br>
+                                        <span class="badge bg-secondary">{{ document.uploaded_by.username }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>Сохранить изменения
+                        </button>
+                        <a href="{% url 'main:admin_documents' %}" class="btn btn-secondary ms-2">
+                            <i class="fas fa-times me-2"></i>Отмена
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

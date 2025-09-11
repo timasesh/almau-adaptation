@@ -1,0 +1,104 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Тест темы{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    {% include 'main/sidebar.html' %}
+    
+    <div class="main-content">
+        <div class="content-header">
+            <h1>Тест темной темы</h1>
+        </div>
+        
+        <div class="test-content">
+            <h2>Заголовок 2</h2>
+            <h3>Заголовок 3</h3>
+            <p>Это тестовый параграф для проверки темной темы.</p>
+            
+            <div class="test-card">
+                <h4>Тестовая карточка</h4>
+                <p>Текст в карточке должен быть видимым в темной теме.</p>
+                <button class="btn btn-primary">Тестовая кнопка</button>
+            </div>
+            
+            <div class="test-form">
+                <h4>Тестовая форма</h4>
+                <input type="text" class="form-control" placeholder="Тестовый ввод">
+                <select class="form-select">
+                    <option>Опция 1</option>
+                    <option>Опция 2</option>
+                </select>
+            </div>
+            
+            <div class="theme-controls">
+                <h4>Управление темой</h4>
+                <button onclick="testTheme('light')" class="btn btn-light">Светлая тема</button>
+                <button onclick="testTheme('dark')" class="btn btn-dark">Темная тема</button>
+                <button onclick="checkCurrentTheme()" class="btn btn-info">Проверить текущую тему</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.test-content {
+    padding: 20px;
+}
+
+.test-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 8px;
+}
+
+.test-form {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 8px;
+}
+
+.test-form input,
+.test-form select {
+    margin: 10px 0;
+}
+
+.theme-controls {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 8px;
+}
+
+.theme-controls button {
+    margin: 5px;
+}
+</style>
+
+<script>
+function testTheme(theme) {
+    console.log('Тестируем тему:', theme);
+    if (typeof applyTheme === 'function') {
+        applyTheme(theme);
+    } else {
+        console.error('Функция applyTheme не найдена!');
+    }
+}
+
+function checkCurrentTheme() {
+    const body = document.body;
+    const html = document.documentElement;
+    console.log('Классы body:', body.className);
+    console.log('Классы html:', html.className);
+    console.log('CSS переменные:');
+    console.log('--bg-primary:', getComputedStyle(document.documentElement).getPropertyValue('--bg-primary'));
+    console.log('--text-primary:', getComputedStyle(document.documentElement).getPropertyValue('--text-primary'));
+}
+</script>
+{% endblock %}
