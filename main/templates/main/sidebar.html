@@ -36,7 +36,7 @@
             <li class="nav-item {% if current_page == 'lessons' %}active{% endif %}">
                 <a href="{% url 'main:lessons' %}" class="nav-link {% if current_page == 'lessons' %}active-nav-link{% endif %}">
                     <i class="fas fa-graduation-cap"></i>
-                    <span class="nav-text">Повышение цифровой грамотности</span>
+                    <span class="nav-text">{% t "Повышение цифровой грамотности" %}</span>
                 </a>
             </li>
             <li class="nav-item {% if current_page == 'map' %}active{% endif %}">
