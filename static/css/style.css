@@ -2911,6 +2911,32 @@ textarea.form-control {
     transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease !important;
 }
 
+/* Mobile dashboard spacing overrides: keep horizontal/vertical gaps at 10px */
+@media (max-width: 768px) {
+    .dashboard-grid {
+        column-gap: 10px !important;
+        row-gap: 10px !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+    .dashboard-link {
+        margin: 0 !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .dashboard-grid {
+        column-gap: 10px !important;
+        row-gap: 10px !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+}
+
 /* Additional fixes for settings page */
 .theme-dark .content-header h1 {
     color: #ffffff !important;

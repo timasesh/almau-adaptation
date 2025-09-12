@@ -106,7 +106,7 @@
                     <div class="lesson-info">
                         <h4>{{ lesson.title }}</h4>
                         <p class="lesson-meta">
-                             {% if lesson.has_video %}
+                            {% if lesson.has_video %}
                                 <span class="has-video">📹 Видео</span>
                                   <button type="button" class="btn btn-sm btn-primary" onclick="previewVideoInList('{{ lesson.video.url }}', '{{ lesson.title }}')" style="margin-left: 5px;">Просмотр</button>
                             {% endif %}
@@ -699,7 +699,7 @@ function editLesson(lessonId) {
     const modalContent = modal.querySelector('.modal-content');
     modal.style.display = 'block';
     modalContent.scrollTop = 0;
-
+    
     fetch(`/admin-panel/lessons/${lessonId}/data/`, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
