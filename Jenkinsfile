@@ -7,7 +7,7 @@ pipeline {
         DOCKER_TAG = "latest"
         CONTAINER_NAME = "adaptation_app"
         ENV_FILE = ".env"
-        APP_PORT = "8006"
+        APP_PORT = "8000"
     }
 
     stages {
