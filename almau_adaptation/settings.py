@@ -136,7 +136,7 @@ DATABASES = {
 }
 
 LOGIN_URL = "/accounts/login/"
-LOGIN_REDIRECT_URL = "/accounts/microsoft/login/callback/"  # сделаем простую вью ниже
+LOGIN_REDIRECT_URL = "/dashboard/"  # сделаем простую вью ниже
 ACCOUNT_EMAIL_VERIFICATION = "none"
 ACCOUNT_AUTHENTICATION_METHOD = "username_email"
 ACCOUNT_EMAIL_REQUIRED = True
