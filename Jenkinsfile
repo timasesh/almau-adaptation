@@ -16,7 +16,7 @@ pipeline {
                 checkout scm
             }
         }
-  stage('Inject .env') {
+         stage('Inject .env') {
             steps {
                 withCredentials([file(credentialsId: 'adaptation-env', variable: 'ENV_FILE')]) {
                     sh '''
@@ -26,6 +26,7 @@ pipeline {
                 }
             }
         }
+
         stage('Build Docker Image') {
             steps {
                 sh '''
