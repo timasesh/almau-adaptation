@@ -33,8 +33,13 @@ SECRET_KEY = 'django-insecure-&2lc)agzzmh11&t^6*%!cga7g2kj-ek((@6%()904rm&)m3$b7
 DEBUG = True
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'testserver', '192.168.45.232', 'adaptation.almau.edu.kz']
-CSRF_TRUSTED_ORIGINS  = ['localhost', '127.0.0.1', 'testserver', '192.168.45.232', 'adaptation.almau.edu.kz']
-
+CSRF_TRUSTED_ORIGINS = [
+    "http://127.0.0.1",
+    "http://192.168.45.232",
+    "https://adaptation.almau.edu.kz",
+    "http://localhost",
+    "http://testserver",
+]
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',

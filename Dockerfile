@@ -14,12 +14,12 @@ WORKDIR /app
 # 4. Устанавливаем зависимости Python
 COPY requirements.txt /app/
 RUN pip install --no-cache-dir -r requirements.txt
-RUN python manage.py collectstatic --noinput
+
 # 5. Копируем проект
 COPY . /app/
 
-# 6. Собираем статику
-
+# 6. Собираем статику (теперь manage.py доступен)
+RUN python manage.py collectstatic --noinput --clear
 
 # 7. Запуск через gunicorn
 CMD ["gunicorn", "almau_adaptation.wsgi:application", "--bind", "0.0.0.0:8000", "--workers=4"]
