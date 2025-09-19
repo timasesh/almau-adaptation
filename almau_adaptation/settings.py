@@ -136,15 +136,19 @@ DATABASES = {
 }
 
 # Microsoft Login
+MS_TENANT = os.getenv("MS_TENANT", "common")
 SOCIALACCOUNT_PROVIDERS = {
     "microsoft": {
+        "TENANT": MS_TENANT,
         "APP": {
-            "client_id": env("MS_CLIENT_ID"),
-            "secret": env("MS_CLIENT_SECRET"),
-            "key": "",
-        }
+            "client_id": os.getenv("MS_CLIENT_ID", ""),
+            "secret": os.getenv("MS_CLIENT_SECRET", ""),
+
+        },
     }
 }
+
+
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
