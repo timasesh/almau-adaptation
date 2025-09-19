@@ -17,15 +17,17 @@ pipeline {
             }
         }
          stage('Inject .env') {
-            steps {
-                withCredentials([file(credentialsId: 'adaptation-env', variable: 'ENV_FILE')]) {
-                    sh '''
-                    echo "⚡ Injecting .env from Jenkins Secret File"
-                    cp $ENV_FILE /tmp/$CONTAINER_NAME.env
-                    '''
-                }
-            }
+    steps {
+        withCredentials([file(credentialsId: 'adaptation-env', variable: 'ENV_FILE')]) {
+            sh '''
+            echo "⚡ Injecting .env from Jenkins Secret File"
+            cp $ENV_FILE .env
+            ls -la .env
+            head -n 5 .env
+            '''
         }
+    }
+}
 
 
 
