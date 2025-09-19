@@ -16,7 +16,16 @@ pipeline {
                 checkout scm
             }
         }
-
+  stage('Inject .env') {
+            steps {
+                withCredentials([file(credentialsId: 'adaptation-env', variable: 'ENV_FILE')]) {
+                    sh '''
+                    echo "⚡ Injecting .env from Jenkins Secret File"
+                    cp $ENV_FILE /tmp/$CONTAINER_NAME.env
+                    '''
+                }
+            }
+        }
         stage('Build Docker Image') {
             steps {
                 sh '''
@@ -35,16 +44,7 @@ pipeline {
             }
         }
 
-        stage('Inject .env') {
-            steps {
-                withCredentials([file(credentialsId: 'adaptation-env', variable: 'ENV_FILE')]) {
-                    sh '''
-                    echo "⚡ Injecting .env from Jenkins Secret File"
-                    cp $ENV_FILE /tmp/$CONTAINER_NAME.env
-                    '''
-                }
-            }
-        }
+
 
         stage('Deploy Container') {
             steps {
