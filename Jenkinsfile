@@ -1,13 +1,11 @@
 pipeline {
-    agent {label 'deployment_2'}
+    agent { label 'deployment_2' }
 
     environment {
-        DOCKER_REGISTRY = "registry.example.com"   // твой Docker Registry
-        DOCKER_IMAGE = "adaptation"
-        DOCKER_TAG = "latest"
-        CONTAINER_NAME = "adaptation_app"
-        ENV_FILE = ".env"
-        APP_PORT = "8000"
+        DOCKER_IMAGE   = "adaptation"
+        DOCKER_TAG     = "latest"
+        COMPOSE_FILE   = "docker-compose.yml"
+        CONTAINER_NAME = "adaptation_web"
     }
 
     stages {
@@ -16,40 +14,37 @@ pipeline {
                 checkout scm
             }
         }
-         stage('Inject .env') {
-    steps {
-        withCredentials([file(credentialsId: 'adaptation-env', variable: 'ENV_FILE')]) {
-            sh '''
-            echo "⚡ Injecting .env from Jenkins Secret File"
-            rm .env || true
-            cp $ENV_FILE .env
-            ls -la .env
-            '''
+
+        stage('Inject .env') {
+            steps {
+                withCredentials([file(credentialsId: 'adaptation-env', variable: 'ENV_FILE')]) {
+                    sh '''
+                    echo "⚡ Injecting .env from Jenkins Secret File"
+                    rm -f .env
+                    cp $ENV_FILE .env
+                    ls -la .env
+                    '''
+                }
+            }
         }
-    }
-}
 
-
-
-        stage('Build Docker Image') {
+        stage('Build & Up') {
             steps {
                 sh '''
-                docker build  --no-cache -t $DOCKER_IMAGE:$DOCKER_TAG .
+                echo "⚡ Building and starting containers via Compose"
+                docker compose -f $COMPOSE_FILE down || true
+                docker compose -f $COMPOSE_FILE build --no-cache
+                docker compose -f $COMPOSE_FILE up -d --remove-orphans
                 '''
             }
         }
 
-
-
-        stage('Deploy Container') {
+        stage('Migrate & Collectstatic') {
             steps {
                 sh '''
-                echo "⚡ Stopping old container if exists"
-                docker stop $CONTAINER_NAME || true
-                docker rm $CONTAINER_NAME || true
-
-                echo "⚡ Running new container"
-                docker run -d --name $CONTAINER_NAME -p $APP_PORT:8000 --env-file .env $DOCKER_IMAGE:$DOCKER_TAG
+                echo "⚡ Running Django migrations and collectstatic"
+                docker compose -f $COMPOSE_FILE exec -T web python manage.py migrate --noinput
+                docker compose -f $COMPOSE_FILE exec -T web python manage.py collectstatic --noinput
                 '''
             }
         }
