@@ -23,7 +23,6 @@ pipeline {
             echo "⚡ Injecting .env from Jenkins Secret File"
             cp $ENV_FILE .env
             ls -la .env
-            head -n 5 .env
             '''
         }
     }
@@ -39,16 +38,6 @@ pipeline {
             }
         }
 
-        stage('Push to Registry') {
-            steps {
-                sh '''
-                echo "⚡ Login to registry"
-                docker login $DOCKER_REGISTRY -u $DOCKER_USER -p $DOCKER_PASS
-                docker push $DOCKER_REGISTRY/$DOCKER_IMAGE:$DOCKER_TAG
-                '''
-            }
-        }
-
 
 
         stage('Deploy Container') {
@@ -60,8 +49,7 @@ pipeline {
 
                 echo "⚡ Running new container"
                 docker run -d --name $CONTAINER_NAME \
-                    -p $APP_PORT:8000 \
-                    $DOCKER_REGISTRY/$DOCKER_IMAGE:$DOCKER_TAG
+                    -p $APP_PORT:8000
                 '''
             }
         }
