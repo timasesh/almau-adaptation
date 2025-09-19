@@ -135,6 +135,13 @@ DATABASES = {
     }
 }
 
+LOGIN_URL = "/accounts/login/"
+LOGIN_REDIRECT_URL = "/accounts/microsoft/login/callback/"  # сделаем простую вью ниже
+ACCOUNT_EMAIL_VERIFICATION = "none"
+ACCOUNT_AUTHENTICATION_METHOD = "username_email"
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_SIGNUP_ENABLED = False
+SOCIALACCOUNT_LOGIN_ON_GET = True
 # Microsoft Login
 MS_TENANT = os.getenv("MS_TENANT", "common")
 SOCIALACCOUNT_PROVIDERS = {
