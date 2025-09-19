@@ -143,14 +143,14 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_SIGNUP_ENABLED = False
 SOCIALACCOUNT_LOGIN_ON_GET = True
 # Microsoft Login
-MS_TENANT = os.getenv("MS_TENANT", "common")
+MS_TENANT = env("MS_TENANT", default="common")
+
 SOCIALACCOUNT_PROVIDERS = {
     "microsoft": {
         "TENANT": MS_TENANT,
         "APP": {
-            "client_id": os.getenv("MS_CLIENT_ID", ""),
-            "secret": os.getenv("MS_CLIENT_SECRET", ""),
-
+            "client_id": env("MS_CLIENT_ID"),
+            "secret": env("MS_CLIENT_SECRET"),
         },
     }
 }
@@ -201,12 +201,6 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_USERNAME_REQUIRED = False
-ACCOUNT_AUTHENTICATION_METHOD = 'email'
-ACCOUNT_EMAIL_VERIFICATION = 'none'  # Отключаем верификацию email для разработки
-LOGIN_REDIRECT_URL = '/dashboard/'
-LOGOUT_REDIRECT_URL = '/'
 
 # Email настройки для разработки
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
@@ -224,14 +218,7 @@ DATABASES = {
 }
 
 # Microsoft Login
-SOCIALACCOUNT_PROVIDERS = {
-    "microsoft": {
-        "APP": {
-            "client_id": env("MS_CLIENT_ID"),
-            "secret": env("MS_CLIENT_SECRET"),
-        }
-    }
-}
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
