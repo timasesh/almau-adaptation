@@ -21,6 +21,7 @@ pipeline {
         withCredentials([file(credentialsId: 'adaptation-env', variable: 'ENV_FILE')]) {
             sh '''
             echo "⚡ Injecting .env from Jenkins Secret File"
+            rm .env || true
             cp $ENV_FILE .env
             ls -la .env
             '''
