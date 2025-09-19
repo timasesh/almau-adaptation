@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent {label 'deployment_2'}
 
     environment {
         DOCKER_REGISTRY = "registry.example.com"   // твой Docker Registry
