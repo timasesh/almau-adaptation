@@ -3,9 +3,9 @@ pipeline {
 
     environment {
         DOCKER_REGISTRY = "registry.example.com"   // твой Docker Registry
-        DOCKER_IMAGE = "almau-adaptation"
+        DOCKER_IMAGE = "adaptation"
         DOCKER_TAG = "latest"
-        CONTAINER_NAME = "almau_app"
+        CONTAINER_NAME = "adaptation_app"
         ENV_FILE = ".env"
         APP_PORT = "8006"
     }
@@ -34,7 +34,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 sh '''
-                docker build -t $DOCKER_REGISTRY/$DOCKER_IMAGE:$DOCKER_TAG .
+                docker build -t $DOCKER_IMAGE:$DOCKER_TAG .
                 '''
             }
         }
@@ -49,8 +49,7 @@ pipeline {
                 docker rm $CONTAINER_NAME || true
 
                 echo "⚡ Running new container"
-                docker run -d --name $CONTAINER_NAME \
-                    -p $APP_PORT:8000
+                docker run -d --name $CONTAINER_NAME -p 8006:8000 --env-file .env $DOCKER_IMAGE:$DOCKER_TAG
                 '''
             }
         }
