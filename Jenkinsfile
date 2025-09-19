@@ -55,7 +55,6 @@ pipeline {
 
                 echo "⚡ Running new container"
                 docker run -d --name $CONTAINER_NAME \
-                    --env-file /tmp/$CONTAINER_NAME.env \
                     -p $APP_PORT:8000 \
                     $DOCKER_REGISTRY/$DOCKER_IMAGE:$DOCKER_TAG
                 '''
