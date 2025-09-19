@@ -49,7 +49,7 @@ pipeline {
                 docker rm $CONTAINER_NAME || true
 
                 echo "⚡ Running new container"
-                docker run -d --name $CONTAINER_NAME -p 8006:8000 --env-file .env $DOCKER_IMAGE:$DOCKER_TAG
+                docker run -d --name $CONTAINER_NAME -p $APP_PORT:8000 --env-file .env $DOCKER_IMAGE:$DOCKER_TAG
                 '''
             }
         }
