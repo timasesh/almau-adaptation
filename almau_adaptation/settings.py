@@ -31,9 +31,6 @@ SECRET_KEY = 'django-insecure-&2lc)agzzmh11&t^6*%!cga7g2kj-ek((@6%()904rm&)m3$b7
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-SECURE_SSL_REDIRECT = True
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'testserver', '192.168.45.232', 'adaptation.almau.edu.kz']
 CSRF_TRUSTED_ORIGINS = [
     "http://127.0.0.1",
@@ -42,6 +39,7 @@ CSRF_TRUSTED_ORIGINS = [
     "http://localhost",
     "http://testserver",
 ]
+
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -61,7 +59,9 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.microsoft',
 ]
-
+SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
