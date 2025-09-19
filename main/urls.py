@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from . import views
 
 app_name = 'main'
@@ -80,7 +80,7 @@ urlpatterns = [
     path('editor/feedback/', views.editor_feedback_view, name='editor_feedback'),
     path('editor/progress/', views.editor_progress_view, name='editor_progress'),
     path('editor/progress/lesson/<int:lesson_id>/', views.editor_lesson_progress_detail_view, name='editor_lesson_progress_detail'),
-    
+    path('accounts/', include('allauth.urls')),
     # Admin Panel - Editors Management
     path('admin-panel/editors/', views.admin_editors_view, name='admin_editors'),
     

@@ -1,7 +1,7 @@
 from django import forms
 from django.forms import ModelForm
 from .models import History, Mission, Values, Leader, Document, DocumentCategory, Editor
-from ckeditor_uploader.widgets import CKEditorUploadingWidget
+
 
 
 class DocumentForm(ModelForm):

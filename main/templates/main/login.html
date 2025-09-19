@@ -562,9 +562,7 @@
                 {% get_providers as socialaccount_providers %}
                 {% for provider in socialaccount_providers %}
                     {% if provider.id == 'google' %}
-                        <a href="{% provider_login_url 'google' %}">
-                            <img src="{% static 'images/google.png' %}" alt="Google" class="provider-img">
-                        </a>
+
                     {% endif %}
                     {% if provider.id == 'microsoft' %}
                         <a href="{% provider_login_url 'microsoft' %}">
@@ -649,9 +647,7 @@
                     {% get_providers as socialaccount_providers %}
                     {% for provider in socialaccount_providers %}
                         {% if provider.id == 'google' %}
-                            <a href="{% provider_login_url 'google' %}">
-                                <img src="{% static 'images/google.png' %}" alt="Google" class="provider-img">
-                            </a>
+
                         {% endif %}
                         {% if provider.id == 'microsoft' %}
                             <a href="{% provider_login_url 'microsoft' %}">
