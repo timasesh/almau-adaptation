@@ -6,17 +6,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Вход - Adaptation AlmaU</title>
-    
+
     <!-- Favicon -->
     {% load static %}
     <link rel="icon" type="image/png" href="{% static 'images/logo.png' %}">
-    
+
     <!-- Принудительно устанавливаем светлую тему до загрузки CSS -->
     <script>
-    document.documentElement.classList.add('theme-light');
-    document.documentElement.style.backgroundColor = '#ffffff';
+        document.documentElement.classList.add('theme-light');
+        document.documentElement.style.backgroundColor = '#ffffff';
     </script>
-    
+
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     {% load socialaccount %}
@@ -525,7 +525,7 @@
 <!-- Мобильная версия формы входа -->
 <div class="mobile-login">
     <div class="mobile-login-container">
-        
+
         <!-- Языковой переключатель -->
         <div class="language-selector mobile-language-selector">
             <button class="language-btn" id="mobileLanguageBtn">
@@ -549,52 +549,57 @@
                 </form>
             </div>
         </div>
-        
+
         <!-- Основной контент -->
         <div class="login-content">
             <!-- Заголовок -->
             <div class="login-title">
-                <img src="{% static 'images/Adaptation AlmaU_mob.png' %}" alt="Adaptation AlmaU" class="mobile-title-img">
+                <img src="{% static 'images/Adaptation AlmaU_mob.png' %}" alt="Adaptation AlmaU"
+                     class="mobile-title-img">
             </div>
-            
+
             <!-- Социальные кнопки -->
             <div class="social-login">
                 {% get_providers as socialaccount_providers %}
                 {% for provider in socialaccount_providers %}
-                    {% if provider.id == 'google' %}
+                {% if provider.id == 'google' %}
 
-                    {% endif %}
-                    {% if provider.id == 'microsoft' %}
-                        <a href="{% provider_login_url 'microsoft' %}">
-                            <img src="{% static 'images/microsoft.png' %}" alt="Microsoft" class="provider-img">
-                        </a>
-                    {% endif %}
+                {% endif %}
+                {% if provider.id == 'microsoft' %}
+                <a href="{% provider_login_url 'microsoft' %}">
+                    <img src="{% static 'images/microsoft.png' %}" alt="Microsoft" class="provider-img">
+                </a>
+                {% endif %}
                 {% endfor %}
             </div>
-            
+
             <!-- Форма входа -->
             <form method="post" action="{% url 'account_login' %}" class="login-form">
                 {% csrf_token %}
-                <input type="email" name="login" placeholder="{% if current_language == 'kk' %}Кіру{% elif current_language == 'en' %}Login{% else %}Логин{% endif %}" class="form-input" required>
-                <input type="password" name="password" placeholder="{% if current_language == 'kk' %}Құпия сөз{% elif current_language == 'en' %}Password{% else %}Пароль{% endif %}" class="form-input" required>
+                <input type="email" name="login"
+                       placeholder="{% if current_language == 'kk' %}Кіру{% elif current_language == 'en' %}Login{% else %}Логин{% endif %}"
+                       class="form-input" required>
+                <input type="password" name="password"
+                       placeholder="{% if current_language == 'kk' %}Құпия сөз{% elif current_language == 'en' %}Password{% else %}Пароль{% endif %}"
+                       class="form-input" required>
                 <button type="submit" class="image-login-btn">
                     {% if current_language == 'en' %}
-                        <img src="{% static 'images/btn-1-eng.png' %}" alt="{% trans 'Продолжить' %}">
+                    <img src="{% static 'images/btn-1-eng.png' %}" alt="{% trans 'Продолжить' %}">
                     {% elif current_language == 'kk' %}
-                        <img src="{% static 'images/btn-1-kaz.png' %}" alt="{% trans 'Продолжить' %}">
+                    <img src="{% static 'images/btn-1-kaz.png' %}" alt="{% trans 'Продолжить' %}">
                     {% else %}
-                        <img src="{% static 'images/btn-1.png' %}" alt="{% trans 'Продолжить' %}">
+                    <img src="{% static 'images/btn-1.png' %}" alt="{% trans 'Продолжить' %}">
                     {% endif %}
                 </button>
             </form>
-            
+
             <!-- Сообщения -->
             {% if messages %}
-                <div class="messages">
-                    {% for message in messages %}
-                        <div class="message {{ message.tags }}">{{ message }}</div>
-                    {% endfor %}
-                </div>
+            <div class="messages">
+                {% for message in messages %}
+                <div class="message {{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            </div>
             {% endif %}
         </div>
     </div>
@@ -610,200 +615,208 @@
             <!-- Background decorative elements -->
             <div class="bg-decoration bg-decoration-left"></div>
             <div class="bg-decoration bg-decoration-right"></div>
-            
+
             <div class="login-card">
-            <div class="login-header">
-                
-                <img src="{% static 'images/adaptation_almau.png' %}" alt="Adaptation AlmaU" class="login-title-img" style="width: 250px; margin-top: 50px;">
-                
-                <!-- Language selector -->
-                                    <div class="language-selector">
+                <div class="login-header">
+
+                    <img src="{% static 'images/adaptation_almau.png' %}" alt="Adaptation AlmaU" class="login-title-img"
+                         style="width: 250px; margin-top: 50px;">
+
+                    <!-- Language selector -->
+                    <div class="language-selector">
                         <button class="language-btn" id="languageBtn">
                             <span class="language-text" id="languageText">
                                 {% if current_language == 'ru' %}RU{% elif current_language == 'en' %}EN{% elif current_language == 'kk' %}KZ{% else %}RU{% endif %}
                             </span>
                         </button>
                         <div class="language-dropdown" id="languageDropdown">
-                    <form method="post" action="{% url 'main:set_language' %}" id="languageForm">
-                        {% csrf_token %}
-                        <input type="hidden" name="next" value="{{ request.get_full_path }}">
-                        <button type="button" class="language-option" data-language="ru">
-                            RU - Русский
-                        </button>
-                        <button type="button" class="language-option" data-language="en">
-                            EN - English
-                        </button>
-                        <button type="button" class="language-option" data-language="kk">
-                            KZ - Қазақша
-                        </button>
-                    </form>
+                            <form method="post" action="{% url 'main:set_language' %}" id="languageForm">
+                                {% csrf_token %}
+                                <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                                <button type="submit" name="language" value="ru" class="language-option">
+                                    RU - Русский
+                                </button>
+                                <button type="submit" name="language" value="en" class="language-option">
+                                    EN - English
+                                </button>
+                                <button type="submit" name="language" value="kk" class="language-option">
+                                    KZ - Қазақша
+                                </button>
+
+                            </form>
+                        </div>
+                    </div>
                 </div>
-                </div>
-            </div>
-            
-            <div class="login-form">
-                <!-- Social login buttons -->
-                <div class="social-login">
-                    {% get_providers as socialaccount_providers %}
-                    {% for provider in socialaccount_providers %}
+
+                <div class="login-form">
+                    <!-- Social login buttons -->
+                    <div class="social-login">
+                        {% get_providers as socialaccount_providers %}
+                        {% for provider in socialaccount_providers %}
                         {% if provider.id == 'google' %}
 
                         {% endif %}
                         {% if provider.id == 'microsoft' %}
-                            <a href="{% provider_login_url 'microsoft' %}">
-                                <img src="{% static 'images/microsoft.png' %}" alt="Microsoft" class="provider-img">
-                            </a>
+                        <a href="{% provider_login_url 'microsoft' %}">
+                            <img src="{% static 'images/microsoft.png' %}" alt="Microsoft" class="provider-img">
+                        </a>
                         {% endif %}
-                    {% endfor %}
-                </div>
-                
-                <!-- Login form -->
-                <form method="post" action="{% url 'account_login' %}" class="login-form-fields">
-                    {% csrf_token %}
-                    <div class="form-group">
-                        <input type="email" name="login" placeholder="{% if current_language == 'kk' %}Кіру{% elif current_language == 'en' %}Login{% else %}Логин{% endif %}" class="form-input" required>
-                    </div>
-                    <div class="form-group">
-                        <div class="password-container">
-                            <input type="password" name="password" placeholder="{% if current_language == 'kk' %}Құпия сөз{% elif current_language == 'en' %}Password{% else %}Пароль{% endif %}" class="form-input password-input" id="passwordInput" required>
-                            <button type="button" class="password-toggle" id="passwordToggle">
-                                <i class="fas fa-eye" id="passwordIcon"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="forgot-password">
-                        <a href="{% url 'account_reset_password' %}">{% if current_language == 'kk' %}Құпия сөзді ұмыттыңыз ба?{% elif current_language == 'en' %}Forgot password?{% else %}Забыли пароль?{% endif %}</a>
-                    </div>
-                    <button type="submit" class="image-login-btn">
-                        {% if current_language == 'en' %}
-                            <img src="{% static 'images/btn-1-eng.png' %}" alt="{% trans 'Продолжить' %}">
-                        {% elif current_language == 'kk' %}
-                            <img src="{% static 'images/btn-1-kaz.png' %}" alt="{% trans 'Продолжить' %}">
-                        {% else %}
-                            <img src="{% static 'images/btn-1.png' %}" alt="{% trans 'Продолжить' %}">
-                        {% endif %}
-                    </button>
-                </form>
-                
-                <!-- Messages -->
-                {% if messages %}
-                    <div class="messages">
-                        {% for message in messages %}
-                            <div class="message {{ message.tags }}">{{ message }}</div>
                         {% endfor %}
                     </div>
-                {% endif %}
+
+                    <!-- Login form -->
+                    <form method="post" action="{% url 'account_login' %}" class="login-form-fields">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <input type="email" name="login"
+                                   placeholder="{% if current_language == 'kk' %}Кіру{% elif current_language == 'en' %}Login{% else %}Логин{% endif %}"
+                                   class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <div class="password-container">
+                                <input type="password" name="password"
+                                       placeholder="{% if current_language == 'kk' %}Құпия сөз{% elif current_language == 'en' %}Password{% else %}Пароль{% endif %}"
+                                       class="form-input password-input" id="passwordInput" required>
+                                <button type="button" class="password-toggle" id="passwordToggle">
+                                    <i class="fas fa-eye" id="passwordIcon"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="forgot-password">
+                            <a href="{% url 'account_reset_password' %}">{% if current_language == 'kk' %}Құпия сөзді
+                                ұмыттыңыз ба?{% elif current_language == 'en' %}Forgot password?{% else %}Забыли
+                                пароль?{% endif %}</a>
+                        </div>
+                        <button type="submit" class="image-login-btn">
+                            {% if current_language == 'en' %}
+                            <img src="{% static 'images/btn-1-eng.png' %}" alt="{% trans 'Продолжить' %}">
+                            {% elif current_language == 'kk' %}
+                            <img src="{% static 'images/btn-1-kaz.png' %}" alt="{% trans 'Продолжить' %}">
+                            {% else %}
+                            <img src="{% static 'images/btn-1.png' %}" alt="{% trans 'Продолжить' %}">
+                            {% endif %}
+                        </button>
+                    </form>
+
+                    <!-- Messages -->
+                    {% if messages %}
+                    <div class="messages">
+                        {% for message in messages %}
+                        <div class="message {{ message.tags }}">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<script>
-// Принудительно применяем светлую тему для страницы логина
-(function() {
-    document.documentElement.classList.remove('theme-dark');
-    document.documentElement.classList.add('theme-light');
-    document.body.classList.remove('theme-dark');
-    document.body.classList.add('theme-light');
-    document.documentElement.style.backgroundColor = '#ffffff';
-    document.body.style.backgroundColor = '#ffffff';
-})();
+    <script>
+        // Принудительно применяем светлую тему для страницы логина
+        (function() {
+            document.documentElement.classList.remove('theme-dark');
+            document.documentElement.classList.add('theme-light');
+            document.body.classList.remove('theme-dark');
+            document.body.classList.add('theme-light');
+            document.documentElement.style.backgroundColor = '#ffffff';
+            document.body.style.backgroundColor = '#ffffff';
+        })();
 
-document.addEventListener('DOMContentLoaded', function() {
-    // Desktop language selector
-    const languageBtn = document.getElementById('languageBtn');
-    const languageDropdown = document.getElementById('languageDropdown');
-    const languageForm = document.getElementById('languageForm');
-    
-    // Mobile language selector
-    const mobileLanguageBtn = document.getElementById('mobileLanguageBtn');
-    const mobileLanguageDropdown = document.getElementById('mobileLanguageDropdown');
-    const mobileLanguageForm = document.getElementById('mobileLanguageForm');
-    
-    const languageOptions = document.querySelectorAll('.language-option');
-    
-    // Переключение видимости выпадающего списка (Desktop)
-    if (languageBtn && languageDropdown) {
-        languageBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            languageDropdown.classList.toggle('active');
-        });
-    }
-    
-    // Переключение видимости выпадающего списка (Mobile)
-    if (mobileLanguageBtn && mobileLanguageDropdown) {
-        mobileLanguageBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            mobileLanguageDropdown.classList.toggle('active');
-        });
-    }
-    
-    // Закрытие при клике вне элемента
-    document.addEventListener('click', function(e) {
-        // Desktop
-        if (languageBtn && languageDropdown && 
-            !languageBtn.contains(e.target) && !languageDropdown.contains(e.target)) {
-            languageDropdown.classList.remove('active');
-        }
-        // Mobile
-        if (mobileLanguageBtn && mobileLanguageDropdown && 
-            !mobileLanguageBtn.contains(e.target) && !mobileLanguageDropdown.contains(e.target)) {
-            mobileLanguageDropdown.classList.remove('active');
-        }
-    });
-    
-    // Обработка выбора языка
-    languageOptions.forEach(option => {
-        option.addEventListener('click', function() {
-            const selectedLanguage = this.dataset.language;
-            
-            // Определяем, какая форма используется (десктопная или мобильная)
-            const isDesktop = this.closest('#languageDropdown');
-            const targetForm = isDesktop ? languageForm : mobileLanguageForm;
-            
-            if (targetForm) {
-                // Создаем скрытое поле для выбранного языка
-                const languageInput = document.createElement('input');
-                languageInput.type = 'hidden';
-                languageInput.name = 'language';
-                languageInput.value = selectedLanguage;
-                
-                // Добавляем в форму и отправляем
-                targetForm.appendChild(languageInput);
-                targetForm.submit();
+        document.addEventListener('DOMContentLoaded', function() {
+            // Desktop language selector
+            const languageBtn = document.getElementById('languageBtn');
+            const languageDropdown = document.getElementById('languageDropdown');
+            const languageForm = document.getElementById('languageForm');
+
+            // Mobile language selector
+            const mobileLanguageBtn = document.getElementById('mobileLanguageBtn');
+            const mobileLanguageDropdown = document.getElementById('mobileLanguageDropdown');
+            const mobileLanguageForm = document.getElementById('mobileLanguageForm');
+
+            const languageOptions = document.querySelectorAll('.language-option');
+
+            // Переключение видимости выпадающего списка (Desktop)
+            if (languageBtn && languageDropdown) {
+                languageBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    languageDropdown.classList.toggle('active');
+                });
+            }
+
+            // Переключение видимости выпадающего списка (Mobile)
+            if (mobileLanguageBtn && mobileLanguageDropdown) {
+                mobileLanguageBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    mobileLanguageDropdown.classList.toggle('active');
+                });
+            }
+
+            // Закрытие при клике вне элемента
+            document.addEventListener('click', function(e) {
+                // Desktop
+                if (languageBtn && languageDropdown &&
+                    !languageBtn.contains(e.target) && !languageDropdown.contains(e.target)) {
+                    languageDropdown.classList.remove('active');
+                }
+                // Mobile
+                if (mobileLanguageBtn && mobileLanguageDropdown &&
+                    !mobileLanguageBtn.contains(e.target) && !mobileLanguageDropdown.contains(e.target)) {
+                    mobileLanguageDropdown.classList.remove('active');
+                }
+            });
+
+            // Обработка выбора языка
+            languageOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    const selectedLanguage = this.dataset.language;
+
+                    // Определяем, какая форма используется (десктопная или мобильная)
+                    const isDesktop = this.closest('#languageDropdown');
+                    const targetForm = isDesktop ? languageForm : mobileLanguageForm;
+
+                    if (targetForm) {
+                        // Создаем скрытое поле для выбранного языка
+                        const languageInput = document.createElement('input');
+                        languageInput.type = 'hidden';
+                        languageInput.name = 'language';
+                        languageInput.value = selectedLanguage;
+
+                        // Добавляем в форму и отправляем
+                        targetForm.appendChild(languageInput);
+                        targetForm.submit();
+                    }
+                });
+            });
+
+            // Функциональность показа/скрытия пароля
+            const passwordInput = document.getElementById('passwordInput');
+            const passwordToggle = document.getElementById('passwordToggle');
+            const passwordIcon = document.getElementById('passwordIcon');
+
+            if (passwordToggle && passwordInput) {
+                passwordToggle.addEventListener('click', function() {
+                    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                    passwordInput.setAttribute('type', type);
+
+                    // Меняем иконку
+                    if (type === 'text') {
+                        passwordIcon.className = 'fas fa-eye-slash';
+                        passwordToggle.setAttribute('title', 'Скрыть пароль');
+                    } else {
+                        passwordIcon.className = 'fas fa-eye';
+                        passwordToggle.setAttribute('title', 'Показать пароль');
+                    }
+                });
+
+                // Предотвращаем отправку формы при нажатии на кнопку показа/скрытия
+                passwordToggle.addEventListener('mousedown', function(e) {
+                    e.preventDefault();
+                });
             }
         });
-    });
-    
-    // Функциональность показа/скрытия пароля
-    const passwordInput = document.getElementById('passwordInput');
-    const passwordToggle = document.getElementById('passwordToggle');
-    const passwordIcon = document.getElementById('passwordIcon');
-    
-    if (passwordToggle && passwordInput) {
-        passwordToggle.addEventListener('click', function() {
-            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            passwordInput.setAttribute('type', type);
-            
-            // Меняем иконку
-            if (type === 'text') {
-                passwordIcon.className = 'fas fa-eye-slash';
-                passwordToggle.setAttribute('title', 'Скрыть пароль');
-            } else {
-                passwordIcon.className = 'fas fa-eye';
-                passwordToggle.setAttribute('title', 'Показать пароль');
-            }
-        });
-        
-        // Предотвращаем отправку формы при нажатии на кнопку показа/скрытия
-        passwordToggle.addEventListener('mousedown', function(e) {
-            e.preventDefault();
-        });
-    }
-});
-</script>
+    </script>
 
 </body>
 </html>
