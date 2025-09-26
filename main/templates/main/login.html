@@ -6,17 +6,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Вход - Adaptation AlmaU</title>
-    
+
     <!-- Favicon -->
     {% load static %}
     <link rel="icon" type="image/png" href="{% static 'images/logo.png' %}">
-    
+
     <!-- Принудительно устанавливаем светлую тему до загрузки CSS -->
     <script>
     document.documentElement.classList.add('theme-light');
     document.documentElement.style.backgroundColor = '#ffffff';
     </script>
-    
+
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     {% load socialaccount %}
@@ -525,7 +525,7 @@
 <!-- Мобильная версия формы входа -->
 <div class="mobile-login">
     <div class="mobile-login-container">
-        
+
         <!-- Языковой переключатель -->
         <div class="language-selector mobile-language-selector">
             <button class="language-btn" id="mobileLanguageBtn">
@@ -549,22 +549,20 @@
                 </form>
             </div>
         </div>
-        
+
         <!-- Основной контент -->
         <div class="login-content">
             <!-- Заголовок -->
             <div class="login-title">
                 <img src="{% static 'images/Adaptation AlmaU_mob.png' %}" alt="Adaptation AlmaU" class="mobile-title-img">
             </div>
-            
+
             <!-- Социальные кнопки -->
             <div class="social-login">
                 {% get_providers as socialaccount_providers %}
                 {% for provider in socialaccount_providers %}
                     {% if provider.id == 'google' %}
-                        <a href="{% provider_login_url 'google' %}">
-                            <img src="{% static 'images/google.png' %}" alt="Google" class="provider-img">
-                        </a>
+
                     {% endif %}
                     {% if provider.id == 'microsoft' %}
                         <a href="{% provider_login_url 'microsoft' %}">
@@ -573,7 +571,7 @@
                     {% endif %}
                 {% endfor %}
             </div>
-            
+
             <!-- Форма входа -->
             <form method="post" action="{% url 'account_login' %}" class="login-form">
                 {% csrf_token %}
@@ -589,7 +587,7 @@
                     {% endif %}
                 </button>
             </form>
-            
+
             <!-- Сообщения -->
             {% if messages %}
                 <div class="messages">
@@ -612,12 +610,12 @@
             <!-- Background decorative elements -->
             <div class="bg-decoration bg-decoration-left"></div>
             <div class="bg-decoration bg-decoration-right"></div>
-            
+
             <div class="login-card">
             <div class="login-header">
-                
+
                 <img src="{% static 'images/adaptation_almau.png' %}" alt="Adaptation AlmaU" class="login-title-img" style="width: 250px; margin-top: 50px;">
-                
+
                 <!-- Language selector -->
                                     <div class="language-selector">
                         <button class="language-btn" id="languageBtn">
@@ -642,16 +640,14 @@
                 </div>
                 </div>
             </div>
-            
+
             <div class="login-form">
                 <!-- Social login buttons -->
                 <div class="social-login">
                     {% get_providers as socialaccount_providers %}
                     {% for provider in socialaccount_providers %}
                         {% if provider.id == 'google' %}
-                            <a href="{% provider_login_url 'google' %}">
-                                <img src="{% static 'images/google.png' %}" alt="Google" class="provider-img">
-                            </a>
+
                         {% endif %}
                         {% if provider.id == 'microsoft' %}
                             <a href="{% provider_login_url 'microsoft' %}">
@@ -660,7 +656,7 @@
                         {% endif %}
                     {% endfor %}
                 </div>
-                
+
                 <!-- Login form -->
                 <form method="post" action="{% url 'account_login' %}" class="login-form-fields">
                     {% csrf_token %}
@@ -688,7 +684,7 @@
                         {% endif %}
                     </button>
                 </form>
-                
+
                 <!-- Messages -->
                 {% if messages %}
                     <div class="messages">
@@ -718,14 +714,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const languageBtn = document.getElementById('languageBtn');
     const languageDropdown = document.getElementById('languageDropdown');
     const languageForm = document.getElementById('languageForm');
-    
+
     // Mobile language selector
     const mobileLanguageBtn = document.getElementById('mobileLanguageBtn');
     const mobileLanguageDropdown = document.getElementById('mobileLanguageDropdown');
     const mobileLanguageForm = document.getElementById('mobileLanguageForm');
-    
+
     const languageOptions = document.querySelectorAll('.language-option');
-    
+
     // Переключение видимости выпадающего списка (Desktop)
     if (languageBtn && languageDropdown) {
         languageBtn.addEventListener('click', function(e) {
@@ -734,7 +730,7 @@ document.addEventListener('DOMContentLoaded', function() {
             languageDropdown.classList.toggle('active');
         });
     }
-    
+
     // Переключение видимости выпадающего списка (Mobile)
     if (mobileLanguageBtn && mobileLanguageDropdown) {
         mobileLanguageBtn.addEventListener('click', function(e) {
@@ -743,54 +739,54 @@ document.addEventListener('DOMContentLoaded', function() {
             mobileLanguageDropdown.classList.toggle('active');
         });
     }
-    
+
     // Закрытие при клике вне элемента
     document.addEventListener('click', function(e) {
         // Desktop
-        if (languageBtn && languageDropdown && 
+        if (languageBtn && languageDropdown &&
             !languageBtn.contains(e.target) && !languageDropdown.contains(e.target)) {
             languageDropdown.classList.remove('active');
         }
         // Mobile
-        if (mobileLanguageBtn && mobileLanguageDropdown && 
+        if (mobileLanguageBtn && mobileLanguageDropdown &&
             !mobileLanguageBtn.contains(e.target) && !mobileLanguageDropdown.contains(e.target)) {
             mobileLanguageDropdown.classList.remove('active');
         }
     });
-    
+
     // Обработка выбора языка
     languageOptions.forEach(option => {
         option.addEventListener('click', function() {
             const selectedLanguage = this.dataset.language;
-            
+
             // Определяем, какая форма используется (десктопная или мобильная)
             const isDesktop = this.closest('#languageDropdown');
             const targetForm = isDesktop ? languageForm : mobileLanguageForm;
-            
+
             if (targetForm) {
                 // Создаем скрытое поле для выбранного языка
                 const languageInput = document.createElement('input');
                 languageInput.type = 'hidden';
                 languageInput.name = 'language';
                 languageInput.value = selectedLanguage;
-                
+
                 // Добавляем в форму и отправляем
                 targetForm.appendChild(languageInput);
                 targetForm.submit();
             }
         });
     });
-    
+
     // Функциональность показа/скрытия пароля
     const passwordInput = document.getElementById('passwordInput');
     const passwordToggle = document.getElementById('passwordToggle');
     const passwordIcon = document.getElementById('passwordIcon');
-    
+
     if (passwordToggle && passwordInput) {
         passwordToggle.addEventListener('click', function() {
             const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
             passwordInput.setAttribute('type', type);
-            
+
             // Меняем иконку
             if (type === 'text') {
                 passwordIcon.className = 'fas fa-eye-slash';
@@ -800,7 +796,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 passwordToggle.setAttribute('title', 'Показать пароль');
             }
         });
-        
+
         // Предотвращаем отправку формы при нажатии на кнопку показа/скрытия
         passwordToggle.addEventListener('mousedown', function(e) {
             e.preventDefault();

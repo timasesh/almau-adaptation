@@ -11,11 +11,18 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import environ
+import os
+
+# Инициализация env
+env = environ.Env(
+    DEBUG=(bool, False)
+)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
+environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
@@ -25,9 +32,19 @@ SECRET_KEY = 'django-insecure-&2lc)agzzmh11&t^6*%!cga7g2kj-ek((@6%()904rm&)m3$b7
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'testserver']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'testserver', '192.168.45.232', 'adaptation.almau.edu.kz']
+CSRF_TRUSTED_ORIGINS = [
+    "http://127.0.0.1",
+    "http://192.168.45.232",
+    "https://adaptation.almau.edu.kz",
+    "http://localhost",
+    "http://testserver",
+]
 
-
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -38,9 +55,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'main',
 
-    # ckeditor
-    'ckeditor',
-    'ckeditor_uploader',
+    "django_ckeditor_5",
 
     # allauth apps
     'allauth',
@@ -52,6 +67,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -63,6 +79,13 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'almau_adaptation.urls'
+CKEDITOR_5_CONFIGS = {
+    "default": {
+        "toolbar": ["bold", "italic", "link", "numberedList", "bulletedList"],
+        "height": 300,
+        "width": "100%",
+    }
+}
 
 TEMPLATES = [
     {
@@ -87,14 +110,6 @@ WSGI_APPLICATION = 'almau_adaptation.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-
-
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
@@ -112,6 +127,38 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+# Database
+DATABASES = {
+    "default": {
+        "ENGINE": env("DB_ENGINE"),
+        "NAME": env("DB_NAME"),
+        "USER": env("DB_USER"),
+        "PASSWORD": env("DB_PASSWORD"),
+        "HOST": env("DB_HOST"),
+        "PORT": env("DB_PORT"),
+    }
+}
+
+LOGIN_URL = "/accounts/login/"
+LOGIN_REDIRECT_URL = "/dashboard/"  # сделаем простую вью ниже
+ACCOUNT_EMAIL_VERIFICATION = "none"
+ACCOUNT_AUTHENTICATION_METHOD = "username_email"
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_SIGNUP_ENABLED = False
+SOCIALACCOUNT_LOGIN_ON_GET = True
+# Microsoft Login
+MS_TENANT = env("MS_TENANT", default="common")
+
+SOCIALACCOUNT_PROVIDERS = {
+    "microsoft": {
+        "TENANT": MS_TENANT,
+        "APP": {
+            "client_id": env("MS_CLIENT_ID"),
+            "secret": env("MS_CLIENT_SECRET"),
+        },
+    }
+}
 
 
 # Internationalization
@@ -140,11 +187,13 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
+# Для Whitenoise (сжатие и кеширование)
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
@@ -157,33 +206,24 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_USERNAME_REQUIRED = False
-ACCOUNT_AUTHENTICATION_METHOD = 'email'
-ACCOUNT_EMAIL_VERIFICATION = 'none'  # Отключаем верификацию email для разработки
-LOGIN_REDIRECT_URL = '/dashboard/'
-LOGOUT_REDIRECT_URL = '/'
 
 # Email настройки для разработки
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # Social account providers
-SOCIALACCOUNT_PROVIDERS = {
-    'google': {
-        'SCOPE': [
-            'profile',
-            'email',
-        ],
-        'AUTH_PARAMS': {
-            'access_type': 'online',
-        }
-    },
-    'microsoft': {
-        'SCOPE': [
-            'https://graph.microsoft.com/user.read',
-        ],
+DATABASES = {
+    "default": {
+        "ENGINE": env("DB_ENGINE"),
+        "NAME": env("DB_NAME"),
+        "USER": env("DB_USER"),
+        "PASSWORD": env("DB_PASSWORD"),
+        "HOST": env("DB_HOST"),
+        "PORT": env("DB_PORT"),
     }
 }
+
+# Microsoft Login
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -193,22 +233,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 SITE_ID = 1
 
-SOCIALACCOUNT_PROVIDERS = {
-    'google': {
-        'APP': {
-            'client_id': 'ВАШ_ID',
-            'secret': 'ВАШ_SECRET',
-            'key': ''
-        }
-    },
-    'microsoft': {
-        'APP': {
-            'client_id': 'ВАШ_ID',
-            'secret': 'ВАШ_SECRET',
-            'key': ''
-        }
-    }
-}
 
 # Настройки безопасности для iframe
 X_FRAME_OPTIONS = 'SAMEORIGIN'

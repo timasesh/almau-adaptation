@@ -1,0 +1,19 @@
+services:
+
+  web:
+    build: .
+    container_name: adaptation_app
+    command: gunicorn almau_adaptation.wsgi:application --bind 0.0.0.0:8000 --workers=4
+    volumes:
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+
+
+
+volumes:
+  static_volume:
+  media_volume:
