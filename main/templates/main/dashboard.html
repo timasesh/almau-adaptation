@@ -11,6 +11,7 @@
     
     <!-- Main content -->
     <div class="main-content" id="mainContent">
+        <span class="user-badge fixed-almau-logo">AlmaUni</span>
         <div class="content-header">
             <div class="greeting">
                 <h1>{{ greeting }}, {{ user_name }}!</h1>
@@ -40,11 +41,11 @@
 
             <a href="{% url 'main:lessons' %}" class="dashboard-link">
                 {% if current_language == 'en' %}
-                    <img src="{% static 'images/уроки-eng.png' %}" alt="{% trans 'Уроки' %}" class="dashboard-img">
+                    <img src="{% static 'images/уроки-eng.png' %}" alt="{% trans 'Повышение цифровой грамотности' %}" class="dashboard-img">
                 {% elif current_language == 'kk' %}
-                    <img src="{% static 'images/уроки-kaz.png' %}" alt="{% trans 'Уроки' %}" class="dashboard-img">
+                    <img src="{% static 'images/уроки-kaz.png' %}" alt="{% trans 'Повышение цифровой грамотности' %}" class="dashboard-img">
                 {% else %}
-                    <img src="{% static 'images/уроки.png' %}" alt="{% trans 'Уроки' %}" class="dashboard-img">
+                    <img src="{% static 'images/уроки.png' %}" alt="{% trans 'Повышение цифровой грамотности' %}" class="dashboard-img">
                 {% endif %}
             </a>
 

@@ -76,6 +76,36 @@ msgstr "Good evening"
 msgid "Начать поиск"
 msgstr "Start the search"
 
+msgid "Поиск по вопросам"
+msgstr "Search questions"
+
+msgid "Категории"
+msgstr "Categories"
+
+msgid "Тема интерфейса"
+msgstr "Interface theme"
+
+msgid "Выберите светлую или темную тему для комфортного просмотра"
+msgstr "Choose light or dark theme for comfortable viewing"
+
+msgid "Светлая тема"
+msgstr "Light theme"
+
+msgid "Классический светлый дизайн"
+msgstr "Classic light design"
+
+msgid "Темная тема"
+msgstr "Dark theme"
+
+msgid "Современный темный дизайн"
+msgstr "Modern dark design"
+
+msgid "Вопросы не найдены"
+msgstr "No questions found"
+
+msgid "По вашему запросу не найдено ни одного вопроса. Попробуйте изменить поисковый запрос или выбрать другую категорию."
+msgstr "No questions were found for your request. Try changing the search query or choose a different category."
+
 msgid "Поиск"
 msgstr "Search"
 

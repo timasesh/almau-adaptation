@@ -4,7 +4,7 @@
 {% load translation_tags %}
 {% load document_filters %}
 
-{% block title %}Документация - Adaptation AlmaU{% endblock %}
+{% block title %}{% trans "Документация" %} - Adaptation AlmaU{% endblock %}
 
 {% block content %}
 <div class="dashboard-container">
@@ -34,7 +34,7 @@
         
         <div class="content-header">
             <div class="greeting">
-                <h1>Документация</h1>
+                <h1>{% trans "Документация" %}</h1>
             </div>
         </div>
         
@@ -47,7 +47,7 @@
                                name="search" 
                                id="searchInput"
                                value="{{ search_query }}" 
-                               placeholder="Начать поиск" 
+                               placeholder="{% trans 'Начать поиск' %}" 
                                class="search-input">
                         <button type="submit" class="search-btn">
                             <i class="fas fa-search"></i>

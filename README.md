@@ -36,31 +36,6 @@ python manage.py runserver
 
 Приложение будет доступно по адресу: http://127.0.0.1:8000/
 
-## Настройка социальной авторизации
-
-### Google OAuth
-1. Перейдите в [Google Cloud Console](https://console.cloud.google.com/)
-2. Создайте новый проект или выберите существующий
-3. Включите Google+ API
-4. Создайте OAuth 2.0 credentials
-5. Добавьте `http://127.0.0.1:8000/accounts/google/login/callback/` в Authorized redirect URIs
-6. В Django Admin добавьте Social Application:
-   - Provider: Google
-   - Name: Google
-   - Client ID: ваш client ID
-   - Secret key: ваш client secret
-
-### Microsoft OAuth
-1. Перейдите в [Azure Portal](https://portal.azure.com/)
-2. Зарегистрируйте новое приложение в Azure AD
-3. Настройте redirect URI: `http://127.0.0.1:8000/accounts/microsoft/login/callback/`
-4. В Django Admin добавьте Social Application:
-   - Provider: Microsoft
-   - Name: Microsoft
-   - Client ID: Application (client) ID
-   - Secret key: Client secret
-
-## Структура проекта
 
 ```
 almau_adaptation/
