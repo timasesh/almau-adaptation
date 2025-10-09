@@ -5,14 +5,7 @@
 
 {% block title %}Главная - Adaptation AlmaU{% endblock %}
 
-{% block extra_css %}
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<style>
-    .greeting h1 { font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; font-weight: 300; }
-</style>
-{% endblock %}
+{% block extra_css %}{% endblock %}
 
 {% block content %}
 <style>
@@ -38,7 +31,7 @@
         <img src="{% static 'images/almauni.svg' %}" alt="AlmaUni" class="page-logo">
         <div class="content-header">
             <div class="greeting">
-                <h1>{{ greeting }}, {{ user_name }}!</h1>
+                <h1 class="inter-regular">{{ greeting }}, {{ user_name }}!</h1>
             </div>
         </div>
         
