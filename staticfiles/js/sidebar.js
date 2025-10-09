@@ -69,6 +69,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // --- Navigation click handlers using event delegation ---
     document.addEventListener('click', function(e) {
+        // Check if sidebar exists first
+        if (!sidebar) return;
+        
         // Check if clicked element is a nav link in sidebar
         const clickedLink = e.target.closest('.sidebar .nav-link');
         if (!clickedLink) return;
@@ -100,13 +103,42 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // --- Auto-collapse on small screens ---
     function handleResize() {
+        if (!sidebar) return; // Exit if no sidebar exists
+        
         if (window.innerWidth <= 768) {
-            collapseSidebar();
+            // На мобильных устройствах скрываем сайдбар полностью
+            sidebar.style.transform = 'translateX(-100%)';
+            body.classList.add('sidebar-collapsed');
+        } else {
+            // На больших экранах восстанавливаем состояние
+            sidebar.style.transform = '';
+            const savedState = localStorage.getItem('sidebarCollapsed');
+            if (savedState === 'true') {
+                collapseSidebar();
+            } else {
+                expandSidebar();
+            }
         }
     }
 
     window.addEventListener('resize', handleResize);
     handleResize(); // Run once on load
+    
+    // --- Mobile sidebar toggle ---
+    function toggleMobileSidebar() {
+        if (!sidebar) return; // Exit if no sidebar exists
+        if (window.innerWidth <= 768) {
+            sidebar.classList.toggle('mobile-open');
+        }
+    }
+    
+    // Добавляем обработчик для мобильного меню
+    document.addEventListener('click', function(e) {
+        if (!sidebar) return; // Exit if no sidebar exists
+        if (window.innerWidth <= 768 && e.target.closest('.sidebar-toggle')) {
+            toggleMobileSidebar();
+        }
+    });
     
     // --- Make updateTooltips globally available ---
     window.updateTooltips = updateTooltips;

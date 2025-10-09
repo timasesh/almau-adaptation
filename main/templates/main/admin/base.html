@@ -254,6 +254,12 @@
             <a href="{% url 'main:admin_about' %}" class="list-group-item bg-dark text-white {% if active_tab == 'about' %}active{% endif %}">
                 <i class="fas fa-university me-2"></i>Об университете
             </a>
+            <a href="{% url 'main:admin_memo' %}" class="list-group-item bg-dark text-white {% if active_tab == 'memo' %}active{% endif %}">
+                <i class="fa-regular fa-bookmark me-2"></i>Памятка сотрудника
+            </a>
+            <a href="{% url 'main:admin_documents' %}" class="list-group-item bg-dark text-white {% if active_tab == 'documents' %}active{% endif %}">
+                <i class="fas fa-file-alt me-2"></i>Документация
+            </a>
             <a href="{% url 'main:admin_map' %}" class="list-group-item bg-dark text-white {% if active_tab == 'map' %}active{% endif %}">
                 <i class="fas fa-map-marker-alt me-2"></i>Контакты и карта
             </a>
@@ -265,12 +271,6 @@
             </a>
             <a href="{% url 'main:admin_lessons' %}" class="list-group-item bg-dark text-white {% if active_tab == 'lessons' %}active{% endif %}">
                 <i class="fas fa-graduation-cap me-2"></i>Уроки
-            </a>
-        </div>
-        
-        <div class="list-group list-group-flush mb-2">
-            <a href="{% url 'main:admin_documents' %}" class="list-group-item bg-dark text-white {% if active_tab == 'documents' %}active{% endif %}">
-                <i class="fas fa-file-alt me-2"></i>Документация
             </a>
         </div>
         

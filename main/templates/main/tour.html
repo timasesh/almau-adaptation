@@ -1,0 +1,61 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}3D тур по университету - Adaptation AlmaU{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    {% include 'main/sidebar.html' %}
+
+    <div class="main-content" id="mainContent" style="position: relative;">
+        <img src="{% static 'images/almauni.svg' %}" alt="AlmaUni" class="page-logo">
+
+        <h1 class="page-title">{% trans "3D тур по университету" %}</h1>
+
+        <div class="tour-embed-wrapper">
+            <iframe 
+                src="https://pano3d.kz/AlmaU_VR/#media=1&yaw=-8.52&pitch=-14.65&fov=110.00" 
+                width="100%" 
+                height="600" 
+                style="border:none;"
+                allowfullscreen>
+            </iframe>
+        </div>
+    </div>
+</div>
+
+<style>
+    .page-title {
+        margin: 30px 30px 10px;
+        font-size: 26px;
+        font-weight: 700;
+    }
+    .tour-embed-wrapper {
+        padding: 20px 30px 30px 30px;
+    }
+    .tour-embed-wrapper iframe {
+        display: block;
+        width: 100%;
+        height: 600px;
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+        background: #000;
+    }
+    @media (max-width: 768px) {
+        .page-title {
+            margin: 20px;
+            font-size: 22px;
+        }
+        .tour-embed-wrapper {
+            padding: 10px 20px 20px 20px;
+        }
+        .tour-embed-wrapper iframe {
+            height: 420px;
+        }
+    }
+</style>
+{% endblock %}
+
+

@@ -1170,6 +1170,9 @@ body {
     overflow-x: hidden;
 }
 
+/* Globally fix AlmaUni logo position on all pages */
+
+
 /* Когда sidebar свернут */
 body.sidebar-collapsed .main-content {
     margin-left: 60px;
@@ -2968,4 +2971,142 @@ textarea.form-control {
 
 .theme-dark .message i {
     color: inherit !important;
+}
+  
+  /* Sidebar compact overrides: make items shorter to avoid scrolling */
+  .sidebar .nav-link {
+      padding: 6px 10px !important; /* was ~12-16px */
+      font-size: 12px !important;
+      line-height: 1.1 !important;
+      margin: 2px 6px !important; /* tighter gaps */
+  }
+  .sidebar .nav-link i {
+      width: 16px !important;
+      height: 16px !important;
+      font-size: 14px !important;
+      margin-right: 8px !important;
+  }
+  .sidebar .nav-link .nav-text,
+  .nav-text {
+      font-size: 12px !important;
+  }
+  .sidebar-section { padding: 8px 6px 4px 6px !important; }
+  .sidebar-section h6 { font-size: 0.68rem !important; margin-bottom: 4px !important; }
+  .sidebar-footer .settings-btn,
+  .sidebar-footer .logout-btn {
+      padding: 6px 8px !important;
+      font-size: 12px !important;
+  }
+  .sidebar-footer .settings-btn i,
+  .sidebar-footer .logout-btn i { font-size: 14px !important; width: 16px !important; margin-right: 6px !important; }
+
+  /* Make sidebar even more compact: hide big logo, compress header/footer */
+  .sidebar-header { padding: 6px 6px !important; min-height: 0 !important; }
+  .sidebar-header { border-bottom: none !important; }
+  .sidebar .logo-container { display: none !important; }
+  .sidebar-toggle { top: 16px !important; }
+  .sidebar-nav { padding: 6px 0 !important; }
+  .sidebar .nav-link { padding: 4px 8px !important; font-size: 11px !important; }
+  .sidebar .nav-link i { width: 14px !important; height: 14px !important; font-size: 13px !important; margin-right: 6px !important; }
+  .sidebar .nav-text { font-size: 11px !important; }
+  .sidebar-footer { padding: 6px !important; border-top: none !important; }
+  .sidebar-footer .settings-btn, .sidebar-footer .logout-btn { padding: 6px 8px !important; font-size: 11px !important; }
+
+  /* Promo link under nav list: visible when open, hidden when collapsed */
+  .sidebar .nav-list + a { display: block !important; margin: 8px 12px !important; }
+  .sidebar.collapsed .nav-list + a { display: none !important; }
+  body.sidebar-collapsed .sidebar .nav-list + a { display: none !important; }
+
+  /* Resolve style conflicts: ensure no vertical scrollbar and tighter spacing */
+  .sidebar { overflow-y: hidden !important; }
+  .sidebar-nav { overflow: hidden !important; padding-top: 4px !important; padding-bottom: 4px !important; }
+  .sidebar .nav-item { margin: 4px 6px !important; }
+  /* немного отступаем контент ссылки от левого края и добавим вертикальный зазор между пунктами */
+  /* Reduce button height ~0.7x by shrinking vertical padding and line-height */
+  .sidebar .nav-link { padding: 4px 16px !important; margin: 3px 6px !important; font-size: 11px !important; line-height: 1.0 !important; border-radius: 8px !important; }
+  .sidebar .nav-link i { width: 14px !important; height: 14px !important; font-size: 12px !important; margin-right: 6px !important; }
+  .sidebar .nav-text { font-size: 11px !important; }
+  .sidebar-footer { padding-top: 4px !important; padding-bottom: 6px !important; border-top: none !important; }
+  .sidebar-footer .user-menu { gap: 4px !important; }
+  .sidebar-footer .settings-btn, .sidebar-footer .logout-btn { padding: 6px 8px !important; font-size: 11px !important; }
+
+  /* Offset settings button from bottom and left by 100px */
+  .sidebar-footer {
+      padding-left: 30px !important;
+      padding-bottom: 20px !important;
+  }
+
+  /* Dashboard tiles: make images/tiles larger and reduce gaps to 5px */
+  .dashboard-grid { gap: 5px !important; }
+  .dashboard-link { width: 300px !important; height: 220px !important; }
+  .dashboard-img { max-width: 100% !important; max-height: 100% !important; }
+
+  /* Adjust sidebar icon size (reduce ~1.5x from previous) */
+  .sidebar .nav-link i {
+      width: 30px !important;
+      height: 30px !important;
+      font-size: 19px !important;
+      margin-right: 10px !important;
+  }
+
+
+.fixed-almau-logo {
+    position: fixed !important;
+    top: 32px !important;
+    right: 30px !important;
+    z-index: 1000 !important;
+    width: 120px !important;
+    pointer-events: none; /* avoid blocking clicks below */
+}
+
+/* Global page logo (non-fixed, scrolls with content) */
+.page-logo {
+    position: absolute;
+    top: 32px;
+    right: 30px;
+    z-index: 10;
+    width: 160px; /* ~1.5x of original 100px */
+    height: auto;
+    pointer-events: none;
+}
+
+/* === Sidebar collapsed width and alignment fixes === */
+/* Keep collapsed width wider so icons fit, and keep vertical positions unchanged */
+.sidebar.collapsed { width: 80px !important; min-width: 80px !important; max-width: 80px !important; }
+@media (min-width: 992px) {
+  .sidebar.collapsed + .main-content { margin-left: 80px !important; width: calc(100% - 80px) !important; }
+  body.sidebar-collapsed .main-content { margin-left: 80px !important; width: calc(100% - 80px) !important; }
+}
+@media (max-width: 991.98px) {
+  .sidebar.collapsed + .main-content,
+  body.sidebar-collapsed .main-content { margin-left: 0 !important; width: 100% !important; }
+}
+
+/* Keep header compact in both states so items start near the top */
+.sidebar-header { min-height: 0 !important; padding-top: 6px !important; padding-bottom: 6px !important; }
+.sidebar.collapsed .sidebar-header { min-height: 0 !important; padding-top: 6px !important; padding-bottom: 6px !important; }
+
+/* Keep nav paddings identical in both states to avoid vertical shifts */
+.sidebar .sidebar-nav, .sidebar.collapsed .sidebar-nav { padding-top: 6px !important; padding-bottom: 6px !important; }
+.sidebar .nav-link, .sidebar.collapsed .nav-link { padding-top: 6px !important; padding-bottom: 6px !important; }
+.sidebar .settings-btn, .sidebar .logout-btn,
+.sidebar.collapsed .settings-btn, .sidebar.collapsed .logout-btn { padding-top: 6px !important; padding-bottom: 6px !important; }
+
+/* Collapsed-only: move icon list down by 100px */
+.sidebar.collapsed .nav-list { margin-top: 135px !important; }
+
+/* === Dashboard tiles: let link size follow image size exactly === */
+.dashboard-link { display: inline-block !important; width: auto !important; height: auto !important; padding: 0 !important; margin: 0 !important; background: transparent !important; }
+.dashboard-img { display: block !important; width: auto !important; height: auto !important; max-width: 100% !important; max-height: 100% !important; margin: 0 !important; }
+
+/* === Dashboard: 3 columns (3x2 for 6 tiles), minimal spacing === */
+.dashboard-grid { display: grid !important; grid-template-columns: repeat(3, auto) !important; justify-content: start !important; gap: 0 !important; column-gap: 0 !important; row-gap: 0 !important; padding: 0 !important; }
+.dashboard-link { margin: 0 !important; }
+@media (max-width: 768px) { .dashboard-grid { grid-template-columns: repeat(2, auto) !important; } }
+@media (max-width: 480px) { .dashboard-grid { grid-template-columns: repeat(2, auto) !important; } }
+
+/* === Dashboard desktop alignment and scale === */
+@media (min-width: 992px) {
+    .dashboard-grid { margin-top: 60px !important; margin-left: 80px !important; }
+    .dashboard-img { width: 100% !important; height: auto !important; }
 }

@@ -27,24 +27,23 @@ environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-&2lc)agzzmh11&t^6*%!cga7g2kj-ek((@6%()904rm&)m3$b7'
+SECRET_KEY = env("DJANGO_SECRET_KEY", default='django-insecure-&2lc)agzzmh11&t^6*%!cga7g2kj-ek((@6%()904rm&)m3$b7')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool("DJANGO_DEBUG", default=False)
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'testserver', '192.168.45.232', 'adaptation.almau.edu.kz']
-CSRF_TRUSTED_ORIGINS = [
-    "http://127.0.0.1",
-    "http://192.168.45.232",
-    "https://adaptation.almau.edu.kz",
-    "http://localhost",
-    "http://testserver",
-]
+ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", default=['localhost', '127.0.0.1'])
+CSRF_TRUSTED_ORIGINS = env.list("DJANGO_CSRF_TRUSTED_ORIGINS", default=[])
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
-SECURE_SSL_REDIRECT = True
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
+if DEBUG:
+    SECURE_SSL_REDIRECT = False
+    SESSION_COOKIE_SECURE = False
+    CSRF_COOKIE_SECURE = False
+else:
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -129,15 +128,23 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # Database
+# Optional SSL mode support (e.g., set DB_SSLMODE=require in .env)
+_db_sslmode = env("DB_SSLMODE", default=None)
+
+_default_db_config = {
+    "ENGINE": env("DB_ENGINE"),
+    "NAME": env("DB_NAME"),
+    "USER": env("DB_USER"),
+    "PASSWORD": env("DB_PASSWORD"),
+    "HOST": env("DB_HOST"),
+    "PORT": env("DB_PORT"),
+}
+
+if _db_sslmode:
+    _default_db_config["OPTIONS"] = {"sslmode": _db_sslmode}
+
 DATABASES = {
-    "default": {
-        "ENGINE": env("DB_ENGINE"),
-        "NAME": env("DB_NAME"),
-        "USER": env("DB_USER"),
-        "PASSWORD": env("DB_PASSWORD"),
-        "HOST": env("DB_HOST"),
-        "PORT": env("DB_PORT"),
-    }
+    "default": _default_db_config
 }
 
 LOGIN_URL = "/accounts/login/"
@@ -199,7 +206,7 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 # Django Allauth settings
-SITE_ID = 1
+SITE_ID = int(env("SITE_ID", default=1))
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
@@ -211,16 +218,6 @@ AUTHENTICATION_BACKENDS = [
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # Social account providers
-DATABASES = {
-    "default": {
-        "ENGINE": env("DB_ENGINE"),
-        "NAME": env("DB_NAME"),
-        "USER": env("DB_USER"),
-        "PASSWORD": env("DB_PASSWORD"),
-        "HOST": env("DB_HOST"),
-        "PORT": env("DB_PORT"),
-    }
-}
 
 # Microsoft Login
 

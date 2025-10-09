@@ -167,16 +167,36 @@
                     </div>
                 </div>
                 
-                <!-- Изображение -->
+                <!-- Изображения истории (3 шт.) -->
                 <div class="form-group">
-                    <label class="form-label">Изображение истории</label>
+                    <label class="form-label">Изображение истории 1</label>
                     {% if history_obj.image %}
                         <div class="current-image mb-3">
-                            <p class="mb-2"><strong>Текущее изображение:</strong></p>
-                            <img src="{{ history_obj.image.url }}" alt="История университета" class="image-preview">
+                            <p class="mb-2"><strong>Текущее изображение 1:</strong></p>
+                            <img src="{{ history_obj.image.url }}" alt="История университета 1" class="image-preview">
                         </div>
                     {% endif %}
                     <input type="file" class="form-control" name="history_image" accept="image/*">
+                </div>
+                <div class="form-group mt-3">
+                    <label class="form-label">Изображение истории 2</label>
+                    {% if history_obj.image_2 %}
+                        <div class="current-image mb-3">
+                            <p class="mb-2"><strong>Текущее изображение 2:</strong></p>
+                            <img src="{{ history_obj.image_2.url }}" alt="История университета 2" class="image-preview">
+                        </div>
+                    {% endif %}
+                    <input type="file" class="form-control" name="history_image_2" accept="image/*">
+                </div>
+                <div class="form-group mt-3">
+                    <label class="form-label">Изображение истории 3</label>
+                    {% if history_obj.image_3 %}
+                        <div class="current-image mb-3">
+                            <p class="mb-2"><strong>Текущее изображение 3:</strong></p>
+                            <img src="{{ history_obj.image_3.url }}" alt="История университета 3" class="image-preview">
+                        </div>
+                    {% endif %}
+                    <input type="file" class="form-control" name="history_image_3" accept="image/*">
                     <small class="form-text text-muted">Поддерживаемые форматы: JPG, PNG, GIF. Рекомендуемый размер: 800x600px</small>
                 </div>
                 
@@ -315,14 +335,68 @@
         </div>
     </div>
     
-    <!-- Ссылка на управление руководством -->
+    <!-- Руководство (2 изображения) -->
     <div class="col-12">
         <div class="form-section">
-            <h3><i class="fas fa-user-tie me-2"></i>Управление руководством университета</h3>
-            <p class="text-muted mb-3">Для управления руководителями университета перейдите в отдельный раздел.</p>
-            <a href="{% url 'main:admin_leaders' %}" class="btn btn-primary">
-                <i class="fas fa-users me-1"></i>Управление руководством
-            </a>
+            <h3><i class="fas fa-user-tie me-2"></i>Руководство (2 изображения)</h3>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="hidden" name="leaders" value="1">
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="form-group mb-2">
+                            <label class="form-label">Должность (Лидер 1)</label>
+                            <select class="form-select" name="leader1_role">
+                                <option value="rector" {% if leaders.0 and leaders.0.role == 'rector' %}selected{% endif %}>Ректор</option>
+                                <option value="prorector" {% if leaders.0 and leaders.0.role == 'prorector' %}selected{% endif %}>Проректор</option>
+                                <option value="other" {% if leaders.0 and leaders.0.role == 'other' %}selected{% endif %}>Другое</option>
+                            </select>
+                        </div>
+                        <div class="form-group mb-2">
+                            <label class="form-label">Имя и фамилия (Лидер 1)</label>
+                            <input type="text" class="form-control" name="leader1_full_name" value="{% if leaders.0 %}{{ leaders.0.full_name }}{% endif %}" placeholder="Например: Иванов Иван Иванович">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Фото (Лидер 1)</label>
+                            {% if leaders.0 and leaders.0.photo %}
+                                <div class="current-image mb-2">
+                                    <img src="{{ leaders.0.photo.url }}" alt="Лидер 1" class="image-preview">
+                                </div>
+                            {% endif %}
+                            <input type="file" class="form-control" name="leader1_photo" accept="image/*">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group mb-2">
+                            <label class="form-label">Должность (Лидер 2)</label>
+                            <select class="form-select" name="leader2_role">
+                                <option value="rector" {% if leaders.1 and leaders.1.role == 'rector' %}selected{% endif %}>Ректор</option>
+                                <option value="prorector" {% if leaders.1 and leaders.1.role == 'prorector' %}selected{% endif %}>Проректор</option>
+                                <option value="other" {% if leaders.1 and leaders.1.role == 'other' %}selected{% endif %}>Другое</option>
+                            </select>
+                        </div>
+                        <div class="form-group mb-2">
+                            <label class="form-label">Имя и фамилия (Лидер 2)</label>
+                            <input type="text" class="form-control" name="leader2_full_name" value="{% if leaders.1 %}{{ leaders.1.full_name }}{% endif %}" placeholder="Например: Петров Петр Петрович">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Фото (Лидер 2)</label>
+                            {% if leaders.1 and leaders.1.photo %}
+                                <div class="current-image mb-2">
+                                    <img src="{{ leaders.1.photo.url }}" alt="Лидер 2" class="image-preview">
+                                </div>
+                            {% endif %}
+                            <input type="file" class="form-control" name="leader2_photo" accept="image/*">
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary mt-3">
+                    <i class="fas fa-save me-2"></i>Сохранить руководство
+                </button>
+                <a href="{% url 'main:admin_leaders' %}" class="btn btn-outline-secondary mt-3 ms-2">
+                    <i class="fas fa-users me-1"></i>Расширенное управление руководством
+                </a>
+            </form>
         </div>
     </div>
 </div>

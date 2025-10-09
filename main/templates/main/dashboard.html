@@ -6,12 +6,27 @@
 {% block title %}Главная - Adaptation AlmaU{% endblock %}
 
 {% block content %}
+<style>
+    .page-logo {
+        position: absolute;
+        top: 32px;
+        right: 30px;
+        z-index: 10;
+        width: 160px; /* match global size */
+        pointer-events: none;
+    }
+.greeting {
+    margin-top: 100px;
+    margin-bottom: -50px;
+    margin-left: 100px;
+}
+</style>
 <div class="dashboard-container dashboard-page">
     {% include 'main/sidebar.html' %}
     
     <!-- Main content -->
-    <div class="main-content" id="mainContent">
-        <span class="user-badge fixed-almau-logo">AlmaUni</span>
+    <div class="main-content" id="mainContent" style="position: relative;">
+        <img src="{% static 'images/almauni.svg' %}" alt="AlmaUni" class="page-logo">
         <div class="content-header">
             <div class="greeting">
                 <h1>{{ greeting }}, {{ user_name }}!</h1>
@@ -21,197 +36,103 @@
         <div class="dashboard-grid">
             <a href="{% url 'main:about' %}" class="dashboard-link">
                 {% if current_language == 'en' %}
-                    <img src="{% static 'images/об_университете-eng.png' %}" alt="{% trans 'Об университете' %}" class="dashboard-img">
+                    {% with img_path='images/1-eng.svg' %}
+                    <img src="{% static img_path %}" alt="{% trans 'Об университете' %}" class="dashboard-img">
+                    {% endwith %}
                 {% elif current_language == 'kk' %}
-                    <img src="{% static 'images/об_университете-kaz.png' %}" alt="{% trans 'Об университете' %}" class="dashboard-img">
+                    {% with img_path='images/1-kz.svg' %}
+                    <img src="{% static img_path %}" alt="{% trans 'Об университете' %}" class="dashboard-img">
+                    {% endwith %}
                 {% else %}
-                    <img src="{% static 'images/об_университете.png' %}" alt="{% trans 'Об университете' %}" class="dashboard-img">
-                {% endif %}
-            </a>
-
-            <a href="{% url 'main:documents' %}" class="dashboard-link">
-                {% if current_language == 'en' %}
-                    <img src="{% static 'images/документация-eng.png' %}" alt="{% trans 'Документация' %}" class="dashboard-img">
-                {% elif current_language == 'kk' %}
-                    <img src="{% static 'images/документация-kaz.png' %}" alt="{% trans 'Документация' %}" class="dashboard-img">
-                {% else %}
-                    <img src="{% static 'images/документация.png' %}" alt="{% trans 'Документация' %}" class="dashboard-img">
+                    {% with img_path='images/1.svg' %}
+                    <img src="{% static img_path %}" alt="{% trans 'Об университете' %}" class="dashboard-img">
+                    {% endwith %}
                 {% endif %}
             </a>
 
             <a href="{% url 'main:lessons' %}" class="dashboard-link">
                 {% if current_language == 'en' %}
-                    <img src="{% static 'images/уроки-eng.png' %}" alt="{% trans 'Повышение цифровой грамотности' %}" class="dashboard-img">
+                    {% with img_path='images/2-eng.svg' %}
+                    <img src="{% static img_path %}" alt="{% trans 'Памятка сотрудника' %}" class="dashboard-img">
+                    {% endwith %}
                 {% elif current_language == 'kk' %}
-                    <img src="{% static 'images/уроки-kaz.png' %}" alt="{% trans 'Повышение цифровой грамотности' %}" class="dashboard-img">
+                    {% with img_path='images/2-kz.svg' %}
+                    <img src="{% static img_path %}" alt="{% trans 'Памятка сотрудника' %}" class="dashboard-img">
+                    {% endwith %}
                 {% else %}
-                    <img src="{% static 'images/уроки.png' %}" alt="{% trans 'Повышение цифровой грамотности' %}" class="dashboard-img">
+                    {% with img_path='images/2.svg' %}
+                    <img src="{% static img_path %}" alt="{% trans 'Памятка сотрудника' %}" class="dashboard-img">
+                    {% endwith %}
                 {% endif %}
             </a>
 
-            <a href="{% url 'main:map' %}" class="dashboard-link">
+            <a href="{% url 'main:documents' %}" class="dashboard-link">
                 {% if current_language == 'en' %}
-                    <img src="{% static 'images/контакты_и_карта-eng.png' %}" alt="{% trans 'Контакты и карта' %}" class="dashboard-img">
+                    {% with img_path='images/3-eng.svg' %}
+                    <img src="{% static img_path %}" alt="{% trans 'Документация' %}" class="dashboard-img">
+                    {% endwith %}
                 {% elif current_language == 'kk' %}
-                    <img src="{% static 'images/контакты_и_карта-kaz.png' %}" alt="{% trans 'Контакты и карта' %}" class="dashboard-img">
+                    {% with img_path='images/3-kz.svg' %}
+                    <img src="{% static img_path %}" alt="{% trans 'Документация' %}" class="dashboard-img">
+                    {% endwith %}
                 {% else %}
-                    <img src="{% static 'images/контакты_и_карта.png' %}" alt="{% trans 'Контакты и карта' %}" class="dashboard-img">
+                    {% with img_path='images/3.svg' %}
+                    <img src="{% static img_path %}" alt="{% trans 'Документация' %}" class="dashboard-img">
+                    {% endwith %}
                 {% endif %}
             </a>
 
-            <a href="{% url 'main:feedback' %}" class="dashboard-link">
+            <a href="{% url 'main:tour' %}" class="dashboard-link">
                 {% if current_language == 'en' %}
-                    <img src="{% static 'images/обратная_связь-eng.png' %}" alt="{% trans 'Обратная связь' %}" class="dashboard-img">
+                    {% with img_path='images/4-eng.svg' %}
+                    <img src="{% static img_path %}" alt="{% trans '3D тур по университету' %}" class="dashboard-img">
+                    {% endwith %}
                 {% elif current_language == 'kk' %}
-                    <img src="{% static 'images/обратная_связь-kaz.png' %}" alt="{% trans 'Обратная связь' %}" class="dashboard-img">
+                    {% with img_path='images/4-kz.svg' %}
+                    <img src="{% static img_path %}" alt="{% trans '3D тур по университету' %}" class="dashboard-img">
+                    {% endwith %}
                 {% else %}
-                    <img src="{% static 'images/обратная_связь.png' %}" alt="{% trans 'Обратная связь' %}" class="dashboard-img">
+                    {% with img_path='images/4.svg' %}
+                    <img src="{% static img_path %}" alt="{% trans '3D тур по университету' %}" class="dashboard-img">
+                    {% endwith %}
                 {% endif %}
             </a>
 
             <a href="{% url 'main:faq' %}" class="dashboard-link">
                 {% if current_language == 'en' %}
-                    <img src="{% static 'images/часто_задаваемые_вопросы-eng.png' %}" alt="{% trans 'Часто задаваемые вопросы' %}" class="dashboard-img">
+                    {% with img_path='images/5-eng.svg' %}
+                    <img src="{% static img_path %}" alt="{% trans 'Часто задаваемые вопросы' %}" class="dashboard-img">
+                    {% endwith %}
                 {% elif current_language == 'kk' %}
-                    <img src="{% static 'images/часто_задаваемые_вопросы-kaz.png' %}" alt="{% trans 'Часто задаваемые вопросы' %}" class="dashboard-img">
+                    {% with img_path='images/5-kz.svg' %}
+                    <img src="{% static img_path %}" alt="{% trans 'Часто задаваемые вопросы' %}" class="dashboard-img">
+                    {% endwith %}
                 {% else %}
-                    <img src="{% static 'images/часто_задаваемые_вопросы.png' %}" alt="{% trans 'Часто задаваемые вопросы' %}" class="dashboard-img">
+                    {% with img_path='images/5.svg' %}
+                    <img src="{% static img_path %}" alt="{% trans 'Часто задаваемые вопросы' %}" class="dashboard-img">
+                    {% endwith %}
+                {% endif %}
+            </a>
+
+            <a href="{% url 'main:feedback' %}" class="dashboard-link">
+                {% if current_language == 'en' %}
+                    {% with img_path='images/6-eng.svg' %}
+                    <img src="{% static img_path %}" alt="{% trans 'Обратная связь' %}" class="dashboard-img">
+                    {% endwith %}
+                {% elif current_language == 'kk' %}
+                    {% with img_path='images/6-kz.svg' %}
+                    <img src="{% static img_path %}" alt="{% trans 'Обратная связь' %}" class="dashboard-img">
+                    {% endwith %}
+                {% else %}
+                    {% with img_path='images/6.svg' %}
+                    <img src="{% static img_path %}" alt="{% trans 'Обратная связь' %}" class="dashboard-img">
+                    {% endwith %}
                 {% endif %}
             </a>
         </div>
-
     </div>
     
     <!-- Background decorative elements -->
 </div>
-
-<script>
-// Немедленное применение темы к изображениям
-(function() {
-    const savedTheme = localStorage.getItem('selectedTheme') || 'light';
-    if (savedTheme === 'dark') {
-        // Применяем темную тему к изображениям немедленно
-        setTimeout(() => {
-            updateDashboardImages('dark');
-        }, 10);
-    }
-})();
-
-// Функция для обновления изображений в зависимости от темы
-function updateDashboardImages(theme) {
-    const dashboardImages = document.querySelectorAll('.dashboard-img');
-    
-    dashboardImages.forEach(img => {
-        const currentSrc = img.src;
-        let newSrc = currentSrc;
-        
-        if (theme === 'dark') {
-            // Добавляем суффикс "-t" для темной темы
-            if (currentSrc.includes('-eng.png')) {
-                newSrc = currentSrc.replace('-eng.png', '-eng-t.png');
-            } else if (currentSrc.includes('-kaz.png')) {
-                newSrc = currentSrc.replace('-kaz.png', '-kaz-t.png');
-            } else if (currentSrc.includes('.png') && !currentSrc.includes('-eng') && !currentSrc.includes('-kaz') && !currentSrc.includes('-t')) {
-                newSrc = currentSrc.replace('.png', '-t.png');
-            }
-        } else {
-            // Убираем суффикс "-t" для светлой темы
-            if (currentSrc.includes('-eng-t.png')) {
-                newSrc = currentSrc.replace('-eng-t.png', '-eng.png');
-            } else if (currentSrc.includes('-kaz-t.png')) {
-                newSrc = currentSrc.replace('-kaz-t.png', '-kaz.png');
-            } else if (currentSrc.includes('-t.png')) {
-                newSrc = currentSrc.replace('-t.png', '.png');
-            }
-        }
-        
-        // Обновляем источник изображения
-        if (newSrc !== currentSrc) {
-            // Сохраняем оригинальный источник для fallback
-            const originalSrc = img.src;
-            
-            // Добавляем обработчик ошибок
-            img.onerror = function() {
-                this.src = originalSrc;
-                this.onerror = null; // Убираем обработчик ошибок
-            };
-            
-            img.src = newSrc;
-        }
-    });
-}
-
-// Функция для применения темы к изображениям
-function applyThemeToImages(theme) {
-    updateDashboardImages(theme);
-}
-
-// Слушаем изменения темы
-document.addEventListener('DOMContentLoaded', function() {
-    const savedTheme = localStorage.getItem('selectedTheme') || 'light';
-    
-    // Предзагружаем изображения темной темы
-    preloadDarkThemeImages();
-    
-    // Применяем тему к изображениям при загрузке
-    setTimeout(() => {
-        applyThemeToImages(savedTheme);
-    }, 100);
-    
-    // Слушаем изменения темы
-    const observer = new MutationObserver(function(mutations) {
-        mutations.forEach(function(mutation) {
-            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-                const body = document.body;
-                if (body.classList.contains('theme-dark')) {
-                    applyThemeToImages('dark');
-                } else if (body.classList.contains('theme-light')) {
-                    applyThemeToImages('light');
-                }
-            }
-        });
-    });
-    
-    // Начинаем наблюдение за изменениями классов body
-    observer.observe(document.body, {
-        attributes: true,
-        attributeFilter: ['class']
-    });
-});
-
-// Функция для предзагрузки изображений темной темы
-function preloadDarkThemeImages() {
-    const dashboardImages = document.querySelectorAll('.dashboard-img');
-    const darkImages = [];
-    
-    dashboardImages.forEach(img => {
-        const currentSrc = img.src;
-        let darkSrc = currentSrc;
-        
-        if (currentSrc.includes('-eng.png')) {
-            darkSrc = currentSrc.replace('-eng.png', '-eng-t.png');
-        } else if (currentSrc.includes('-kaz.png')) {
-            darkSrc = currentSrc.replace('-kaz.png', '-kaz-t.png');
-        } else if (currentSrc.includes('.png') && !currentSrc.includes('-eng') && !currentSrc.includes('-kaz') && !currentSrc.includes('-t')) {
-            darkSrc = currentSrc.replace('.png', '-t.png');
-        }
-        
-        if (darkSrc !== currentSrc) {
-            darkImages.push(darkSrc);
-        }
-    });
-    
-    // Предзагружаем изображения
-    darkImages.forEach(src => {
-        const img = new Image();
-        img.src = src;
-    });
-}
-
-// Делаем функции глобально доступными
-window.applyThemeToImages = applyThemeToImages;
-window.preloadDarkThemeImages = preloadDarkThemeImages;
-</script>
-
 
 {% endblock %}

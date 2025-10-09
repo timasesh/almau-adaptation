@@ -172,6 +172,11 @@
         
         // Показываем страницу после применения темы
         document.documentElement.classList.add('theme-loaded');
+        // Mobile overflow fix
+        if (window.innerWidth < 992) {
+            document.documentElement.style.overflowX = 'hidden';
+            document.body.style.overflowX = 'hidden';
+        }
         
         console.log('Тема применена:', theme);
         console.log('Классы body:', body.className);
@@ -310,6 +315,17 @@
     // Вызываем функцию при загрузке и изменении размера окна
     document.addEventListener('DOMContentLoaded', manageMobileButtons);
     window.addEventListener('resize', manageMobileButtons);
+    </script>
+    <script>
+    (function(){
+        try { localStorage.setItem('selectedTheme','light'); } catch(e) {}
+        var html=document.documentElement, body=document.body;
+        if(html){ html.classList.remove('theme-dark'); html.classList.add('theme-light'); html.style.backgroundColor='#ffffff'; }
+        if(body){ body.classList.remove('theme-dark'); body.classList.add('theme-light'); body.style.backgroundColor='#ffffff'; }
+        window.applyTheme = function(){};
+        window.testTheme = function(){};
+        if (window.console && typeof console.log === 'function') { console.log = function(){}; }
+    })();
     </script>
 </body>
 </html>

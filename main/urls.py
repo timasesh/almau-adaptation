@@ -10,6 +10,7 @@ urlpatterns = [
     path('documents/', views.documents_view, name='documents'),
     path('api/documents/search/', views.documents_api_search, name='documents_api_search'),
     path('download/<int:document_id>/', views.download_document, name='download_document'),
+    path('documents/<int:document_id>/', views.document_detail_view, name='document_detail'),
     path('logout/', views.logout_view, name='logout'),
     path('lessons/', views.lessons_view, name='lessons'),
     path('lessons/<int:lesson_id>/complete/', views.complete_lesson_view, name='complete_lesson'),
@@ -21,11 +22,14 @@ urlpatterns = [
     path('lessons/<int:lesson_id>/convert-pdf/', views.convert_pdf_to_slides_view, name='convert_pdf_to_slides'),
     path('admin-panel/employee-progress/', views.employee_progress_view, name='employee_progress'),
     path('admin-panel/lesson-progress/<int:lesson_id>/', views.lesson_progress_detail_view, name='lesson_progress_detail'),
+    path('tour/', views.tour_view, name='tour'),
     path('map/', views.map_view, name='map'),
     path('feedback/', views.feedback_view, name='feedback'),
     path('faq/', views.faq_view, name='faq'),
     path('api/faq/search/', views.faq_api_search, name='faq_api_search'),
     path('api/faq/<int:faq_id>/views/', views.faq_increment_views, name='faq_increment_views'),
+    path('api/instructions/<int:instruction_id>/detail/', views.instruction_detail_api, name='instruction_detail_api'),
+    path('instructions/<int:instruction_id>/', views.instruction_detail_view, name='instruction_detail'),
 
     path('settings/', views.settings_view, name='settings'),
     path('set-language/', views.set_language_view, name='set_language'),
@@ -36,6 +40,7 @@ urlpatterns = [
     
     # Admin Panel - Content Management
     path('admin-panel/about/', views.admin_about_view, name='admin_about'),
+    path('admin-panel/memo/', views.admin_memo_view, name='admin_memo'),
     path('admin-panel/map/', views.admin_map_view, name='admin_map'),
     path('admin-panel/faq/', views.admin_faq_view, name='admin_faq'),
     path('admin-panel/feedback/', views.admin_feedback_view, name='admin_feedback'),

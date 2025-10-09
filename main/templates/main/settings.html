@@ -10,9 +10,9 @@
     {% include 'main/sidebar.html' %}
     
     <!-- Main content -->
-    <div class="main-content" id="mainContent">
-        <!-- Фиксированный логотип (не в потоке документа) -->
-        <span class="user-badge fixed-almau-logo">AlmaUni</span>
+    <div class="main-content" id="mainContent" style="position: relative;">
+        <!-- Нефиксированный логотип (SVG) -->
+        <img src="{% static 'images/almauni.svg' %}" alt="AlmaUni" class="page-logo">
         
         <div class="content-header">
             <div class="greeting">
@@ -68,51 +68,7 @@
                 </div>
             </div>
             
-            <!-- Настройки темы -->
-            <div class="settings-section">
-                <div class="settings-card">
-                    <div class="settings-header">
-                        <h2>{% trans "Тема интерфейса" %}</h2>
-                        <p>{% trans "Выберите светлую или темную тему для комфортного просмотра" %}</p>
-                    </div>
-                    
-                    <div class="theme-options">
-                        <div class="theme-option" data-theme="light">
-                            <div class="theme-preview light-theme">
-                                <div class="theme-header"></div>
-                                <div class="theme-content">
-                                    <div class="theme-sidebar"></div>
-                                    <div class="theme-main"></div>
-                                </div>
-                            </div>
-                            <div class="theme-info">
-                                <span class="theme-name">{% trans "Светлая тема" %}</span>
-                                <span class="theme-description">{% trans "Классический светлый дизайн" %}</span>
-                            </div>
-                            {% if current_theme == 'light' %}
-                                <i class="fas fa-check theme-check"></i>
-                            {% endif %}
-                        </div>
-                        
-                        <div class="theme-option" data-theme="dark">
-                            <div class="theme-preview dark-theme">
-                                <div class="theme-header"></div>
-                                <div class="theme-content">
-                                    <div class="theme-sidebar"></div>
-                                    <div class="theme-main"></div>
-                                </div>
-                            </div>
-                            <div class="theme-info">
-                                <span class="theme-name">{% trans "Темная тема" %}</span>
-                                <span class="theme-description">{% trans "Современный темный дизайн" %}</span>
-                            </div>
-                            {% if current_theme == 'dark' %}
-                                <i class="fas fa-check theme-check"></i>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-            </div>
+            
             
             <!-- Тестовая область для проверки темной темы -->
             
@@ -135,14 +91,9 @@
     top: 32px !important;
     right: 30px !important;
     z-index: 1000 !important;
-    background: #1976D2 !important;
-    color: white !important;
-    padding: 8px 16px !important;
-    border-radius: 20px !important;
-    font-weight: bold !important;
-    font-size: 14px !important;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
-    white-space: nowrap !important;
+    width: 120px !important;
+    height: auto !important;
+    display: block !important;
 }
 
 .sidebar {

@@ -27,9 +27,9 @@
     {% include 'main/sidebar.html' %}
 
     <!-- Main content -->
-    <div class="main-content" id="mainContent">
-        <!-- Top right logo -->
-        <span class="user-badge fixed-almau-logo">AlmaUni</span>
+    <div class="main-content" id="mainContent" style="position: relative;">
+        <!-- Top right logo (scrolls with page) -->
+        <img src="{% static 'images/almauni.svg' %}" alt="AlmaUni" class="page-logo">
 
                         <h1 class="page-title">{% trans "Контакты и карта" %}</h1>
 
@@ -131,20 +131,15 @@
         font-weight: 900; /* для solid-иконок */
     }
     /* Фиксированный логотип вверху справа (как на странице Документация) */
-    .fixed-almau-logo {
-        position: fixed !important;
-        top: 32px !important;
-        right: 30px !important;
-        z-index: 1000 !important;
-        background: #1976D2 !important;
-        color: white !important;
-        padding: 8px 16px !important;
-        border-radius: 20px !important;
-        font-weight: bold !important;
-        font-size: 14px !important;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
-        white-space: nowrap !important;
-    }
+.fixed-almau-logo {
+    position: fixed !important;
+    top: 32px !important;
+    right: 30px !important;
+    z-index: 1000 !important;
+    width: 120px !important;
+    height: auto !important;
+    display: block !important;
+}
     .almauni-label {
         position: absolute;
         top: 20px;

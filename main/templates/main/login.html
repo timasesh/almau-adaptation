@@ -9,7 +9,7 @@
 
     <!-- Favicon -->
     {% load static %}
-    <link rel="icon" type="image/png" href="{% static 'images/logo.png' %}">
+    <link rel="icon" type="image/png" href="{% static 'images/logo-almau.png' %}">
 
     <!-- Принудительно устанавливаем светлую тему до загрузки CSS -->
     <script>
@@ -42,7 +42,7 @@
     /* Мобильная версия формы входа */
     .mobile-login-container {
         min-height: 100vh;
-        background-image: url("{% static 'images/фон_моб_устр.png' %}");
+        background-image: url("{% static 'images/image.png' %}");
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
@@ -193,7 +193,7 @@
     }
     
     .adaptive-background {
-        background-image: url("{% static 'images/adaptation.png' %}");
+        background-image: url("{% static 'images/image.png' %}");
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
@@ -205,68 +205,62 @@
     /* Принудительные стили для логотипа в десктопной версии */
     .desktop-login .page-logo-container {
         position: fixed !important;
-        top: 30px !important;
-        left: 30px !important;
+        top: 80px !important;
+        left: 80px !important;
         z-index: 9999 !important;
         width: auto !important;
         height: auto !important;
         display: block !important;
-        background: rgba(255, 255, 255, 0.9) !important;
-        border-radius: 10px !important;
-        padding: 10px !important;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+        background: transparent !important;
+        border-radius: 0 !important;
+        padding: 0 !important;
+        box-shadow: none !important;
     }
     
     .desktop-login .page-logo-container .logo {
-        width: 120px !important;
+        width: 180px !important;
         height: auto !important;
         display: block !important;
         padding: 0 !important;
         margin: 0 !important;
     }
     
-    .image-login-btn {
-        background: none;
-        border: none;
-        padding: 0;
+    .primary-login-btn {
+        display: inline-block;
+        padding: 10px 22px;
+        background: #0B4EA2;
+        color: #fff;
+        border: 2px solid #0B4EA2;
+        border-radius: 24px;
+        font-size: 16px;
+        font-weight: 100;
         cursor: pointer;
-        transition: filter 0.3s ease;
-        display: block;
-        margin: 0 auto;
+        transition: background .2s ease, transform .05s ease;
     }
-    
-    .image-login-btn img {
-        display: block;
-        max-width: 200px;
-        width: 200px;
-        height: auto;
-        transition: filter 0.3s ease;
-    }
-    
-    .image-login-btn:hover img {
-        filter: brightness(1.2);
-    }
-    
-    .image-login-btn:active img {
-        filter: brightness(0.9);
-    }
+
+    .primary-login-btn:hover { background: #0a4998; }
+    .primary-login-btn:active { transform: translateY(1px); }
     
     /* Стили для социальных кнопок */
     .social-login {
         display: flex;
         justify-content: center;
         gap: 1px;
-        margin-bottom: -14px;
+        margin-bottom: 0px;
+        margin-top: -30px;
     }
     
     .provider-img {
-        width: 200px !important;
-        height: 100px !important;
+        width: 160px !important;
+        height: 80px !important;
         object-fit: contain;
         transition: all 0.3s ease;
         cursor: pointer;
-        border: none;
         background: transparent;
+        border: none;
+        border-radius: 0;
+        padding: 0;
+        box-sizing: border-box;
     }
     
     /* Адаптивные размеры для мобильных устройств */
@@ -293,14 +287,15 @@
     
     /* Стили для полей ввода - единые для обеих тем */
     .form-input {
-        width: 380px;
-        height: 55px;
+        width: 240px;
+        height: 36px;
         margin: 0 auto;
         display: block;
-        padding: 12px 20px !important;
-        border: 1px solid #333 !important;
+        padding: 10px 16px !important;
+        border: 1px solid #72B1FF !important;
         border-radius: 25px !important;
         font-size: 18px !important;
+        font-weight: 400 !important;
         transition: border-color 0.3s ease, box-shadow 0.3s ease;
         background: #fff !important;
         color: #333 !important;
@@ -308,8 +303,8 @@
     
     .form-input:focus {
         outline: none !important;
-        border-color: #1976D2 !important;
-        box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
+        border-color: #72B1FF !important;
+        box-shadow: 0 0 0 3px rgba(114, 177, 255, 0.15);
     }
     
     .form-input::placeholder {
@@ -320,7 +315,7 @@
     /* Контейнер для поля пароля с иконкой */
     .password-container {
         position: relative;
-        width: 380px;
+        width: 240px;
         margin: 0 auto;
     }
     
@@ -373,22 +368,27 @@
     /* Стили для переключателя языка */
     .language-selector {
         position: absolute;
-        top: 20px;
-        right: 20px;
+        top: 8px;
+        right: 158px; /* сдвиг влево ~150px */
         z-index: 1000;
     }
 
     .language-btn {
-        background: #87CEEB;
+        background: #72B1FF;
         border: none;
-        border-radius: 15px;
-        padding: 8px 16px;
+        border-radius: 50%;
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         cursor: pointer;
         font-size: 14px;
-        font-weight: 600;
-        color: #333;
+        font-weight: 400;
+        color: #000000;
         transition: all 0.3s ease;
         position: relative;
+        padding: 0;
     }
 
     .language-btn:hover {
@@ -456,12 +456,17 @@
     }
     
     .mobile-language-selector .language-btn {
-        background: #1976D2;
-        color: white;
-        padding: 8px 16px;
-        border-radius: 20px;
+        background: #72B1FF;
+        color: #000000;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
         font-size: 14px;
-        font-weight: 500;
+        font-weight: 400;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
     
     .mobile-language-selector .language-btn:hover {
@@ -470,15 +475,17 @@
     
     /* Принудительно применяем светлую тему для формы логина */
     .login-card {
-        background: white !important;
+        background: transparent !important;
         color: #333 !important;
-        min-height: 500px !important;
-        padding-bottom: 40px !important;
+        min-height: unset !important;
+        padding: 0 !important;
+        box-shadow: none !important;
     }
     
     .login-header {
-        background: white !important;
+        background: transparent !important;
         color: #333 !important;
+        box-shadow: none !important;
     }
     
     .login-form {
@@ -521,6 +528,15 @@
         color: #2e7d32 !important;
         border-color: #a5d6a7 !important;
     }
+
+    .page-logo-container {
+        margin-top: -21px;
+        margin-left: 10px;
+    }
+    .provider-img {
+        margin-bottom: -10px;
+    }
+    
 </style>
 <!-- Мобильная версия формы входа -->
 <div class="mobile-login">
@@ -530,7 +546,7 @@
         <div class="language-selector mobile-language-selector">
             <button class="language-btn" id="mobileLanguageBtn">
                 <span class="language-text" id="mobileLanguageText">
-                    {% if current_language == 'ru' %}RU{% elif current_language == 'en' %}EN{% elif current_language == 'kk' %}KZ{% else %}RU{% endif %}
+                    {% if current_language == 'ru' %}Ru{% elif current_language == 'en' %}En{% elif current_language == 'kk' %}KZ{% else %}Ru{% endif %}
                 </span>
             </button>
             <div class="language-dropdown" id="mobileLanguageDropdown">
@@ -577,14 +593,8 @@
                 {% csrf_token %}
                 <input type="email" name="login" placeholder="{% if current_language == 'kk' %}Кіру{% elif current_language == 'en' %}Login{% else %}Логин{% endif %}" class="form-input" required>
                 <input type="password" name="password" placeholder="{% if current_language == 'kk' %}Құпия сөз{% elif current_language == 'en' %}Password{% else %}Пароль{% endif %}" class="form-input" required>
-                <button type="submit" class="image-login-btn">
-                    {% if current_language == 'en' %}
-                        <img src="{% static 'images/btn-1-eng.png' %}" alt="{% trans 'Продолжить' %}">
-                    {% elif current_language == 'kk' %}
-                        <img src="{% static 'images/btn-1-kaz.png' %}" alt="{% trans 'Продолжить' %}">
-                    {% else %}
-                        <img src="{% static 'images/btn-1.png' %}" alt="{% trans 'Продолжить' %}">
-                    {% endif %}
+                <button type="submit" class="primary-login-btn">
+                    {% if current_language == 'en' %}Sign in{% elif current_language == 'kk' %}Кіру{% else %}Войти{% endif %}
                 </button>
             </form>
 
@@ -604,7 +614,7 @@
 <div class="desktop-login">
     <div class="adaptive-background">
         <div class="page-logo-container">
-            <img src="{% static 'images/logo.png' %}" alt="AlmaU" class="logo">
+            <img src="{% static 'images/logo-almau.png' %}" alt="AlmaU" class="logo">
         </div>
         <div class="login-container">
             <!-- Background decorative elements -->
@@ -614,13 +624,13 @@
             <div class="login-card">
             <div class="login-header">
 
-                <img src="{% static 'images/adaptation_almau.png' %}" alt="Adaptation AlmaU" class="login-title-img" style="width: 250px; margin-top: 50px;">
+                <img src="{% static 'images/login1.png' %}" alt="Adaptation" class="login-title-img" style="width: 370px; margin-top: 70px;">
 
                 <!-- Language selector -->
                                     <div class="language-selector">
                         <button class="language-btn" id="languageBtn">
                             <span class="language-text" id="languageText">
-                                {% if current_language == 'ru' %}RU{% elif current_language == 'en' %}EN{% elif current_language == 'kk' %}KZ{% else %}RU{% endif %}
+                                {% if current_language == 'ru' %}Ru{% elif current_language == 'en' %}En{% elif current_language == 'kk' %}Kz{% else %}Ru{% endif %}
                             </span>
                         </button>
                         <div class="language-dropdown" id="languageDropdown">
@@ -628,13 +638,13 @@
                         {% csrf_token %}
                         <input type="hidden" name="next" value="{{ request.get_full_path }}">
                         <button type="button" class="language-option" data-language="ru">
-                            RU - Русский
+                            Ru - Русский
                         </button>
                         <button type="button" class="language-option" data-language="en">
-                            EN - English
+                            En - English
                         </button>
                         <button type="button" class="language-option" data-language="kk">
-                            KZ - Қазақша
+                            Kz - Қазақша
                         </button>
                     </form>
                 </div>
@@ -674,14 +684,8 @@
                     <div class="forgot-password">
                         <a href="{% url 'account_reset_password' %}">{% if current_language == 'kk' %}Құпия сөзді ұмыттыңыз ба?{% elif current_language == 'en' %}Forgot password?{% else %}Забыли пароль?{% endif %}</a>
                     </div>
-                    <button type="submit" class="image-login-btn">
-                        {% if current_language == 'en' %}
-                            <img src="{% static 'images/btn-1-eng.png' %}" alt="{% trans 'Продолжить' %}">
-                        {% elif current_language == 'kk' %}
-                            <img src="{% static 'images/btn-1-kaz.png' %}" alt="{% trans 'Продолжить' %}">
-                        {% else %}
-                            <img src="{% static 'images/btn-1.png' %}" alt="{% trans 'Продолжить' %}">
-                        {% endif %}
+                    <button type="submit" class="primary-login-btn">
+                        {% if current_language == 'en' %}Sign in{% elif current_language == 'kk' %}Кіру{% else %}Войти{% endif %}
                     </button>
                 </form>
 

@@ -260,6 +260,20 @@ def lessons_view(request):
         lesson.can_complete = lesson.can_be_completed_by_user(request.user)
         lesson_progress[lesson.id] = lesson.get_or_create_progress(request.user)
     
+    # Инструкции для раздела "Памятка сотрудника" (2 тестовых если нет данных)
+    instr_qs = list(Instruction.objects.filter(is_active=True)[:2])
+    if not instr_qs:
+        try:
+            i1 = Instruction.objects.create(
+                title="Инструкция по работе с порталом",
+                description="Сервис работает по принципу ‘Единого окна’, где сотрудник может найти все, что нужно.")
+            i2 = Instruction.objects.create(
+                title="Как использовать сервисы AlmaU",
+                description="Обзор сервисов: Rent, HelpDesk, Booking, Documentolog и др.")
+            instr_qs = [i1, i2]
+        except Exception:
+            instr_qs = []
+
     return render(request, 'main/lessons.html', {
         'lessons': lessons,
         'lesson_progress': lesson_progress,
@@ -268,8 +282,72 @@ def lessons_view(request):
         'difficulty_filter': difficulty_filter,
         'category_filter': category_filter,
         'current_language': request.session.get('django_language', 'ru'),
-        'current_page': 'lessons'
+        'current_page': 'lessons',
+        'instructions': instr_qs
     })
+
+def instruction_detail_api(request, instruction_id):
+    try:
+        instr = Instruction.objects.get(id=instruction_id, is_active=True)
+    except Instruction.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Instruction not found'}, status=404)
+
+    lang = request.session.get('django_language', 'ru')
+    title = instr.get_title(lang)
+    description = instr.get_description(lang)
+    video_url = instr.video.url if getattr(instr, 'video', None) else ''
+    # Выбор PDF по языку
+    pdf_field = None
+    if lang == 'en' and hasattr(instr, 'pdf_file_en') and instr.pdf_file_en:
+        pdf_field = instr.pdf_file_en
+    elif lang == 'kk' and hasattr(instr, 'pdf_file_kk') and instr.pdf_file_kk:
+        pdf_field = instr.pdf_file_kk
+    else:
+        pdf_field = instr.pdf_file if hasattr(instr, 'pdf_file') else None
+    pdf_url = pdf_field.url if pdf_field else ''
+    primary = 'video' if video_url else ('pdf' if pdf_url else 'none')
+
+    return JsonResponse({'success': True, 'id': instr.id, 'title': title, 'description': description, 'video_url': video_url, 'pdf_url': pdf_url, 'primary': primary})
+
+def instruction_detail_view(request, instruction_id):
+    try:
+        instr = Instruction.objects.get(id=instruction_id, is_active=True)
+    except Instruction.DoesNotExist:
+        return redirect('main:lessons')
+
+    lang = request.session.get('django_language', 'ru')
+    # Выбор PDF по языку
+    pdf_field = None
+    if lang == 'en' and hasattr(instr, 'pdf_file_en') and instr.pdf_file_en:
+        pdf_field = instr.pdf_file_en
+    elif lang == 'kk' and hasattr(instr, 'pdf_file_kk') and instr.pdf_file_kk:
+        pdf_field = instr.pdf_file_kk
+    else:
+        pdf_field = instr.pdf_file if hasattr(instr, 'pdf_file') else None
+    context = {
+        'instruction': instr,
+        'title': instr.get_title(lang),
+        'description': instr.get_description(lang),
+        'video_url': instr.video.url if getattr(instr, 'video', None) else '',
+        'pdf_url': pdf_field.url if pdf_field else '',
+        'current_page': 'lessons'
+    }
+    return render(request, 'main/instruction_detail.html', context)
+
+def document_detail_view(request, document_id):
+    try:
+        doc = Document.objects.get(id=document_id, is_active=True)
+    except Document.DoesNotExist:
+        return redirect('main:documents')
+    lang = request.session.get('django_language', 'ru')
+    context = {
+        'document': doc,
+        'title': doc.get_title(lang),
+        'description': doc.get_description(lang),
+        'file_url': doc.get_file(lang).url if doc.get_file(lang) else '',
+        'current_page': 'documents'
+    }
+    return render(request, 'main/document_detail.html', context)
 
 
 @login_required
@@ -864,8 +942,12 @@ def about_view(request):
     except Teacher.DoesNotExist:
         pass
     
-    # Получаем текущий язык из сессии
-    current_language = request.session.get('django_language', 'ru')
+    # Получаем текущий язык (из активной локали)
+    try:
+        from django.utils import translation
+        current_language = translation.get_language() or 'ru'
+    except Exception:
+        current_language = getattr(request, 'LANGUAGE_CODE', 'ru') or 'ru'
     
     # Получаем объекты для страницы "Об университете"
     try:
@@ -939,6 +1021,22 @@ def map_view(request):
         'current_page': 'map'
     }
     return render(request, 'main/map.html', context)
+
+@login_required
+def tour_view(request):
+    """3D tour page with embedded panorama iframe"""
+    # Optional: resolve display name
+    if hasattr(request.user, 'first_name') and request.user.first_name:
+        user_name = request.user.first_name
+    else:
+        user_name = request.user.email.split('@')[0] if getattr(request.user, 'email', '') else 'Пользователь'
+
+    context = {
+        'user': request.user,
+        'user_name': user_name,
+        'current_page': 'tour',
+    }
+    return render(request, 'main/tour.html', context)
 
 @login_required
 def documents_view(request):
@@ -1059,72 +1157,52 @@ def download_document(request, document_id):
 @login_required
 def documents_api_search(request):
     """API endpoint для поиска документов без перезагрузки страницы"""
-    from .models import Document, DocumentCategory
-    from django.db.models import Q
+    from .models import Document
     from django.http import JsonResponse
     from django.template.loader import render_to_string
-    
-    # Получаем параметры из запроса
-    search_query = request.GET.get('search', '')
-    category_filter = request.GET.get('category', '')
-    
-    # Получаем текущий язык из сессии
-    current_language = request.session.get('django_language', 'ru')
-    
-    # Базовый queryset только активных документов
-    documents = Document.objects.filter(is_active=True)
-    
-    # Применяем фильтр по категории сначала (для оптимизации)
-    if category_filter:
-        try:
-            # Фильтруем по ID категории, а не по имени
-            category_id = int(category_filter)
-            documents = documents.filter(category_id=category_id)
-        except (ValueError, TypeError):
-            # Если category_filter не является числом, игнорируем фильтр
-            pass
-    
-    # Применяем поиск (нечувствительный к регистру)
-    # Используем Python поиск из-за проблем SQLite с кириллицей в icontains
-    if search_query:
-        search_query = search_query.strip().lower()
-        if search_query:
-            # Получаем все документы сначала, потом фильтруем в Python
-            all_documents = list(documents)
-            filtered_documents = []
-            
-            for doc in all_documents:
-                # Получаем переведенные названия и описания
-                title = doc.get_title(current_language)
-                description = doc.get_description(current_language)
-                
-                # Проверяем вхождение поискового запроса в разные поля
-                title_match = search_query in title.lower()
-                desc_match = search_query in description.lower()
-                category_match = search_query in doc.category.name.lower()
-                
-                if title_match or desc_match or category_match:
-                    filtered_documents.append(doc.id)
-            
-            # Фильтруем queryset по найденным ID
-            if filtered_documents:
-                documents = documents.filter(id__in=filtered_documents)
-            else:
+
+    try:
+        # Параметры
+        search_query = request.GET.get('search', '')
+        category_filter = request.GET.get('category', '')
+        current_language = request.session.get('django_language', 'ru')
+
+        # Базовый queryset
+        documents = Document.objects.filter(is_active=True)
+
+        # Фильтр по категории (по ID)
+        if category_filter:
+            try:
+                documents = documents.filter(category_id=int(category_filter))
+            except (ValueError, TypeError):
                 documents = documents.none()
-    
-    # Рендерим только список документов
-    documents_html = render_to_string('main/documents_list_partial.html', {
-        'documents': documents,
-        'search_query': search_query,
-        'current_category': category_filter,
-        'current_language': current_language
-    })
-    
-    return JsonResponse({
-        'success': True,
-        'html': documents_html,
-        'count': documents.count()
-    })
+
+        # Поиск
+        if search_query:
+            q = search_query.strip().lower()
+            if q:
+                all_documents = list(documents)
+                matched_ids = []
+                for doc in all_documents:
+                    title = doc.get_title(current_language).lower()
+                    description = doc.get_description(current_language).lower()
+                    if q in title or q in description or q in (doc.category.name or '').lower():
+                        matched_ids.append(doc.id)
+                documents = documents.filter(id__in=matched_ids) if matched_ids else documents.none()
+
+        html = render_to_string('main/documents_list_partial.html', {
+            'documents': documents,
+            'search_query': search_query,
+            'current_category': category_filter,
+            'current_language': current_language
+        }, request=request)
+
+        return JsonResponse({'success': True, 'html': html, 'count': documents.count()})
+
+    except Exception as e:
+        # Лог для сервера и безопасный ответ для клиента
+        print('documents_api_search error:', str(e))
+        return JsonResponse({'success': False, 'error': 'server_error'}, status=500)
 
 
 
@@ -1379,7 +1457,8 @@ def faq_api_search(request):
     faq_html = render_to_string('main/faq_list_partial.html', {
         'faqs': faqs_with_translations,
         'search_query': search_query,
-        'current_category': category_filter
+        'current_category': category_filter,
+        'current_language': current_language,
     })
     
     return JsonResponse({
@@ -1562,6 +1641,10 @@ def admin_about_view(request):
             history_obj.text_kk = request.POST.get('history_text_kk', '')
             if 'history_image' in request.FILES:
                 history_obj.image = request.FILES['history_image']
+            if 'history_image_2' in request.FILES:
+                history_obj.image_2 = request.FILES['history_image_2']
+            if 'history_image_3' in request.FILES:
+                history_obj.image_3 = request.FILES['history_image_3']
             history_obj.save()
             messages.success(request, 'История успешно обновлена!')
         
@@ -1581,18 +1664,98 @@ def admin_about_view(request):
             values_obj.save()
             messages.success(request, 'Ценности успешно обновлены!')
             
-        # Обработка руководителей перенесена в отдельный раздел admin_leaders_view
+        # Обработка двух руководителей (упрощенная форма)
+        if 'leaders' in request.POST:
+            from .models import Leader
+            # Загружаем существующих (первые два по порядку)
+            leaders = list(Leader.objects.all().order_by('order')[:2])
+            # Лидер 1
+            leader1 = leaders[0] if len(leaders) > 0 else Leader()
+            leader1.role = request.POST.get('leader1_role', leader1.role or 'rector')
+            leader1.full_name = request.POST.get('leader1_full_name', leader1.full_name or '')
+            if 'leader1_photo' in request.FILES:
+                leader1.photo = request.FILES['leader1_photo']
+            if not leader1.pk:
+                leader1.order = 1
+            leader1.save()
+            # Лидер 2
+            leader2 = leaders[1] if len(leaders) > 1 else Leader()
+            leader2.role = request.POST.get('leader2_role', leader2.role or 'prorector')
+            leader2.full_name = request.POST.get('leader2_full_name', leader2.full_name or '')
+            if 'leader2_photo' in request.FILES:
+                leader2.photo = request.FILES['leader2_photo']
+            if not leader2.pk:
+                leader2.order = 2
+            leader2.save()
+            messages.success(request, 'Руководство успешно обновлено!')
         
         return redirect('main:admin_about')
     
+    # Для предпросмотра текущих лидеров (до 2 шт.)
+    from .models import Leader
+    leaders_preview = list(Leader.objects.all().order_by('order')[:2])
+
     context = {
         'current_page': 'admin_about',
         'active_tab': 'about',
         'history_obj': history_obj,
         'mission_obj': mission_obj,
         'values_obj': values_obj,
+        'leaders': leaders_preview,
     }
     return render(request, 'main/admin/about.html', context)
+
+@login_required
+def admin_memo_view(request):
+    """Админка для страницы 'Памятка сотрудника'"""
+    if not request.user.is_staff:
+        return redirect('main:admin_login')
+
+    from .models import Instruction
+
+    instructions = Instruction.objects.all().order_by('-created_at')
+
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        instruction_id = request.POST.get('instruction_id')
+
+        if action in ('create', 'update'):
+            if instruction_id:
+                instruction = Instruction.objects.get(pk=instruction_id)
+            else:
+                instruction = Instruction()
+
+            instruction.title = request.POST.get('title', '')
+            instruction.description = request.POST.get('description', '')
+            instruction.title_en = request.POST.get('title_en', '')
+            instruction.description_en = request.POST.get('description_en', '')
+            instruction.title_kk = request.POST.get('title_kk', '')
+            instruction.description_kk = request.POST.get('description_kk', '')
+
+            if 'video' in request.FILES:
+                instruction.video = request.FILES['video']
+            if 'pdf_file' in request.FILES:
+                instruction.pdf_file = request.FILES['pdf_file']
+            if 'pdf_file_en' in request.FILES:
+                instruction.pdf_file_en = request.FILES['pdf_file_en']
+            if 'pdf_file_kk' in request.FILES:
+                instruction.pdf_file_kk = request.FILES['pdf_file_kk']
+
+            instruction.save()
+            messages.success(request, 'Инструкция сохранена')
+            return redirect('main:admin_memo')
+
+        if action == 'delete' and instruction_id:
+            Instruction.objects.filter(pk=instruction_id).delete()
+            messages.success(request, 'Инструкция удалена')
+            return redirect('main:admin_memo')
+
+    context = {
+        'current_page': 'admin_memo',
+        'active_tab': 'memo',
+        'instructions': instructions,
+    }
+    return render(request, 'main/admin/memo.html', context)
 
 @login_required
 def admin_map_view(request):

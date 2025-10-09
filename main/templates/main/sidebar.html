@@ -2,11 +2,16 @@
 {% load i18n %}
 {% load translation_tags %}
 
+<style>
+    .sidebar-brand { text-align: center; margin: 8px 10px 10px 10px; }
+    .sidebar-brand-logo { width: 140px; height: auto; display: block; margin: 6px auto; }
+    .sidebar.collapsed .sidebar-brand { display: none; }
+</style>
 <!-- Sidebar -->
 <div class="sidebar" id="sidebar">
     <div class="sidebar-header">
         <div class="logo-container">
-            <img src="{% static 'images/logo.png' %}" alt="AlmaU" class="logo">
+            <img src="{% static 'images/login2.png' %}" alt="AlmaU" class="logo" style="width: 200px; height: auto;">
         </div>
         <button class="sidebar-toggle" id="sidebarToggle" type="button">
             <i class="fas fa-angle-double-left"></i>
@@ -15,46 +20,51 @@
     
     <nav class="sidebar-nav">
         <ul class="nav-list">
+            <li class="nav-item sidebar-brand">
+                <img src="{% static 'images/sidebar-logo.png' %}" alt="AlmaU" class="sidebar-brand-logo">
+            </li>
             <li class="nav-item {% if current_page == 'dashboard' %}active{% endif %}">
                 <a href="{% url 'main:dashboard' %}" class="nav-link {% if current_page == 'dashboard' %}active-nav-link{% endif %}">
-                    <i class="fas fa-home"></i>
+                    <i class="fa-solid fa-house"></i>
                     <span class="nav-text">{% trans "Главная" %}</span>
                 </a>
             </li>
             <li class="nav-item {% if current_page == 'about' %}active{% endif %}">
                 <a href="{% url 'main:about' %}" class="nav-link {% if current_page == 'about' %}active-nav-link{% endif %}">
-                    <i class="fas fa-university"></i>
+                    <i class="fa-regular fa-building"></i>
                     <span class="nav-text">{% trans "Об университете" %}</span>
-                </a>
-            </li>
-            <li class="nav-item {% if current_page == 'documents' %}active{% endif %}">
-                <a href="{% url 'main:documents' %}" class="nav-link {% if current_page == 'documents' %}active-nav-link{% endif %}">
-                    <i class="fas fa-file-alt"></i>
-                    <span class="nav-text">{% trans "Документация" %}</span>
                 </a>
             </li>
             <li class="nav-item {% if current_page == 'lessons' %}active{% endif %}">
                 <a href="{% url 'main:lessons' %}" class="nav-link {% if current_page == 'lessons' %}active-nav-link{% endif %}">
-                    <i class="fas fa-graduation-cap"></i>
-                    <span class="nav-text">{% t "Повышение цифровой грамотности" %}</span>
+                    <i class="fa-regular fa-bookmark"></i>
+                    <span class="nav-text">{% t "Памятка сотрудника" %}</span>
                 </a>
             </li>
-            <li class="nav-item {% if current_page == 'map' %}active{% endif %}">
-                <a href="{% url 'main:map' %}" class="nav-link {% if current_page == 'map' %}active-nav-link{% endif %}">
-                    <i class="fas fa-map-marker-alt"></i>
-                    <span class="nav-text">{% trans "Контакты и карта" %}</span>
+            <li class="nav-item {% if current_page == 'documents' %}active{% endif %}">
+                <a href="{% url 'main:documents' %}" class="nav-link {% if current_page == 'documents' %}active-nav-link{% endif %}">
+                    <i class="fa-regular fa-file-lines"></i>
+                    <span class="nav-text">{% trans "Документация" %}</span>
+                </a>
+            </li>
+            
+            <li class="nav-item {% if current_page == 'tour' %}active{% endif %}">
+                <a href="{% url 'main:tour' %}" class="nav-link {% if current_page == 'tour' %}active-nav-link{% endif %}">
+                    <i class="fa-solid fa-cube"></i>
+                    <span class="nav-text">{% trans "3D тур по университету" %}</span>
+                </a>
+            </li>
+            
+            <li class="nav-item {% if current_page == 'faq' %}active{% endif %}">
+                <a href="{% url 'main:faq' %}" class="nav-link {% if current_page == 'faq' %}active-nav-link{% endif %}">
+                    <i class="fa-regular fa-circle-question"></i>
+                    <span class="nav-text">{% trans "Часто задаваемые вопросы" %}</span>
                 </a>
             </li>
             <li class="nav-item {% if current_page == 'feedback' %}active{% endif %}">
                 <a href="{% url 'main:feedback' %}" class="nav-link {% if current_page == 'feedback' %}active-nav-link{% endif %}">
-                    <i class="fas fa-comments"></i>
+                    <i class="fa-regular fa-comment-dots"></i>
                     <span class="nav-text">{% trans "Обратная связь" %}</span>
-                </a>
-            </li>
-            <li class="nav-item {% if current_page == 'faq' %}active{% endif %}">
-                <a href="{% url 'main:faq' %}" class="nav-link {% if current_page == 'faq' %}active-nav-link{% endif %}">
-                    <i class="fas fa-question-circle"></i>
-                    <span class="nav-text">{% trans "Часто задаваемые вопросы" %}</span>
                 </a>
             </li>
         </ul>
@@ -66,10 +76,7 @@
                 <i class="fas fa-cog"></i>
                 <span class="nav-text">{% trans "Настройки" %}</span>
             </a>
-            <a href="{% url 'main:logout' %}" class="logout-btn">
-                <i class="fas fa-sign-out-alt"></i>
-                <span class="nav-text">{% trans "Выход" %}</span>
-            </a>
+            
         </div>
     </div>
 </div>

@@ -18,6 +18,37 @@ class Instruction(models.Model):
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
     is_active = models.BooleanField(default=True, verbose_name="Активна")
 
+    # Дополнительно: файлы для предпросмотра
+    video = models.FileField(
+        upload_to='instructions/videos/',
+        blank=True,
+        null=True,
+        verbose_name="Видео",
+        help_text="Опционально. Поддерживаемые форматы: MP4, AVI, MOV, WMV"
+    )
+    # Отдельные PDF по языкам
+    pdf_file = models.FileField(
+        upload_to='instructions/pdfs/',
+        blank=True,
+        null=True,
+        verbose_name="PDF (Русский)",
+        help_text="Опционально. Инструкция в формате PDF для русского языка"
+    )
+    pdf_file_en = models.FileField(
+        upload_to='instructions/pdfs/',
+        blank=True,
+        null=True,
+        verbose_name="PDF (English)",
+        help_text="Опционально. Инструкция в формате PDF для английского языка"
+    )
+    pdf_file_kk = models.FileField(
+        upload_to='instructions/pdfs/',
+        blank=True,
+        null=True,
+        verbose_name="PDF (Қазақша)",
+        help_text="Опционально. Инструкция в формате PDF для казахского языка"
+    )
+
     class Meta:
         verbose_name = "Инструкция"
         verbose_name_plural = "Инструкции"
@@ -331,7 +362,9 @@ class History(models.Model):
     text = models.TextField(verbose_name="Текст истории", help_text="Простой текст истории университета")
     text_en = models.TextField(blank=True, verbose_name="Текст истории (English)", help_text="University history text in English")
     text_kk = models.TextField(blank=True, verbose_name="Текст истории (Қазақша)", help_text="Университет тарихының мәтіні қазақ тілінде")
-    image = models.ImageField(upload_to='about/', blank=True, verbose_name="Картинка истории")
+    image = models.ImageField(upload_to='about/', blank=True, verbose_name="Картинка истории 1")
+    image_2 = models.ImageField(upload_to='about/', blank=True, verbose_name="Картинка истории 2")
+    image_3 = models.ImageField(upload_to='about/', blank=True, verbose_name="Картинка истории 3")
 
     class Meta:
         verbose_name = "История университета"

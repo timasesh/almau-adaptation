@@ -1,0 +1,163 @@
+{% extends 'main/admin/base.html' %}
+{% load static i18n %}
+
+{% block title %}Памятка сотрудника — Админ-панель{% endblock %}
+{% block heading %}Памятка сотрудника{% endblock %}
+
+{% block content %}
+<div class="card mb-4">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <h5 class="mb-0">Инструкции</h5>
+    <button class="btn btn-primary btn-sm" data-bs-toggle="collapse" data-bs-target="#memoForm">
+      <i class="fas fa-plus me-1"></i>Добавить инструкцию
+    </button>
+  </div>
+  <div id="memoForm" class="collapse">
+    <div class="card-body">
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="create">
+
+        <ul class="nav nav-tabs mb-3" role="tablist">
+          <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#ru" type="button">Русский</button></li>
+          <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#en" type="button">English</button></li>
+          <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#kk" type="button">Қазақша</button></li>
+        </ul>
+
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="ru">
+            <div class="mb-3">
+              <label class="form-label">Заголовок (RU)</label>
+              <input type="text" name="title" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Текст (RU)</label>
+              <textarea name="description" class="form-control" rows="4" required></textarea>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">PDF (RU)</label>
+              <input type="file" name="pdf_file" class="form-control" accept="application/pdf">
+            </div>
+          </div>
+          <div class="tab-pane fade" id="en">
+            <div class="mb-3">
+              <label class="form-label">Title (EN)</label>
+              <input type="text" name="title_en" class="form-control">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Text (EN)</label>
+              <textarea name="description_en" class="form-control" rows="4"></textarea>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">PDF (EN)</label>
+              <input type="file" name="pdf_file_en" class="form-control" accept="application/pdf">
+            </div>
+          </div>
+          <div class="tab-pane fade" id="kk">
+            <div class="mb-3">
+              <label class="form-label">Тақырып (KK)</label>
+              <input type="text" name="title_kk" class="form-control">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Мәтін (KK)</label>
+              <textarea name="description_kk" class="form-control" rows="4"></textarea>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">PDF (KK)</label>
+              <input type="file" name="pdf_file_kk" class="form-control" accept="application/pdf">
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Видео (одно для всех языков)</label>
+          <input type="file" name="video" class="form-control" accept="video/*">
+        </div>
+
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-body">
+    {% if instructions %}
+      <div class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead>
+            <tr>
+              <th>Заголовок (RU)</th>
+              <th>PDF RU</th>
+              <th>PDF EN</th>
+              <th>PDF KK</th>
+              <th>Видео</th>
+              <th width="160" class="text-end">Действия</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for i in instructions %}
+            <tr>
+              <td>{{ i.title }}</td>
+              <td>{% if i.pdf_file %}<span class="badge bg-success">есть</span>{% else %}<span class="badge bg-secondary">нет</span>{% endif %}</td>
+              <td>{% if i.pdf_file_en %}<span class="badge bg-success">есть</span>{% else %}<span class="badge bg-secondary">нет</span>{% endif %}</td>
+              <td>{% if i.pdf_file_kk %}<span class="badge bg-success">есть</span>{% else %}<span class="badge bg-secondary">нет</span>{% endif %}</td>
+              <td>{% if i.video %}<span class="badge bg-success">есть</span>{% else %}<span class="badge bg-secondary">нет</span>{% endif %}</td>
+              <td class="text-end">
+                <button class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#edit{{ i.id }}">Редактировать</button>
+                <form method="post" class="d-inline">
+                  {% csrf_token %}
+                  <input type="hidden" name="action" value="delete">
+                  <input type="hidden" name="instruction_id" value="{{ i.id }}">
+                  <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Удалить инструкцию?')">Удалить</button>
+                </form>
+              </td>
+            </tr>
+            <tr class="collapse" id="edit{{ i.id }}">
+              <td colspan="6">
+                <form method="post" enctype="multipart/form-data" class="border rounded p-3 bg-light">
+                  {% csrf_token %}
+                  <input type="hidden" name="action" value="update">
+                  <input type="hidden" name="instruction_id" value="{{ i.id }}">
+
+                  <ul class="nav nav-tabs mb-3" role="tablist">
+                    <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#ru{{ i.id }}" type="button">RU</button></li>
+                    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#en{{ i.id }}" type="button">EN</button></li>
+                    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#kk{{ i.id }}" type="button">KK</button></li>
+                  </ul>
+
+                  <div class="tab-content">
+                    <div class="tab-pane fade show active" id="ru{{ i.id }}">
+                      <div class="mb-2"><label class="form-label">Заголовок (RU)</label><input type="text" name="title" class="form-control" value="{{ i.title }}"></div>
+                      <div class="mb-2"><label class="form-label">Текст (RU)</label><textarea name="description" class="form-control" rows="3">{{ i.description }}</textarea></div>
+                      <div class="mb-2"><label class="form-label">PDF (RU)</label><input type="file" name="pdf_file" class="form-control" accept="application/pdf"></div>
+                    </div>
+                    <div class="tab-pane fade" id="en{{ i.id }}">
+                      <div class="mb-2"><label class="form-label">Title (EN)</label><input type="text" name="title_en" class="form-control" value="{{ i.title_en }}"></div>
+                      <div class="mb-2"><label class="form-label">Text (EN)</label><textarea name="description_en" class="form-control" rows="3">{{ i.description_en }}</textarea></div>
+                      <div class="mb-2"><label class="form-label">PDF (EN)</label><input type="file" name="pdf_file_en" class="form-control" accept="application/pdf"></div>
+                    </div>
+                    <div class="tab-pane fade" id="kk{{ i.id }}">
+                      <div class="mb-2"><label class="form-label">Тақырып (KK)</label><input type="text" name="title_kk" class="form-control" value="{{ i.title_kk }}"></div>
+                      <div class="mb-2"><label class="form-label">Мәтін (KK)</label><textarea name="description_kk" class="form-control" rows="3">{{ i.description_kk }}</textarea></div>
+                      <div class="mb-2"><label class="form-label">PDF (KK)</label><input type="file" name="pdf_file_kk" class="form-control" accept="application/pdf"></div>
+                    </div>
+                  </div>
+
+                  <div class="mb-2"><label class="form-label">Видео</label><input type="file" name="video" class="form-control" accept="video/*"></div>
+                  <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p class="text-muted mb-0">Пока нет инструкций.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
+
+
