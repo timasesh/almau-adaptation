@@ -51,7 +51,21 @@ msgid "Часто задаваемые вопросы"
 msgstr "Жиі қойылатын сұрақтар"
 
 msgid "Настройки"
-msgstr "Настройки"
+msgstr "Параметрлер"
+
+# Sidebar specific
+msgid "Инструкции по работе"
+msgstr "Жұмыс нұсқаулары"
+
+msgid "3D тур по университету"
+msgstr "Университет бойынша 3D тур"
+
+# Leadership titles
+msgid "Ректор"
+msgstr "Ректор"
+
+msgid "Проректор"
+msgstr "Проректор"
 
 msgid "Поддержка"
 msgstr "Поддержка"

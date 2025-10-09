@@ -48,10 +48,24 @@ msgid "Обратная связь"
 msgstr "Feedback"
 
 msgid "Часто задаваемые вопросы"
-msgstr "Frequently asked questions"
+msgstr "Frequently Asked Questions"
 
 msgid "Настройки"
 msgstr "Settings"
+
+# Sidebar specific
+msgid "Инструкции по работе"
+msgstr "Instructions for use"
+
+msgid "3D тур по университету"
+msgstr "3D tour of the university"
+
+# Leadership titles
+msgid "Ректор"
+msgstr "Rector"
+
+msgid "Проректор"
+msgstr "Vice-Rector"
 
 msgid "Поддержка"
 msgstr "Support"

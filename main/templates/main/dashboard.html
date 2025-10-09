@@ -55,15 +55,15 @@
             <a href="{% url 'main:lessons' %}" class="dashboard-link">
                 {% if current_language == 'en' %}
                     {% with img_path='images/2-eng.svg' %}
-                    <img src="{% static img_path %}" alt="{% trans 'Памятка сотрудника' %}" class="dashboard-img">
+                    <img src="{% static img_path %}" alt="{% trans 'Инструкции по работе' %}" class="dashboard-img">
                     {% endwith %}
                 {% elif current_language == 'kk' %}
                     {% with img_path='images/2-kz.svg' %}
-                    <img src="{% static img_path %}" alt="{% trans 'Памятка сотрудника' %}" class="dashboard-img">
+                    <img src="{% static img_path %}" alt="{% trans 'Инструкции по работе' %}" class="dashboard-img">
                     {% endwith %}
                 {% else %}
                     {% with img_path='images/2.svg' %}
-                    <img src="{% static img_path %}" alt="{% trans 'Памятка сотрудника' %}" class="dashboard-img">
+                    <img src="{% static img_path %}" alt="{% trans 'Инструкции по работе' %}" class="dashboard-img">
                     {% endwith %}
                 {% endif %}
             </a>

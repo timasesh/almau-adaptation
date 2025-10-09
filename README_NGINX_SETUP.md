@@ -1,16 +1,19 @@
 # Настройка Nginx для исправления ошибки 404 при загрузке PDF
 
 ## Проблема
+
 При загрузке PDF файлов на продакшн сайте `https://adaptation.almau.edu.kz` возникает ошибка 404 Not Found от Nginx. Это происходит потому, что Nginx не настроен для раздачи медиафайлов.
 
 ## Решение
 
 ### 1. Подключение к серверу
+
 ```bash
 ssh user@your-server-ip
 ```
 
 ### 2. Найти путь к проекту
+
 ```bash
 # Найти где находится проект Django
 find / -name "manage.py" -type f 2>/dev/null | grep adaptation
@@ -21,6 +24,7 @@ find /var/www -name "manage.py" -type f 2>/dev/null
 ```
 
 ### 3. Запустить скрипт настройки
+
 ```bash
 # Скачать скрипт на сервер
 wget https://raw.githubusercontent.com/your-repo/almau-adaptation/main/deploy_nginx_config.sh
@@ -39,11 +43,13 @@ sudo bash deploy_nginx_config.sh
 ### 4. Альтернативный способ - ручная настройка
 
 #### Создать конфигурацию Nginx:
+
 ```bash
 sudo nano /etc/nginx/sites-available/adaptation
 ```
 
 #### Вставить следующую конфигурацию:
+
 ```nginx
 server {
     listen 80;
@@ -70,16 +76,16 @@ server {
         alias /path/to/your/project/media/;
         expires 1y;
         add_header Cache-Control "public, immutable";
-        
+
         # Безопасность для загруженных файлов
         add_header X-Content-Type-Options nosniff;
         add_header X-Frame-Options DENY;
-        
+
         # Разрешаем только определенные типы файлов
         location ~* \.(pdf|doc|docx|txt|mp4|avi|mov|wmv|jpg|jpeg|png|gif)$ {
             # Разрешаем доступ к этим типам файлов
         }
-        
+
         # Блокируем выполнение скриптов
         location ~* \.(php|pl|py|jsp|asp|sh|cgi)$ {
             deny all;
@@ -100,16 +106,19 @@ server {
 ```
 
 #### Включить сайт:
+
 ```bash
 sudo ln -s /etc/nginx/sites-available/adaptation /etc/nginx/sites-enabled/
 ```
 
 #### Проверить конфигурацию:
+
 ```bash
 sudo nginx -t
 ```
 
 #### Перезагрузить Nginx:
+
 ```bash
 sudo systemctl reload nginx
 ```
@@ -125,6 +134,7 @@ sudo systemctl reload nginx
 ### 6. Логи для отладки
 
 Если проблемы остаются, проверьте логи:
+
 ```bash
 # Логи Nginx
 sudo tail -f /var/log/nginx/adaptation_error.log
@@ -137,6 +147,7 @@ sudo journalctl -u your-django-service -f
 ### 7. Права доступа
 
 Убедитесь, что Nginx может читать медиафайлы:
+
 ```bash
 # Проверить права на папку media
 ls -la /path/to/your/project/media/
@@ -149,8 +160,9 @@ sudo chmod -R 755 /path/to/your/project/media/
 ## Структура медиафайлов
 
 Проект использует следующие пути для медиафайлов:
+
 - `media/instructions/pdfs/` - PDF инструкции
-- `media/instructions/videos/` - Видео инструкции  
+- `media/instructions/videos/` - Видео инструкции
 - `media/documents/` - Документы
 - `media/lessons/pdfs/` - PDF уроки
 - `media/lessons/videos/` - Видео уроки
@@ -163,6 +175,7 @@ sudo chmod -R 755 /path/to/your/project/media/
 ## Безопасность
 
 Конфигурация включает меры безопасности:
+
 - Блокировка выполнения скриптов в медиапапке
 - Заголовки безопасности
 - Ограничение типов файлов
