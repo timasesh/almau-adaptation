@@ -942,12 +942,26 @@ def about_view(request):
     except Teacher.DoesNotExist:
         pass
     
-    # Получаем текущий язык (из активной локали)
+    # Получаем текущий язык из сессии (как на других страницах), с fallback на активную локаль
     try:
-        from django.utils import translation
-        current_language = translation.get_language() or 'ru'
+        current_language = request.session.get('django_language')
+        if not current_language:
+            from django.utils import translation
+            current_language = translation.get_language() or 'ru'
     except Exception:
         current_language = getattr(request, 'LANGUAGE_CODE', 'ru') or 'ru'
+
+    # Нормализуем код языка (en, kk, ru)
+    try:
+        simplified_lang = (current_language or 'ru').lower()
+        if simplified_lang.startswith('en'):
+            current_language = 'en'
+        elif simplified_lang.startswith('kk'):
+            current_language = 'kk'
+        else:
+            current_language = 'ru'
+    except Exception:
+        current_language = 'ru'
     
     # Получаем объекты для страницы "Об университете"
     try:

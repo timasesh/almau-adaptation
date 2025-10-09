@@ -146,7 +146,7 @@ body {
     transition: all 0.3s ease;
     overflow: hidden; /* Убираем все слайдеры */
     flex-shrink: 0;
-    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 1px 0 20px rgba(0, 0, 0, 0.08);
     display: flex;
     flex-direction: column;
 }
@@ -274,7 +274,7 @@ body {
     flex: 1;
     font-weight: 300 !important; /* Inter Light */
     white-space: nowrap;
-    font-size: 24px !important;
+    font-size: 16px !important;
     font-family: "Inter", sans-serif !important;
 }
 
@@ -3113,6 +3113,79 @@ textarea.form-control {
     .dashboard-img { width: 100% !important; height: auto !important; }
 }
 
+/* === About page typography overrides === */
+.about-content .history-section h2,
+.about-content .mission-card h3,
+.about-content .values-card h3,
+.about-content .leadership-section h2,
+.about-content .leader-card h3 {
+    font-family: "Inter", sans-serif !important;
+    font-weight: 400 !important;
+    font-size: 20px !important;
+    color: #000000 !important;
+}
+
+.about-content .history-text p,
+.about-content .mission-card p,
+.about-content .values-card p {
+    font-family: "Inter", sans-serif !important;
+    font-weight: 400 !important;
+    font-size: 16px !important;
+    line-height: 1.6 !important;
+    color: #000000 !important;
+}
+
+.about-content .leader-name {
+    font-family: "Inter", sans-serif !important;
+    font-weight: 400 !important;
+    font-size: 20px !important;
+    color: #000000 !important;
+}
+
+/* Ensure history text is exactly 16px, even when wrapped by linebreaks */
+.about-content .history-paragraph,
+.about-content .history-paragraph p {
+    font-family: "Inter", sans-serif !important;
+    font-weight: 400 !important;
+    font-size: 16px !important;
+    line-height: 1.6 !important;
+    color: #000000 !important;
+}
+
+/* Reduce space between Mission and Values and reset padding */
+.about-content .mission-values {
+    gap: 24px !important; /* compact spacing between columns */
+    width: fit-content !important; /* shrink container to content */
+    margin-left: auto !important;
+    margin-right: auto !important; /* center the pair */
+}
+.about-content .mission-card {
+    padding-left: 0 !important;
+}
+
+/* Slightly narrower cards to bring columns closer */
+.about-content .mission-card,
+.about-content .values-card {
+    max-width: 360px !important;
+}
+
+/* Leadership photos: remove circular border, make square thumbnails */
+.about-content .leader-avatar {
+    width: 150px !important;
+    height: 180px !important;
+    border: none !important;
+    border-radius: 12px !important; /* square with slight rounding like history */
+    background: transparent !important;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1) !important;
+}
+
+.about-content .leader-photo {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    border-radius: 12px !important;
+}
+
 /* Utility: Inter Regular */
 .inter-regular {
     font-family: "Inter", sans-serif !important;
@@ -3120,3 +3193,4 @@ textarea.form-control {
     font-weight: 400;
     font-style: normal;
 }
+

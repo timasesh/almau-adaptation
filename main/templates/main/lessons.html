@@ -43,14 +43,14 @@
     <!-- Main content -->
     <div class="main-content" id="mainContent" style="position: relative;">
         <img src="{% static 'images/almauni.svg' %}" alt="AlmaUni" class="page-logo">
-        <div class="content-header" style="margin-left: 100px; margin-top: 20px;">
+        <div class="content-header" style="margin-left: 85px; margin-top: 20px;">
             <div class="greeting">
-                <h1>{% trans "Памятка сотрудника" %}</h1>
+                <h1 style="padding-left:15px">{% trans "Памятка сотрудника" %}</h1>
             </div>
         </div>
         
         <!-- Новая шапка и блоки памятки сотрудника -->
-        <div class="memo-container">
+            <div class="memo-container" >
             <div class="profile-block">
                 <div class="profile-info">
                     <h2 class="profile-name">{% firstof request.user.get_full_name request.user.username %}</h2>
