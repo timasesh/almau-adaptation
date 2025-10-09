@@ -1,0 +1,49 @@
+# Russian translations for Django project.
+# Copyright (C) 2024
+# This file is distributed under the same license as the Django project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2024.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-08-06 22:06+0600\n"
+"PO-Revision-Date: 2024-08-06 22:06+0600\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+# Navigation
+msgid "Главная"
+msgstr "Главная"
+
+msgid "Об университете"
+msgstr "Об университете"
+
+msgid "Инструкции по работе"
+msgstr "Инструкции по работе"
+
+msgid "Документация"
+msgstr "Документация"
+
+msgid "3D тур по университету"
+msgstr "3D тур по университету"
+
+msgid "Часто задаваемые вопросы"
+msgstr "Часто задаваемые вопросы"
+
+msgid "Обратная связь"
+msgstr "Обратная связь"
+
+msgid "Настройки"
+msgstr "Настройки"
+
+# Leadership titles
+msgid "Ректор"
+msgstr "Ректор"
+
+msgid "Проректор"
+msgstr "Проректор"

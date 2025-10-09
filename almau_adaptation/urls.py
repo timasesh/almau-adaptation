@@ -25,6 +25,8 @@ urlpatterns = [
     path('', include('main.urls')),
 ]
 
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+# Serve media in all environments (fallback if Nginx isn't configured)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+# Static files are handled by WhiteNoise in production, but keep fallback for completeness
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
