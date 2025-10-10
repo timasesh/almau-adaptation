@@ -173,10 +173,10 @@ class DocumentCategory(models.Model):
     name_en = models.CharField(max_length=100, blank=True, verbose_name="Название (English)")
     name_kk = models.CharField(max_length=100, blank=True, verbose_name="Название (Қазақша)")
     allowed_positions = models.ManyToManyField(
-        Position,
+        'Position',
         blank=True,
-        related_name="documents",
-        verbose_name="Доступные должности"
+        related_name='allowed_document_categories',
+        verbose_name='Доступные должности'
     )
     description = models.TextField(blank=True, verbose_name="Описание")
     description_en = models.TextField(blank=True, verbose_name="Описание (English)")
@@ -206,6 +206,12 @@ class Document(models.Model):
     title = models.CharField(max_length=200, verbose_name="Название документа")
     title_en = models.CharField(max_length=200, blank=True, verbose_name="Название (English)")
     title_kk = models.CharField(max_length=200, blank=True, verbose_name="Название (Қазақша)")
+    allowed_positions = models.ManyToManyField(
+        'Position',
+        blank=True,
+        related_name='documents',
+        verbose_name='Доступные должности'
+    )
 
     description = models.TextField(blank=True, verbose_name="Описание")
     description_en = models.TextField(blank=True, verbose_name="Описание (English)")
