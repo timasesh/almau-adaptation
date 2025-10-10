@@ -475,7 +475,8 @@ class LessonAdmin(admin.ModelAdmin):
         ('Служебная информация', {
             'fields': ('created_at', 'updated_at'),
             'classes': ('collapse',)
-        }),
+        })
+    )
 
     def has_video(self, obj):
         return obj.has_video()
