@@ -172,7 +172,12 @@ class DocumentCategory(models.Model):
     name = models.CharField(max_length=100, verbose_name="Название категории")
     name_en = models.CharField(max_length=100, blank=True, verbose_name="Название (English)")
     name_kk = models.CharField(max_length=100, blank=True, verbose_name="Название (Қазақша)")
-
+    allowed_positions = models.ManyToManyField(
+        Position,
+        blank=True,
+        related_name="documents",
+        verbose_name="Доступные должности"
+    )
     description = models.TextField(blank=True, verbose_name="Описание")
     description_en = models.TextField(blank=True, verbose_name="Описание (English)")
     description_kk = models.TextField(blank=True, verbose_name="Описание (Қазақша)")
@@ -623,6 +628,13 @@ class Lesson(models.Model):
 
     category = models.ForeignKey(LessonCategory, on_delete=models.CASCADE, verbose_name="Категория", null=True,
                                  blank=True)
+
+    allowed_positions = models.ManyToManyField(
+        Position,
+        blank=True,
+        related_name="lessons",
+        verbose_name="Доступные должности"
+    )
 
     # Видео файл (опционально)
     video = models.FileField(
@@ -1264,3 +1276,5 @@ class Editor(models.Model):
     def is_verified(self):
         """Проверяет, верифицирован ли редактор"""
         return self.is_active and self.user.is_active
+
+

@@ -1,8 +1,11 @@
 from django.contrib import admin
 from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
-from .models import Teacher, Document, DocumentCategory, Instruction, Process, Feedback, FAQ, FAQCategory, History, Mission, Values, Leader, ContactInfo, Lesson, LessonCompletion, LessonProgress, LessonCategory, LessonSlide
+from .models import Teacher, Document, DocumentCategory, Instruction, Process, Feedback, FAQ, FAQCategory, History, \
+    Mission, Values, Leader, ContactInfo, Lesson, LessonCompletion, LessonProgress, LessonCategory, LessonSlide
+
 
 class TeacherInline(admin.StackedInline):
     """Inline для отображения информации о преподавателе в админке пользователя"""
@@ -11,14 +14,16 @@ class TeacherInline(admin.StackedInline):
     verbose_name_plural = 'Информация о преподавателе'
     fields = ('full_name', 'department', 'position', 'phone', 'office', 'is_active')
 
+
 class UserAdmin(BaseUserAdmin):
     """Расширенная админка пользователя с информацией о преподавателе"""
     inlines = (TeacherInline,)
-    
+
     def get_inline_instances(self, request, obj=None):
         if not obj:
             return list()
         return super(UserAdmin, self).get_inline_instances(request, obj)
+
 
 @admin.register(Teacher)
 class TeacherAdmin(admin.ModelAdmin):
@@ -28,7 +33,7 @@ class TeacherAdmin(admin.ModelAdmin):
     search_fields = ('full_name', 'user__email', 'department', 'position')
     list_editable = ('is_active',)
     ordering = ('full_name',)
-    
+
     fieldsets = (
         ('Основная информация', {
             'fields': ('user', 'full_name', 'is_active')
@@ -40,15 +45,18 @@ class TeacherAdmin(admin.ModelAdmin):
             'fields': ('phone',)
         }),
     )
-    
+
     def get_email(self, obj):
         return obj.user.email
+
     get_email.short_description = 'Email'
     get_email.admin_order_field = 'user__email'
+
 
 # Перерегистрируем стандартную админку пользователя
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
+
 
 class AboutUniversityAdmin(admin.ModelAdmin):
     """Админка для информации об университете"""
@@ -56,7 +64,7 @@ class AboutUniversityAdmin(admin.ModelAdmin):
     list_editable = ('is_active', 'order')
     search_fields = ('title', 'content', 'title_en', 'content_en', 'title_kk', 'content_kk')
     readonly_fields = ('created_at', 'updated_at')
-    
+
     fieldsets = (
         ('Русская версия', {
             'fields': ('title', 'content')
@@ -77,7 +85,7 @@ class AboutUniversityAdmin(admin.ModelAdmin):
             'classes': ('collapse',)
         }),
     )
-    
+
     def save_model(self, request, obj, form, change):
         # При сохранении, если английская или казахская версия не заполнены,
         # копируем русскую версию
@@ -91,6 +99,7 @@ class AboutUniversityAdmin(admin.ModelAdmin):
             obj.content_kk = obj.content
         super().save_model(request, obj, form, change)
 
+
 @admin.register(History)
 class HistoryAdmin(admin.ModelAdmin):
     fieldsets = (
@@ -100,6 +109,7 @@ class HistoryAdmin(admin.ModelAdmin):
         ('Изображение', {'fields': ('image',)})
     )
 
+
 @admin.register(Mission)
 class MissionAdmin(admin.ModelAdmin):
     fieldsets = (
@@ -107,6 +117,7 @@ class MissionAdmin(admin.ModelAdmin):
         ('English', {'fields': ('text_en',), 'classes': ('collapse',)}),
         ('Қазақша', {'fields': ('text_kk',), 'classes': ('collapse',)})
     )
+
 
 @admin.register(Values)
 class ValuesAdmin(admin.ModelAdmin):
@@ -116,14 +127,18 @@ class ValuesAdmin(admin.ModelAdmin):
         ('Қазақша', {'fields': ('text_kk',), 'classes': ('collapse',)})
     )
 
+
 @admin.register(ContactInfo)
 class ContactInfoAdmin(admin.ModelAdmin):
     fieldsets = (
         ('Адрес', {'fields': ('address', 'address_en', 'address_kk', 'phone')}),
         ('Кампус', {'fields': ('campus_items', 'campus_items_en', 'campus_items_kk', 'campus_image')}),
-        ('3D Кампус', {'fields': ('campus_3d_enabled', 'campus_3d_url', 'campus_3d_button_text', 'campus_3d_button_text_en', 'campus_3d_button_text_kk')}),
+        ('3D Кампус', {'fields': (
+        'campus_3d_enabled', 'campus_3d_url', 'campus_3d_button_text', 'campus_3d_button_text_en',
+        'campus_3d_button_text_kk')}),
         ('IT Поддержка', {'fields': ('it_support_enabled', 'it_support_url')})
     )
+
 
 @admin.register(DocumentCategory)
 class DocumentCategoryAdmin(admin.ModelAdmin):
@@ -133,20 +148,25 @@ class DocumentCategoryAdmin(admin.ModelAdmin):
     readonly_fields = ('created_at',)
     list_editable = ('order_index',)
     list_display_links = ('name',)
-    
+
     def get_documents_count(self, obj):
         return obj.document_set.count()
+
     get_documents_count.short_description = 'Количество документов'
+
 
 @admin.register(Document)
 class DocumentAdmin(admin.ModelAdmin):
     """Админка для документов"""
-    list_display = ('title', 'category', 'get_file_extension', 'get_file_size', 'download_count', 'is_active', 'created_at')
+    list_display = (
+    'title', 'category', 'get_file_extension', 'get_file_size', 'download_count', 'is_active', 'created_at')
     list_filter = ('category', 'is_active', 'created_at', 'uploaded_by')
     search_fields = ('title', 'description', 'title_en', 'title_kk', 'description_en', 'description_kk')
     readonly_fields = ('uploaded_by', 'created_at', 'updated_at', 'download_count')
     list_editable = ('is_active',)
-    
+
+    filter_horizontal = ('allowed_positions',)
+
     fieldsets = (
         ('Русский язык', {
             'fields': ('title', 'description', 'file')
@@ -160,41 +180,33 @@ class DocumentAdmin(admin.ModelAdmin):
             'classes': ('collapse',)
         }),
         ('Общие настройки', {
-            'fields': ('category', 'is_active')
+            'fields': ('category', 'is_active', 'allowed_positions')
         }),
         ('Служебная информация', {
             'fields': ('uploaded_by', 'download_count', 'created_at', 'updated_at'),
             'classes': ('collapse',)
         }),
+
     )
-    
+
     def save_model(self, request, obj, form, change):
         if not change:  # Если это новый объект
             obj.uploaded_by = request.user
         super().save_model(request, obj, form, change)
-    
+
     def get_file_extension(self, obj):
         return obj.get_file_extension()
+
     get_file_extension.short_description = 'Тип файла'
-    
+
     def get_file_size(self, obj):
         return obj.get_file_size()
+
     get_file_size.short_description = 'Размер файла'
 
-@admin.register(Instruction)
-class InstructionAdmin(admin.ModelAdmin):
-    list_display = ('title', 'is_active', 'created_at', 'updated_at')
-    search_fields = ('title', 'description', 'title_en', 'title_kk', 'description_en', 'description_kk')
-    list_filter = ('is_active', 'created_at')
-    list_editable = ('is_active',)
-    readonly_fields = ('created_at', 'updated_at')
 
-    fieldsets = (
-        ('Русский', {'fields': ('title', 'description')}),
-        ('English', {'fields': ('title_en', 'description_en'), 'classes': ('collapse',)}),
-        ('Қазақша', {'fields': ('title_kk', 'description_kk'), 'classes': ('collapse',)}),
-        ('Служебное', {'fields': ('is_active', 'created_at', 'updated_at'), 'classes': ('collapse',)}),
-    )
+
+
 
 @admin.register(Process)
 class ProcessAdmin(admin.ModelAdmin):
@@ -211,6 +223,7 @@ class ProcessAdmin(admin.ModelAdmin):
         ('Служебное', {'fields': ('is_active', 'created_at', 'updated_at'), 'classes': ('collapse',)}),
     )
 
+
 @admin.register(Feedback)
 class FeedbackAdmin(admin.ModelAdmin):
     """Админка для обратной связи"""
@@ -219,7 +232,7 @@ class FeedbackAdmin(admin.ModelAdmin):
     search_fields = ('subject', 'message', 'email', 'user__username', 'user__first_name')
     readonly_fields = ('user', 'created_at', 'updated_at')
     list_editable = ('status',)
-    
+
     fieldsets = (
         ('Информация об обращении', {
             'fields': ('recipient', 'feedback_type', 'subject', 'message', 'status')
@@ -236,19 +249,21 @@ class FeedbackAdmin(admin.ModelAdmin):
             'classes': ('collapse',)
         }),
     )
-    
+
     def get_user_name(self, obj):
         try:
             teacher = obj.user.teacher
             return teacher.full_name
         except:
             return obj.user.get_full_name() or obj.user.username
+
     get_user_name.short_description = 'Пользователь'
     get_user_name.admin_order_field = 'user__username'
-    
+
     def has_delete_permission(self, request, obj=None):
         # Ограничиваем удаление обращений
         return request.user.is_superuser
+
 
 @admin.register(LessonCategory)
 class LessonCategoryAdmin(admin.ModelAdmin):
@@ -259,7 +274,7 @@ class LessonCategoryAdmin(admin.ModelAdmin):
     readonly_fields = ('created_at',)
     list_editable = ('order_index', 'is_active')
     list_display_links = ('name',)
-    
+
     fieldsets = (
         ('Русский', {'fields': ('name', 'description')}),
         ('English', {'fields': ('name_en', 'description_en'), 'classes': ('collapse',)}),
@@ -273,9 +288,10 @@ class LessonCategoryAdmin(admin.ModelAdmin):
             'classes': ('collapse',)
         }),
     )
-    
+
     def get_lesson_count(self, obj):
         return obj.lesson_set.filter(is_active=True).count()
+
     get_lesson_count.short_description = 'Количество уроков'
     get_lesson_count.admin_order_field = 'lesson_count'
 
@@ -289,7 +305,7 @@ class FAQCategoryAdmin(admin.ModelAdmin):
     readonly_fields = ('created_at',)
     list_editable = ('order_index', 'is_active')
     list_display_links = ('name',)
-    
+
     fieldsets = (
         ('Русский', {'fields': ('name', 'description')}),
         ('English', {'fields': ('name_en', 'description_en'), 'classes': ('collapse',)}),
@@ -303,11 +319,13 @@ class FAQCategoryAdmin(admin.ModelAdmin):
             'classes': ('collapse',)
         }),
     )
-    
+
     def get_faq_count(self, obj):
         return obj.faq_set.filter(is_active=True).count()
+
     get_faq_count.short_description = 'Количество вопросов'
     get_faq_count.admin_order_field = 'faq_count'
+
 
 @admin.register(FAQ)
 class FAQAdmin(admin.ModelAdmin):
@@ -318,7 +336,7 @@ class FAQAdmin(admin.ModelAdmin):
     readonly_fields = ('views_count', 'created_at', 'updated_at')
     list_editable = ('is_active', 'is_popular', 'order_index')
     list_display_links = ('question',)
-    
+
     fieldsets = (
         ('Русский', {'fields': ('question', 'answer')}),
         ('English', {'fields': ('question_en', 'answer_en'), 'classes': ('collapse',)}),
@@ -336,32 +354,37 @@ class FAQAdmin(admin.ModelAdmin):
             'classes': ('collapse',)
         }),
     )
-    
+
     def get_queryset(self, request):
         # Оптимизируем запросы, добавляя связанные объекты
         return super().get_queryset(request).select_related('category')
-    
+
     actions = ['mark_as_popular', 'mark_as_not_popular', 'activate_faqs', 'deactivate_faqs']
-    
+
     def mark_as_popular(self, request, queryset):
         updated = queryset.update(is_popular=True)
         self.message_user(request, f'{updated} вопросов отмечено как популярные.')
+
     mark_as_popular.short_description = 'Отметить как популярные'
-    
+
     def mark_as_not_popular(self, request, queryset):
         updated = queryset.update(is_popular=False)
         self.message_user(request, f'{updated} вопросов убрано из популярных.')
+
     mark_as_not_popular.short_description = 'Убрать из популярных'
-    
+
     def activate_faqs(self, request, queryset):
         updated = queryset.update(is_active=True)
         self.message_user(request, f'{updated} вопросов активировано.')
+
     activate_faqs.short_description = 'Активировать вопросы'
-    
+
     def deactivate_faqs(self, request, queryset):
         updated = queryset.update(is_active=False)
         self.message_user(request, f'{updated} вопросов деактивировано.')
+
     deactivate_faqs.short_description = 'Деактивировать вопросы'
+
 
 @admin.register(Leader)
 class LeaderAdmin(admin.ModelAdmin):
@@ -370,7 +393,7 @@ class LeaderAdmin(admin.ModelAdmin):
     search_fields = ('full_name',)
     list_editable = ('order', 'is_active')
     ordering = ('order', 'role')
-    
+
     fieldsets = (
         ('Основная информация', {
             'fields': ('role', 'full_name', 'photo', 'is_active')
@@ -389,7 +412,7 @@ class LessonSlideAdmin(admin.ModelAdmin):
     search_fields = ('lesson__title', 'title', 'description')
     list_editable = ('order',)
     ordering = ('lesson', 'order')
-    
+
     fieldsets = (
         ('Основная информация', {
             'fields': ('lesson', 'order', 'title', 'description')
@@ -404,7 +427,7 @@ class LessonSlideAdmin(admin.ModelAdmin):
         }),
     )
     readonly_fields = ('created_at', 'preview_image')
-    
+
     def preview_image(self, obj):
         if obj.image:
             return format_html(
@@ -412,8 +435,9 @@ class LessonSlideAdmin(admin.ModelAdmin):
                 obj.image.url
             )
         return "Нет изображения"
+
     preview_image.short_description = 'Предварительный просмотр'
-    
+
     def save_model(self, request, obj, form, change):
         # Автоматически устанавливаем порядок, если не задан
         if not obj.order:
@@ -432,13 +456,18 @@ class LessonAdmin(admin.ModelAdmin):
     ordering = ('-created_at',)
     readonly_fields = ('created_at', 'updated_at', 'has_video', 'has_pdf', 'has_slides')
 
+    filter_horizontal = ('allowed_positions',)
+
     fieldsets = (
         ('Основная информация', {
-            'fields': ('title', 'title_en', 'title_kk', 'description', 'description_en', 'description_kk', 'category', 'duration')
+            'fields': (
+            'title', 'title_en', 'title_kk', 'description', 'description_en', 'description_kk', 'category', 'duration')
         }),
         ('Медиа файлы', {
             'fields': ('video', 'pdf_file'),
-            'description': 'Можно загрузить видео ИЛИ PDF, или оба файла. Слайды создаются отдельно.'
+        }),
+        ('Доступ', {
+            'fields': ('allowed_positions',)
         }),
         ('Статус', {
             'fields': ('is_active',)
@@ -447,20 +476,22 @@ class LessonAdmin(admin.ModelAdmin):
             'fields': ('created_at', 'updated_at'),
             'classes': ('collapse',)
         }),
-    )
 
     def has_video(self, obj):
         return obj.has_video()
+
     has_video.boolean = True
     has_video.short_description = 'Видео'
 
     def has_pdf(self, obj):
         return obj.has_pdf()
+
     has_pdf.boolean = True
     has_pdf.short_description = 'PDF'
 
     def has_slides(self, obj):
         return obj.has_slides()
+
     has_slides.boolean = True
     has_slides.short_description = 'Слайды'
 
@@ -475,9 +506,9 @@ class LessonAdmin(admin.ModelAdmin):
             obj.title_kk = obj.title
         if not obj.description_kk:
             obj.description_kk = obj.description
-        
+
         super().save_model(request, obj, form, change)
-        
+
         # Если загружен PDF, конвертируем его в слайды
         if obj.pdf_file and (change or form.files.get('pdf_file')):
             try:
@@ -489,7 +520,7 @@ class LessonAdmin(admin.ModelAdmin):
                     self.message_user(request, "Ошибка при конвертации PDF в слайды", level='WARNING')
             except Exception as e:
                 self.message_user(request, f"Ошибка при конвертации PDF: {str(e)}", level='ERROR')
-        
+
         # Если есть PDF, но нет слайдов, конвертируем
         elif obj.pdf_file and not obj.slides.exists():
             try:
@@ -544,7 +575,7 @@ class LessonProgressAdmin(admin.ModelAdmin):
     search_fields = ('lesson__title', 'user__username', 'user__first_name', 'user__last_name')
     readonly_fields = ('created_at', 'updated_at')
     ordering = ('-updated_at',)
-    
+
     fieldsets = (
         ('Основная информация', {
             'fields': ('lesson', 'user')
@@ -562,4 +593,22 @@ class LessonProgressAdmin(admin.ModelAdmin):
             'fields': ('created_at', 'updated_at'),
             'classes': ('collapse',)
         }),
+    )
+
+
+@admin.register(Instruction)
+class InstructionAdmin(admin.ModelAdmin):
+    list_display = ('title', 'is_active', 'created_at', 'updated_at')
+    search_fields = ('title', 'description', 'title_en', 'title_kk', 'description_en', 'description_kk')
+    list_filter = ('is_active', 'created_at')
+    list_editable = ('is_active',)
+    readonly_fields = ('created_at', 'updated_at')
+    filter_horizontal = ('allowed_positions',)
+
+    fieldsets = (
+        ('Русский', {'fields': ('title', 'description')}),
+        ('English', {'fields': ('title_en', 'description_en'), 'classes': ('collapse',)}),
+        ('Қазақша', {'fields': ('title_kk', 'description_kk'), 'classes': ('collapse',)}),
+        ('Доступ', {'fields': ('allowed_positions',)}),
+        ('Служебное', {'fields': ('is_active', 'created_at', 'updated_at'), 'classes': ('collapse',)}),
     )

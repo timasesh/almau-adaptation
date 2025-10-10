@@ -3616,3 +3616,4 @@ class InstructionDetailView(DetailView):
     model = Instruction
     template_name = "main/instruction_detail.html"
     context_object_name = "instruction"
+
