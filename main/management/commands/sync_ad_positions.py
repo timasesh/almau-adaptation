@@ -13,7 +13,7 @@ class Command(BaseCommand):
         updated = 0
 
         # Используем твои ENV переменные
-        token_url = f"{settings.MS_AUTHORITY}/oauth2/v2.0/token"
+        token_url = f"{settings.MS_TENANT}/oauth2/v2.0/token"
         data = {
             "grant_type": "client_credentials",
             "client_id": settings.MS_CLIENT_ID,
