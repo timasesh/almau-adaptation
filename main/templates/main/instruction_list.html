@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+  <h2>Инструкции и материалы</h2>
+
+  <form method="get" class="mb-4">
+    <input type="text" name="q" value="{{ request.GET.q }}" placeholder="Поиск..." class="form-control">
+  </form>
+
+  {% if request.user.profile.position %}
+  <p class="text-muted">Ваша должность: <b>{{ request.user.profile.position.name }}</b></p>
+  {% endif %}
+
+  <div class="list-group">
+    {% for instr in instructions %}
+      <a href="{% url 'instruction_detail' instr.pk %}" class="list-group-item list-group-item-action">
+        <h5>{{ instr.title }}</h5>
+        <p>{{ instr.description|truncatewords:20 }}</p>
+      </a>
+    {% empty %}
+      <p>Нет доступных инструкций</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

@@ -3,14 +3,41 @@ from django.contrib.auth.models import User
 
 from django.utils import timezone
 
+
 # Create your models here.
+
+class Position(models.Model):
+    """Справочник должностей (может подтягиваться из AD)"""
+    name = models.CharField(max_length=128, unique=True)
+
+    class Meta:
+        verbose_name = "Должность"
+        verbose_name_plural = "Должности"
+
+    def __str__(self):
+        return self.name
+
+
+class Profile(models.Model):
+    """Профиль пользователя с должностью"""
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
+    position = models.ForeignKey(Position, null=True, blank=True, on_delete=models.SET_NULL)
+
+    def __str__(self):
+        return self.user.username
+
 
 class Instruction(models.Model):
     """Модель инструкции"""
     title = models.CharField(max_length=200, verbose_name="Название инструкции")
     title_en = models.CharField(max_length=200, blank=True, verbose_name="Название (English)")
     title_kk = models.CharField(max_length=200, blank=True, verbose_name="Название (Қазақша)")
-
+    allowed_positions = models.ManyToManyField(
+        Position,
+        blank=True,
+        related_name="instructions",
+        verbose_name="Доступные должности",
+    )
     description = models.TextField(verbose_name="Текст инструкции")
     description_en = models.TextField(blank=True, verbose_name="Текст (English)")
     description_kk = models.TextField(blank=True, verbose_name="Текст (Қазақша)")
@@ -70,6 +97,7 @@ class Instruction(models.Model):
         if language == 'kk' and self.description_kk:
             return self.description_kk
         return self.description
+
 
 class Process(models.Model):
     """Модель процесса"""
@@ -138,6 +166,7 @@ class Teacher(models.Model):
             self.user.save()
         super().save(*args, **kwargs)
 
+
 class DocumentCategory(models.Model):
     """Категории документов"""
     name = models.CharField(max_length=100, verbose_name="Название категории")
@@ -166,22 +195,23 @@ class DocumentCategory(models.Model):
             return self.name_kk
         return self.name
 
+
 class Document(models.Model):
     """Модель документов"""
     title = models.CharField(max_length=200, verbose_name="Название документа")
     title_en = models.CharField(max_length=200, blank=True, verbose_name="Название (English)")
     title_kk = models.CharField(max_length=200, blank=True, verbose_name="Название (Қазақша)")
-    
+
     description = models.TextField(blank=True, verbose_name="Описание")
     description_en = models.TextField(blank=True, verbose_name="Описание (English)")
     description_kk = models.TextField(blank=True, verbose_name="Описание (Қазақша)")
-    
+
     category = models.ForeignKey(DocumentCategory, on_delete=models.CASCADE, verbose_name="Категория")
-    
+
     file = models.FileField(upload_to='documents/', verbose_name="Файл (Русский)")
     file_en = models.FileField(upload_to='documents/', blank=True, verbose_name="Файл (English)")
     file_kk = models.FileField(upload_to='documents/', blank=True, verbose_name="Файл (Қазақша)")
-    
+
     uploaded_by = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Загружено пользователем")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата загрузки")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
@@ -213,7 +243,7 @@ class Document(models.Model):
         if self.file:
             return self.file.name.split('.')[-1].upper()
         return ""
-    
+
     def get_title(self, language='ru'):
         """Получить название на нужном языке"""
         if language == 'en' and self.title_en:
@@ -221,7 +251,7 @@ class Document(models.Model):
         elif language == 'kk' and self.title_kk:
             return self.title_kk
         return self.title
-    
+
     def get_description(self, language='ru'):
         """Получить описание на нужном языке"""
         if language == 'en' and self.description_en:
@@ -229,7 +259,7 @@ class Document(models.Model):
         elif language == 'kk' and self.description_kk:
             return self.description_kk
         return self.description
-    
+
     def get_file(self, language='ru'):
         """Получить файл на нужном языке"""
         if language == 'en' and self.file_en:
@@ -243,25 +273,26 @@ class Document(models.Model):
         self.download_count += 1
         self.save(update_fields=['download_count'])
 
+
 class Feedback(models.Model):
     """Модель обратной связи"""
     RECIPIENT_CHOICES = [
         ('hr', 'HR'),
         ('it', 'IT поддержка'),
     ]
-    
+
     TYPE_CHOICES = [
         ('suggestion', 'Предложение'),
         ('question', 'Вопрос'),
     ]
-    
+
     STATUS_CHOICES = [
         ('new', 'Новое'),
         ('in_progress', 'В обработке'),
         ('resolved', 'Решено'),
         ('closed', 'Закрыто'),
     ]
-    
+
     recipient = models.CharField(max_length=20, choices=RECIPIENT_CHOICES, verbose_name="Кому направить")
     feedback_type = models.CharField(max_length=20, choices=TYPE_CHOICES, verbose_name="Тип обращения")
     subject = models.CharField(max_length=200, verbose_name="Тема обращения")
@@ -269,20 +300,21 @@ class Feedback(models.Model):
     file = models.FileField(upload_to='feedback/', blank=True, null=True, verbose_name="Прикрепленный файл")
     email = models.EmailField(verbose_name="Почта")
     phone = models.CharField(max_length=20, blank=True, verbose_name="Номер телефона")
-    
+
     # Служебные поля
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Пользователь")
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='new', verbose_name="Статус")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
-    
+
     class Meta:
         verbose_name = "Обратная связь"
         verbose_name_plural = "Обратная связь"
         ordering = ['-created_at']
-    
+
     def __str__(self):
         return f"{self.subject} - {self.user.username}"
+
 
 class FAQCategory(models.Model):
     """Категории для часто задаваемых вопросов"""
@@ -311,6 +343,7 @@ class FAQCategory(models.Model):
         if language == 'kk' and self.name_kk:
             return self.name_kk
         return self.name
+
 
 class FAQ(models.Model):
     """Модель часто задаваемых вопросов"""
@@ -360,8 +393,10 @@ class FAQ(models.Model):
 class History(models.Model):
     """История университета (редактируемый текст + картинка)"""
     text = models.TextField(verbose_name="Текст истории", help_text="Простой текст истории университета")
-    text_en = models.TextField(blank=True, verbose_name="Текст истории (English)", help_text="University history text in English")
-    text_kk = models.TextField(blank=True, verbose_name="Текст истории (Қазақша)", help_text="Университет тарихының мәтіні қазақ тілінде")
+    text_en = models.TextField(blank=True, verbose_name="Текст истории (English)",
+                               help_text="University history text in English")
+    text_kk = models.TextField(blank=True, verbose_name="Текст истории (Қазақша)",
+                               help_text="Университет тарихының мәтіні қазақ тілінде")
     image = models.ImageField(upload_to='about/', blank=True, verbose_name="Картинка истории 1")
     image_2 = models.ImageField(upload_to='about/', blank=True, verbose_name="Картинка истории 2")
     image_3 = models.ImageField(upload_to='about/', blank=True, verbose_name="Картинка истории 3")
@@ -379,6 +414,7 @@ class History(models.Model):
         if language == 'kk' and self.text_kk:
             return self.text_kk
         return self.text
+
 
 class Mission(models.Model):
     """Миссия университета (редактируемый текст)"""
@@ -399,6 +435,7 @@ class Mission(models.Model):
         if language == 'kk' and self.text_kk:
             return self.text_kk
         return self.text
+
 
 class Values(models.Model):
     """Ценности университета (редактируемый текст)"""
@@ -432,51 +469,51 @@ class ContactInfo(models.Model):
     campus_items = models.TextField(help_text="Список пунктов через перевод строки", verbose_name="Кампус — пункты")
     campus_items_en = models.TextField(blank=True, verbose_name="Кампус — пункты (English)")
     campus_items_kk = models.TextField(blank=True, verbose_name="Кампус — пункты (Қазақша)")
-    
+
     campus_image = models.ImageField(
-        upload_to='campus/', 
-        blank=True, 
-        null=True, 
+        upload_to='campus/',
+        blank=True,
+        null=True,
         verbose_name="Изображение кампуса",
         help_text="Изображение отображается на странице 'Контакты и карта' в разделе 'Кампус'"
     )
-    
+
     # 3D кнопка кампуса
     campus_3d_button_text = models.CharField(
-        max_length=200, 
-        blank=True, 
+        max_length=200,
+        blank=True,
         verbose_name="Текст кнопки 3D кампуса",
         default="Изучить кампус в 3D",
         help_text="Текст, который отображается на кнопке для 3D просмотра кампуса"
     )
     campus_3d_button_text_en = models.CharField(
-        max_length=200, 
-        blank=True, 
+        max_length=200,
+        blank=True,
         verbose_name="Текст кнопки 3D кампуса (English)",
         help_text="Текст кнопки на английском языке"
     )
     campus_3d_button_text_kk = models.CharField(
-        max_length=200, 
-        blank=True, 
+        max_length=200,
+        blank=True,
         verbose_name="Текст кнопки 3D кампуса (Қазақша)",
         help_text="Текст кнопки на казахском языке"
     )
-    
+
     campus_3d_url = models.URLField(
-        blank=True, 
+        blank=True,
         verbose_name="Ссылка на 3D кампус",
         help_text="URL для 3D просмотра кампуса (например, виртуальный тур)"
     )
-    
+
     campus_3d_enabled = models.BooleanField(
         default=False,
         verbose_name="Показывать кнопку 3D кампуса",
         help_text="Включить/выключить отображение кнопки 3D кампуса на сайте"
     )
-    
+
     # IT поддержка
     it_support_url = models.URLField(
-        blank=True, 
+        blank=True,
         verbose_name="Ссылка на IT поддержку",
         help_text="URL для IT поддержки (например, система helpdesk)"
     )
@@ -507,13 +544,14 @@ class ContactInfo(models.Model):
         elif language == 'kk' and self.campus_items_kk:
             text = self.campus_items_kk
         return [line.strip() for line in text.splitlines() if line.strip()]
-    
+
     def get_campus_3d_button_text(self, language: str = 'ru') -> str:
         if language == 'en' and self.campus_3d_button_text_en:
             return self.campus_3d_button_text_en
         if language == 'kk' and self.campus_3d_button_text_kk:
             return self.campus_3d_button_text_kk
         return self.campus_3d_button_text or "Изучить кампус в 3D"
+
 
 class Leader(models.Model):
     """Модель для руководства университета"""
@@ -582,22 +620,23 @@ class Lesson(models.Model):
     description = models.TextField(verbose_name="Описание урока")
     description_en = models.TextField(blank=True, verbose_name="Описание (English)")
     description_kk = models.TextField(blank=True, verbose_name="Описание (Қазақша)")
-    
-    category = models.ForeignKey(LessonCategory, on_delete=models.CASCADE, verbose_name="Категория", null=True, blank=True)
+
+    category = models.ForeignKey(LessonCategory, on_delete=models.CASCADE, verbose_name="Категория", null=True,
+                                 blank=True)
 
     # Видео файл (опционально)
     video = models.FileField(
-        upload_to='lessons/videos/', 
-        blank=True, 
+        upload_to='lessons/videos/',
+        blank=True,
         null=True,
         verbose_name="Видео файл",
         help_text="Поддерживаемые форматы: MP4, AVI, MOV, WMV"
     )
-    
+
     # PDF файл (опционально)
     pdf_file = models.FileField(
-        upload_to='lessons/pdfs/', 
-        blank=True, 
+        upload_to='lessons/pdfs/',
+        blank=True,
         null=True,
         verbose_name="PDF файл",
         help_text="PDF файл будет автоматически конвертирован в слайды"
@@ -608,12 +647,12 @@ class Lesson(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
     is_active = models.BooleanField(default=True, verbose_name="Активен")
-    
+
     # Автор урока
     created_by = models.ForeignKey(
-        User, 
-        on_delete=models.SET_NULL, 
-        null=True, 
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
         blank=True,
         verbose_name="Автор урока",
         help_text="Редактор или администратор, создавший урок"
@@ -621,7 +660,7 @@ class Lesson(models.Model):
 
     # Пользователи, завершившие урок
     completed_users = models.ManyToManyField(
-        User, 
+        User,
         through='LessonCompletion',
         related_name='completed_lessons',
         verbose_name="Завершившие пользователи"
@@ -652,13 +691,13 @@ class Lesson(models.Model):
     def calculate_duration(self) -> int:
         """Автоматически рассчитывает длительность урока в минутах"""
         total_duration = 0
-        
+
         # Расчет длительности видео (упрощенный)
         if self.video:
             # Используем фиксированную длительность для видео
             # В будущем можно добавить более точный расчет
             total_duration += 10  # 10 минут по умолчанию для видео
-        
+
         # Расчет длительности PDF (2 слайда = 1 минута)
         if self.pdf_file:
             try:
@@ -677,7 +716,7 @@ class Lesson(models.Model):
             except Exception as e:
                 # Если произошла ошибка, используем фиксированную длительность
                 total_duration += 5  # 5 минут по умолчанию для PDF
-        
+
         return max(1, total_duration)  # Минимум 1 минута
 
     @property
@@ -689,7 +728,7 @@ class Lesson(models.Model):
         """Переопределяем save для автоматической конвертации PDF"""
         is_new = self.pk is None
         had_pdf = False
-        
+
         # Проверяем, был ли PDF до сохранения
         if not is_new:
             try:
@@ -697,9 +736,9 @@ class Lesson(models.Model):
                 had_pdf = old_instance.pdf_file != self.pdf_file
             except Lesson.DoesNotExist:
                 pass
-        
+
         super().save(*args, **kwargs)
-        
+
         # Конвертируем PDF в слайды если:
         # 1. Это новый урок с PDF
         # 2. PDF был изменен
@@ -785,7 +824,7 @@ class Lesson(models.Model):
         """Проверяет, может ли пользователь завершить урок"""
         if self.is_completed_by_user(user):
             return False
-        
+
         progress = self.get_or_create_progress(user)
         return progress.is_ready_to_complete
 
@@ -793,30 +832,30 @@ class Lesson(models.Model):
         """Автоматически конвертирует PDF в слайды"""
         if not self.pdf_file:
             return False
-        
+
         try:
             import fitz  # PyMuPDF
             from PIL import Image
             import io
             from django.core.files.base import ContentFile
-            
+
             # Удаляем существующие слайды
             self.slides.all().delete()
-            
+
             # Открываем PDF
             pdf_document = fitz.open(self.pdf_file.path)
-            
+
             for page_num in range(pdf_document.page_count):
                 page = pdf_document.load_page(page_num)
-                
+
                 # Рендерим страницу как изображение
                 mat = fitz.Matrix(2.0, 2.0)  # Увеличиваем разрешение
                 pix = page.get_pixmap(matrix=mat)
-                
+
                 # Конвертируем в PIL Image
                 img_data = pix.tobytes("png")
                 img = Image.open(io.BytesIO(img_data))
-                
+
                 # Создаем слайд
                 slide = LessonSlide.objects.create(
                     lesson=self,
@@ -824,21 +863,21 @@ class Lesson(models.Model):
                     title=f"Страница {page_num + 1}",
                     description=f"Страница {page_num + 1} из {pdf_document.page_count}"
                 )
-                
+
                 # Сохраняем изображение
                 img_io = io.BytesIO()
                 img.save(img_io, format='PNG')
                 img_io.seek(0)
-                
+
                 slide.image.save(
                     f'slide_{page_num + 1}.png',
                     ContentFile(img_io.getvalue()),
                     save=True
                 )
-            
+
             pdf_document.close()
             return True
-            
+
         except ImportError:
             # Если PyMuPDF не установлен, используем альтернативный метод
             return self.convert_pdf_to_slides_alternative()
@@ -850,18 +889,18 @@ class Lesson(models.Model):
         """Альтернативный метод конвертации PDF (без PyMuPDF)"""
         if not self.pdf_file:
             return False
-        
+
         try:
             from pdf2image import convert_from_path
             from django.core.files.base import ContentFile
             import io
-            
+
             # Удаляем существующие слайды
             self.slides.all().delete()
-            
+
             # Конвертируем PDF в изображения
             images = convert_from_path(self.pdf_file.path, dpi=150)
-            
+
             for i, image in enumerate(images):
                 # Создаем слайд
                 slide = LessonSlide.objects.create(
@@ -870,20 +909,20 @@ class Lesson(models.Model):
                     title=f"Страница {i + 1}",
                     description=f"Страница {i + 1} из {len(images)}"
                 )
-                
+
                 # Сохраняем изображение
                 img_io = io.BytesIO()
                 image.save(img_io, format='PNG')
                 img_io.seek(0)
-                
+
                 slide.image.save(
                     f'slide_{i + 1}.png',
                     ContentFile(img_io.getvalue()),
                     save=True
                 )
-            
+
             return True
-            
+
         except ImportError:
             print("Необходимо установить PyMuPDF или pdf2image для конвертации PDF")
             return False
@@ -895,7 +934,7 @@ class Lesson(models.Model):
         """Переопределяем save для автоматической конвертации PDF"""
         is_new = self.pk is None
         had_pdf = False
-        
+
         # Проверяем, был ли PDF до сохранения
         if not is_new:
             try:
@@ -903,9 +942,9 @@ class Lesson(models.Model):
                 had_pdf = old_instance.pdf_file != self.pdf_file
             except Lesson.DoesNotExist:
                 pass
-        
+
         super().save(*args, **kwargs)
-        
+
         # Конвертируем PDF в слайды если:
         # 1. Это новый урок с PDF
         # 2. PDF был изменен
@@ -953,9 +992,9 @@ class LessonSlide(models.Model):
     order = models.PositiveIntegerField(default=0, verbose_name="Порядок")
     title = models.CharField(max_length=200, blank=True, verbose_name="Название слайда")
     description = models.TextField(blank=True, verbose_name="Описание слайда")
-    
+
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
-    
+
     class Meta:
         verbose_name = "Слайд урока"
         verbose_name_plural = "Слайды уроков"
@@ -985,32 +1024,33 @@ class LessonCompletion(models.Model):
 class LessonProgress(models.Model):
     """Прогресс пользователя по уроку"""
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, related_name='user_progress', verbose_name="Урок")
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='lesson_progress', verbose_name="Пользователь")
-    
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='lesson_progress',
+                             verbose_name="Пользователь")
+
     # Прогресс видео
     video_watched = models.BooleanField(default=False, verbose_name="Видео просмотрено")
     video_current_time = models.FloatField(default=0.0, verbose_name="Текущее время видео (секунды)")
     video_total_time = models.FloatField(default=0.0, verbose_name="Общее время видео (секунды)")
     video_max_progress_percent = models.FloatField(default=0.0, verbose_name="Максимальный прогресс видео (%)")
     video_last_updated = models.DateTimeField(auto_now=True, verbose_name="Последнее обновление видео")
-    
+
     # Прогресс PDF/слайдов
     pdf_completed = models.BooleanField(default=False, verbose_name="PDF/слайды завершены")
     pdf_current_page = models.PositiveIntegerField(default=1, verbose_name="Текущая страница PDF")
     pdf_total_pages = models.PositiveIntegerField(default=1, verbose_name="Всего страниц PDF")
     pdf_last_updated = models.DateTimeField(auto_now=True, verbose_name="Последнее обновление PDF")
-    
+
     # Прогресс слайдов
     slides_current_slide = models.PositiveIntegerField(default=1, verbose_name="Текущий слайд")
     slides_total_slides = models.PositiveIntegerField(default=1, verbose_name="Всего слайдов")
     slides_max_progress_percent = models.FloatField(default=0.0, verbose_name="Максимальный прогресс слайдов (%)")
     slides_completed = models.BooleanField(default=False, verbose_name="Слайды завершены")
     slides_last_updated = models.DateTimeField(auto_now=True, verbose_name="Последнее обновление слайдов")
-    
+
     # Общий прогресс
     is_ready_to_complete = models.BooleanField(default=False, verbose_name="Готов к завершению")
     last_activity = models.DateTimeField(auto_now=True, verbose_name="Последняя активность")
-    
+
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
 
@@ -1027,14 +1067,14 @@ class LessonProgress(models.Model):
         """Обновляет прогресс видео"""
         self.video_current_time = current_time
         self.video_total_time = total_time
-        
+
         # Обновляем максимальный прогресс
         if max_progress_percent is not None:
             self.video_max_progress_percent = max(self.video_max_progress_percent, max_progress_percent)
-        
+
         # Видео считается просмотренным, если максимальный прогресс >= 100%
         self.video_watched = self.video_max_progress_percent >= 100
-        
+
         self.video_last_updated = timezone.now()
         self.last_activity = timezone.now()
         self.check_completion_ready()
@@ -1054,12 +1094,12 @@ class LessonProgress(models.Model):
         """Обновляет прогресс слайдов"""
         self.slides_current_slide = current_slide
         self.slides_total_slides = total_slides
-        
+
         # Обновляем максимальный прогресс
         if total_slides > 0:
             current_progress_percent = (current_slide / total_slides) * 100
             self.slides_max_progress_percent = max(self.slides_max_progress_percent, current_progress_percent)
-        
+
         # Слайды считаются завершенными, если максимальный прогресс >= 100%
         self.slides_completed = self.slides_max_progress_percent >= 100
         self.slides_last_updated = timezone.now()
@@ -1102,7 +1142,7 @@ class LessonProgress(models.Model):
         # Если нет ни видео, ни PDF, ни слайдов
         else:
             self.is_ready_to_complete = True
-        
+
         # Автоматически завершаем урок, если он готов к завершению и еще не завершен
         if self.is_ready_to_complete and not self.lesson.is_completed_by_user(self.user):
             self.lesson.mark_as_completed(self.user)
@@ -1175,6 +1215,7 @@ class LessonProgress(models.Model):
         """Проверяет, завершен ли урок пользователем"""
         return self.lesson.is_completed_by_user(self.user)
 
+
 class Editor(models.Model):
     """Модель редактора - пользователя, который может создавать уроки"""
     user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name="Пользователь")
@@ -1201,14 +1242,14 @@ class Editor(models.Model):
             self.user.first_name = self.full_name.split()[0] if self.full_name.split() else ''
         if not self.user.last_name and len(self.full_name.split()) > 1:
             self.user.last_name = ' '.join(self.full_name.split()[1:])
-        
+
         # Устанавливаем email пользователя
         if self.user.email != self.email:
             self.user.email = self.email
-        
+
         # Сохраняем пользователя
         self.user.save()
-        
+
         super().save(*args, **kwargs)
 
     def get_created_lessons_count(self):

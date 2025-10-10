@@ -64,6 +64,20 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.microsoft',
 ]
 
+SOCIALACCOUNT_PIPELINE = (
+    # стандартные шаги allauth
+    "allauth.socialaccount.pipeline.socialaccount_authenticate",
+    "allauth.socialaccount.pipeline.socialaccount_user",
+    "allauth.socialaccount.pipeline.user.get_username",
+    "allauth.socialaccount.pipeline.user.create_user",
+    "allauth.socialaccount.pipeline.socialaccount_assoc",
+    "allauth.socialaccount.pipeline.socialaccount_load_extra_data",
+    "allauth.socialaccount.pipeline.user.populate_user",
+
+    # наш кастомный шаг
+    "main.pipeline.sync_position_from_ad",
+)
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',

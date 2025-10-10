@@ -1,10 +1,13 @@
 from django.urls import path, include
 from . import views
+from .views import InstructionDetailView, InstructionListView
 
 app_name = 'main'
 
 urlpatterns = [
     path('', views.login_view, name='login'),
+    path('instruction/', InstructionListView.as_view(), name="instruction_list"),
+    path('instruction/<int:pk>/', InstructionDetailView.as_view(), name="instruction_detail"),
     path('dashboard/', views.dashboard_view, name='dashboard'),
     path('about/', views.about_view, name='about'),
     path('documents/', views.documents_view, name='documents'),

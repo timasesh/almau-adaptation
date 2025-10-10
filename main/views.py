@@ -9,6 +9,7 @@ from django.utils.translation import gettext as _, activate
 from django.utils import timezone
 from django.template.loader import render_to_string
 from django.db.models import Q
+from django.views.generic import DetailView, ListView
 
 # Import models
 from .models import (
@@ -3586,3 +3587,32 @@ def editor_edit_document_view(request, document_id):
         'categories': categories,
     }
     return render(request, 'main/editor/edit_document.html', context)
+
+class InstructionListView(ListView):
+    template_name = "main/instruction_list.html"
+    context_object_name = "instructions"
+    model = Instruction
+
+    def get_queryset(self):
+        user = self.request.user
+        query = self.request.GET.get("q", "")
+        qs = Instruction.objects.all()
+
+        # Фильтрация по должности
+        if hasattr(user, "profile") and user.profile.position:
+            qs = qs.filter(allowed_positions=user.profile.position)
+
+        # Поиск по названию, описанию, контенту
+        if query:
+            qs = qs.filter(
+                Q(title__icontains=query) |
+                Q(description__icontains=query) |
+                Q(content__icontains=query)
+            )
+        return qs
+
+
+class InstructionDetailView(DetailView):
+    model = Instruction
+    template_name = "main/instruction_detail.html"
+    context_object_name = "instruction"
