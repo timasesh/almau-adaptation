@@ -12,7 +12,38 @@ services:
     ports:
       - "8000:8000"
 
+  celery:
+    build: .
+    container_name: adaptation_celery
+    command: celery -A almau_adaptation worker -l info
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    depends_on:
+      - redis
+      - web
+    restart: always
 
+  celery_beat:
+    build: .
+    container_name: adaptation_celery_beat
+    command: celery -A almau_adaptation beat -l info
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    depends_on:
+      - redis
+      - web
+    restart: always
+
+  redis:
+    image: redis:7.2-alpine
+    container_name: adaptation_redis
+    restart: always
+    ports:
+      - "6379:6379"
 
 volumes:
   static_volume:

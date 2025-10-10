@@ -63,6 +63,22 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.microsoft',
 ]
+MS_CLIENT_ID = os.getenv("MS_CLIENT_ID")
+MS_CLIENT_SECRET = os.getenv("MS_CLIENT_SECRET")
+MS_TENANT = os.getenv("MS_TENANT")
+MS_AUTHORITY = os.getenv("MS_AUTHORITY", f"https://login.microsoftonline.com/{MS_TENANT}")
+MS_REDIRECT_URI = os.getenv("MS_REDIRECT_URI")
+# Celery
+CELERY_BROKER_URL = 'redis://redis:6379/0'
+CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
+
+CELERY_BEAT_SCHEDULE = {
+    "sync_ad_positions_morning": {
+        "task": "main.tasks.sync_ad_positions_task",
+        "schedule": 86400,  # каждые 24 часа, можно заменить на crontab(hour=6, minute=0)
+    },
+}
+
 
 SOCIALACCOUNT_PIPELINE = (
     # стандартные шаги allauth
