@@ -207,6 +207,75 @@ class DocumentAdmin(admin.ModelAdmin):
 
 
 
+from django.contrib import admin
+from django.utils.html import format_html
+from .models import Instruction
+
+@admin.register(Instruction)
+class InstructionAdmin(admin.ModelAdmin):
+    """Админка для инструкций (видео + PDF на трёх языках)"""
+    list_display = ('title', 'is_active', 'has_video', 'has_pdf', 'created_at')
+    list_filter = ('is_active', 'created_at')
+    search_fields = ('title', 'description', 'title_en', 'title_kk')
+    list_editable = ('is_active',)
+    readonly_fields = ('created_at', 'updated_at', 'video_preview', 'pdf_preview')
+
+    fieldsets = (
+        ('Русская версия', {
+            'fields': ('title', 'description', 'video', 'video_preview', 'pdf_file', 'pdf_preview'),
+            'description': 'Основная инструкция на русском языке. Можно загрузить видео и/или PDF.'
+        }),
+        ('English version', {
+            'fields': ('title_en', 'description_en', 'pdf_file_en'),
+            'classes': ('collapse',)
+        }),
+        ('Қазақша нұсқа', {
+            'fields': ('title_kk', 'description_kk', 'pdf_file_kk'),
+            'classes': ('collapse',)
+        }),
+        ('Доступ и статус', {
+            'fields': ('allowed_positions', 'is_active'),
+        }),
+        ('Служебная информация', {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',)
+        }),
+    )
+
+    # ----- ПРОСМОТР ВИДЕО -----
+    def video_preview(self, obj):
+        if obj.video:
+            return format_html(
+                '<video width="320" height="180" controls>'
+                '<source src="{}" type="video/mp4">'
+                '</video>',
+                obj.video.url
+            )
+        return "Нет видео"
+    video_preview.short_description = "Предпросмотр видео"
+
+    # ----- ПРОСМОТР PDF -----
+    def pdf_preview(self, obj):
+        if obj.pdf_file:
+            return format_html(
+                '<iframe src="{}" width="320" height="200" style="border:1px solid #ccc;"></iframe>',
+                obj.pdf_file.url
+            )
+        return "Нет PDF"
+    pdf_preview.short_description = "Предпросмотр PDF"
+
+    # ----- БУЛЕВЫЕ КОЛОНКИ -----
+    def has_video(self, obj):
+        return bool(obj.video)
+    has_video.boolean = True
+    has_video.short_description = "Видео"
+
+    def has_pdf(self, obj):
+        return any([obj.pdf_file, obj.pdf_file_en, obj.pdf_file_kk])
+    has_pdf.boolean = True
+    has_pdf.short_description = "PDF"
+
+
 
 @admin.register(Process)
 class ProcessAdmin(admin.ModelAdmin):

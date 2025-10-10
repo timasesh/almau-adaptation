@@ -1188,10 +1188,10 @@ function renderInstructionModal(data) {
     </div>
     <div class="modal-body">
       <div class="tab-content" id="tab-video" style="display:none;">
-        ${data.video_url ? `<video controls style=\"width:100%;border-radius:12px;outline:1px solid #E1E6F0\"><source src=\"${data.video_url}\" type=\"video/mp4\"></video>` : '<p style="color:#666">Видео недоступно</p>'}
+        ${data.video_url ? `<video controls style=\"width:100%;border-radius:12px;outline:1px solid #E1E6F0\; max-height: 255px"><source src=\"${data.video_url}\" type=\"video/mp4\"></video>` : '<p style="color:#666">Видео недоступно</p>'}
       </div>
       <div class="tab-content" id="tab-pdf" style="display:block;">
-        ${data.pdf_url ? `<iframe src=\"${data.pdf_url}\" style=\"width:100%;height:420px;border:1px solid #E1E6F0;border-radius:12px\"></iframe>` : `
+        ${data.pdf_url ? `<iframe src=\"${data.pdf_url}\" style=\"width:100%;height:255px;border:1px solid #E1E6F0;border-radius:12px\"></iframe>` : `
           <ol class=\"modal-list\">
             <li>Lorem ipsum dolor sit amet consectetur. Sem odio nisl pulvinar tortor...</li>
             <li>Ac enim id urna at augue scelerisque in. Ut enim sed aliquam...</li>
@@ -1215,7 +1215,7 @@ function switchInstructionTab(e, tab) {
 
 <style>
 .instruction-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 20px; }
-.instruction-modal { background: #fff; border-radius: 20px; width: 720px; max-width: 100%; padding: 24px; position: relative; }
+.instruction-modal { background: #fff; border-radius: 20px; width: 590px; max-width: 100%; padding: 24px; position: relative;}
 .modal-close { position: absolute; right: 16px; top: 12px; background: transparent; border: none; font-size: 24px; cursor: pointer; }
 .modal-header { display: grid; grid-template-columns: 1fr 160px; align-items: center; gap: 16px; }
 .modal-title { font-size: 28px; font-weight: 700; }
