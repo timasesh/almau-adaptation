@@ -664,21 +664,3 @@ class LessonProgressAdmin(admin.ModelAdmin):
             'classes': ('collapse',)
         }),
     )
-
-
-@admin.register(Instruction)
-class InstructionAdmin(admin.ModelAdmin):
-    list_display = ('title', 'is_active', 'created_at', 'updated_at')
-    search_fields = ('title', 'description', 'title_en', 'title_kk', 'description_en', 'description_kk')
-    list_filter = ('is_active', 'created_at')
-    list_editable = ('is_active',)
-    readonly_fields = ('created_at', 'updated_at')
-    filter_horizontal = ('allowed_positions',)
-
-    fieldsets = (
-        ('Русский', {'fields': ('title', 'description')}),
-        ('English', {'fields': ('title_en', 'description_en'), 'classes': ('collapse',)}),
-        ('Қазақша', {'fields': ('title_kk', 'description_kk'), 'classes': ('collapse',)}),
-        ('Доступ', {'fields': ('allowed_positions',)}),
-        ('Служебное', {'fields': ('is_active', 'created_at', 'updated_at'), 'classes': ('collapse',)}),
-    )
