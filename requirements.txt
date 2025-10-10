@@ -11,12 +11,8 @@ gunicorn==22.0.0
 celery==5.4.0
 redis==5.0.1
 
-# Django Celery integration (автозагрузка задач и Beat)
-django-celery-beat==2.6.0
+django-celery-beat>=2.7.0
 django-celery-results==2.6.0
 
-# Для периодических задач с crontab
 python-crontab==3.0.0
-
-# Для логов (если хочешь структурированные логи)
 eventlet==0.36.1
