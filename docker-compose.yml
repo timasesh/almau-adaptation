@@ -7,7 +7,8 @@ services:
     volumes:
       # - .:/app     
       - static_volume:/app/staticfiles
-      - media_volume:/app/media
+      - /srv/adaptation/media:/app/media   # ✅ добавляем постоянное хранилище
+      # - media_volume:/app/media
       # - ./static:/app/staticfiles     # 👈 локальная папка static
       # - ./media:/app/media   
     env_file:
@@ -47,6 +48,20 @@ services:
     restart: always
     ports:
       - "6379:6379"
+  
+  nginx:
+    image: nginx:stable
+    container_name: adaptation_nginx
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - static_volume:/app/staticfiles
+      - /srv/adaptation/media:/app/media
+    depends_on:
+      - web
+
 
 volumes:
   static_volume:
