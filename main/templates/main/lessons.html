@@ -5,7 +5,7 @@
 {% load document_filters %}
 {% load progress_filters %}
 
-{% block title %}{% trans "Памятка сотрудника" %} - Adaptation AlmaU{% endblock %}
+{% block title %}{% trans "Инструкции по работе" %} - Adaptation AlmaU{% endblock %}
 
 {% block content %}
 <style>
@@ -22,7 +22,6 @@
 <div class="dashboard-container">
     {% csrf_token %}
     <script>
-    // Немедленное применение темы
     (function() {
         const savedTheme = localStorage.getItem('selectedTheme') || 'light';
         if (savedTheme === 'dark') {
@@ -41,16 +40,16 @@
     {% include 'main/sidebar.html' %}
     
     <!-- Main content -->
-    <div class="main-content" id="mainContent" style="position: relative;">
-        <img src="{% static 'images/almauni.svg' %}" alt="AlmaUni" class="page-logo">
-        <div class="content-header" style="margin-left: 100px; margin-top: 20px;">
-            <div class="greeting">
-                <h1>{% trans "Памятка сотрудника" %}</h1>
+        <div class="main-content" id="mainContent" style="position: relative;">
+       
+
+            <div class="memo-container">
+                <div class="content-header">
+                <div class="greeting">
+                    <h1>{% trans "Инструкции по работе" %}</h1>
+                </div>
             </div>
-        </div>
-        
-        <!-- Новая шапка и блоки памятки сотрудника -->
-        <div class="memo-container">
+
             <div class="profile-block">
                 <div class="profile-info">
                     <h2 class="profile-name">{% firstof request.user.get_full_name request.user.username %}</h2>
@@ -1233,8 +1232,7 @@ function switchInstructionTab(e, tab) {
 .modal-top-actions { display:flex; justify-content:flex-end; align-items:center; gap:5px; padding:4px; }
 .modal-top-actions .modal-close { position: static; right: auto; top: auto; background: transparent; border: none; padding: 0; }
 .modal-icon-img { width:24px; height:24px; display:block; }
-.memo-container { max-width: 1200px; margin: 0 auto; padding: 0 20px 40px; }
-@media (min-width: 992px) { .memo-container { margin-left: 100px; } }
+.memo-container { max-width: 640px; margin: 0 auto; padding-bottom: 160px; }
 .profile-block { margin-bottom: 20px; }
 .profile-name { font-size: 20px; font-weight: 700; margin: 0 0 6px 0; }
 .profile-role { color: #666; margin-bottom: 8px; }

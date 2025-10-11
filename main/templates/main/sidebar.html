@@ -3,9 +3,11 @@
 {% load translation_tags %}
 
 <style>
-    .sidebar-brand { text-align: center; margin: 8px 10px 10px 10px; }
-    .sidebar-brand-logo { width: 140px; height: auto; display: block; margin: 6px auto; }
+    .sidebar-brand-logo { width: 60px; height: auto; display: block; margin: 0 140px 0 auto; }
     .sidebar.collapsed .sidebar-brand { display: none; }
+    .sidebar-brand{
+        margin-top: 85px;
+    }
 </style>
 <!-- Sidebar -->
 <div class="sidebar" id="sidebar">
@@ -19,10 +21,11 @@
     </div>
     
     <nav class="sidebar-nav">
+        <div class="sidebar-brand">
+            <img src="{% static 'images/sidebar-logo.svg' %}" alt="AlmaU" class="sidebar-brand-logo">
+        </div>
+
         <ul class="nav-list">
-            <li class="nav-item sidebar-brand">
-                <img src="{% static 'images/sidebar-logo.png' %}" alt="AlmaU" class="sidebar-brand-logo">
-            </li>
             <li class="nav-item {% if current_page == 'dashboard' %}active{% endif %}">
                 <a href="{% url 'main:dashboard' %}" class="nav-link {% if current_page == 'dashboard' %}active-nav-link{% endif %}">
                     <i class="fa-solid fa-house"></i>

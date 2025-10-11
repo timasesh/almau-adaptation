@@ -1,17 +1,22 @@
 <!DOCTYPE html>
-{% load static %}
-{% load i18n %}
+{% load static i18n %}
 {% get_current_language as LANGUAGE_CODE %}
 <html lang="{{ LANGUAGE_CODE }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Adaptation AlmaU{% endblock %}</title>
-    
-    <!-- Favicon -->
+
     <link rel="icon" type="image/png" href="{% static 'images/logo.png' %}">
+
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
     
-    <!-- Немедленное применение темы до загрузки CSS -->
     <script>
     (function() {
         const savedTheme = localStorage.getItem('selectedTheme') || 'light';
@@ -25,12 +30,14 @@
     })();
     </script>
     
-    {% load static %}
-    <link href="{% static 'css/style.css' %}" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     {% block extra_css %}{% endblock %}
 </head>
 <body>
+    <div class="page-logo">
+        <a href="https://almauni.almau.edu.kz/"  target="_blank">
+            <img src="{% static 'images/almauni.svg' %}" alt="AlmaUni" >
+        </a>
+    </div>
     {% block content %}{% endblock %}
     
     <!-- Подключаем скрипты в правильном порядке -->

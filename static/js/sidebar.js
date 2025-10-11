@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const icon = sidebarToggle.querySelector('i');
         if (!icon) return;
         icon.className = sidebar.classList.contains('collapsed')
-            ? 'fas fa-angle-double-right'
+            ? 'fas fa-angle-double-left'
             : 'fas fa-angle-double-left';
     }
 

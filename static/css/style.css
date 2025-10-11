@@ -1,66 +1,3 @@
-/* Reset all elements */
-* {
-    box-sizing: border-box;
-}
-
-/* Prevent flash of unstyled content during theme loading */
-html {
-    visibility: visible;
-    background-color: #ffffff;
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-/* Немедленное применение светлой темы до загрузки JavaScript */
-html.theme-light,
-body.theme-light {
-    background-color: #ffffff !important;
-    color: #333333 !important;
-}
-
-html.theme-dark,
-body.theme-dark {
-    background-color: #1a1a1a !important;
-    color: #ffffff !important;
-}
-
-html.theme-loaded {
-    visibility: visible;
-}
-
-/* Ensure body has proper background during loading */
-body {
-    background-color: #ffffff; /* Default light background */
-    transition: background-color 0.3s ease;
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    overflow-x: hidden;
-}
-
-body.theme-dark {
-    background-color: #1a1a1a;
-}
-
-/* Prevent sidebar flash during page transitions */
-#sidebar {
-    opacity: 1 !important;
-    visibility: visible !important;
-    transition: all 0.3s ease !important;
-}
-
-/* Ensure sidebar is always visible during theme changes */
-.dashboard-container {
-    opacity: 1 !important;
-    visibility: visible !important;
-}
-
-/* CSS Variables for theming */
 :root {
     --bg-primary: #ffffff;
     --bg-secondary: #f8f9fa;
@@ -89,7 +26,6 @@ body.theme-dark {
     --info-color: #17a2b8;
 }
 
-/* Dark theme variables */
 .theme-dark {
     --bg-primary: #1a1a1a;
     --bg-secondary: #2d2d2d;
@@ -118,63 +54,96 @@ body.theme-dark {
     --info-color: #2196f3;
 }
 
-/* Apply theme variables to all elements */
-body {
-    background-color: var(--bg-primary);
-    color: var(--text-primary);
-    transition: background-color 0.3s ease, color 0.3s ease;
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease !important;
+}
+
+html {
+    visibility: visible;
+    background-color: #ffffff;
     width: 100%;
     height: 100%;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
+}
+
+html.theme-light,
+body.theme-light {
+    background-color: #ffffff !important;
+    color: #333333 !important;
+}
+
+html.theme-dark,
+body.theme-dark {
+    background-color: #1a1a1a !important;
+    color: #ffffff !important;
+}
+
+html.theme-loaded {
+    visibility: visible;
+}
+
+body {
+    background-color: var(--bg-primary); 
+    transition: background-color 0.3s ease, color 0.3s ease;
+    width: 100%;
+    height: 100%;
     overflow-x: hidden;
+    color: var(--text-primary);
+    font-family: "Inter";
 }
 
-/* Sidebar styles */
-.sidebar {
-    width: 250px;
-    min-width: 250px;
-    max-width: 250px;
-    background: var(--sidebar-bg);
-    color: var(--sidebar-text);
-    height: 100vh;
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 1000;
-    transition: all 0.3s ease;
-    overflow: hidden; /* Убираем все слайдеры */
-    flex-shrink: 0;
-    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+#sidebar {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transition: all 0.3s ease !important;
+}
+
+.dashboard-container {
+    opacity: 1 !important;
+    visibility: visible !important;
     display: flex;
-    flex-direction: column;
+    min-height: 100vh;
+    background: var(--bg-primary);
+    width: 100%;
+    overflow-x: hidden;
+    position: relative;
+    transition: all 0.3s ease !important;
 }
 
-.sidebar.collapsed {
-    width: 60px;
-    min-width: 60px;
-    max-width: 60px;
+.sidebar.collapsed { 
+    width: 80px !important; 
+    min-width: 80px !important; 
+    max-width: 80px !important; 
 }
 
-/* Sidebar header */
 .sidebar-header {
-    padding: 12px;
-    border-bottom: 1px solid var(--border-color);
     display: flex;
     align-items: center;
     justify-content: space-between;
     flex-shrink: 0;
+    border-bottom: none !important; 
+    position: relative;
 }
 
 .sidebar.collapsed .sidebar-header {
-    padding: 12px 8px;
+    padding: 15px 10px;
     justify-content: center;
+    min-height: 0 !important; 
+    padding-top: 6px !important; 
+    padding-bottom: 6px !important; 
+    transition: all 0.3s ease;
 }
 
 .logo-container {
     display: flex;
     align-items: center;
+    margin-bottom: 20px;
+    transition: all 0.3s ease;
+    transform-origin: left center;
 }
 
 .logo {
@@ -194,56 +163,107 @@ body {
     padding: 8px;
     border-radius: 4px;
     transition: all 0.3s ease;
+
+    color: var(--accent-color);
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    font-size: 18px;
+    position: absolute;
+    right: 45px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 101;
+    top: 41px !important;
 }
 
-.sidebar-toggle:hover {
-    background: var(--sidebar-hover);
+.sidebar.collapsed .sidebar-toggle i {
+    transform: rotate(180deg);
+    transition: transform 0.3s ease;
+}
+
+.sidebar-toggle i {
+    transition: transform 0.3s ease;
 }
 
 .sidebar.collapsed .sidebar-toggle {
+    right: 15px;
+    background: rgba(100, 181, 246, 0.1);
+    padding: 10px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
     padding: 4px;
+    transform: translateY(-50%);
 }
 
-/* Sidebar navigation */
+.sidebar.collapsed .sidebar-toggle:hover {
+    background: rgba(25, 118, 210, 0.2);
+    transform: translateY(-50%) scale(1.1);
+    transition: all 0.3s ease;
+}
+
+.sidebar-toggle:hover {
+    background: rgba(25, 118, 210, 0.15);
+    color: var(--accent-hover);
+    transform: translateY(-50%) scale(1.1);
+    transition: all 0.3s ease;
+
+    background: var(--sidebar-hover);
+}
+
 .sidebar-nav {
     flex: 1;
-    overflow: hidden; /* Убираем вертикальный слайдер */
-    padding: 12px 0;
-}
-
-.sidebar.collapsed .sidebar-nav {
-    padding: 8px 0;
+    overflow: hidden; 
+    overflow-y: auto;
+    position: relative;
 }
 
 .nav-list {
     list-style: none;
     margin: 0;
     padding: 0;
+    position: relative;
+    margin-top: 62px;
 }
 
 .nav-item {
     margin: 0;
+    margin-bottom: 5px;
+    position: relative;
 }
 
 .nav-link {
     display: flex;
     align-items: center;
-    padding: 8px 12px;
-    color: var(--sidebar-text);
+    padding: 10px 16px;     
+    color: var(--text-secondary);
     text-decoration: none;
     transition: all 0.3s ease;
     border-left: 3px solid transparent;
     position: relative;
+    font-size: 13px;  
+    width: 100%;
+    overflow: hidden;
+    min-width: 0;
 }
 
 .sidebar.collapsed .nav-link {
-    padding: 12px 16px; /* Сохраняем одинаковые отступы для иконок */
-    justify-content: center;
+    padding: 10px 15px;
+    justify-content: flex-start;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.sidebar .nav-link, .sidebar.collapsed .nav-link { 
+    padding-top: 6px !important; 
+    padding-bottom: 6px !important; 
 }
 
 .nav-link:hover {
     background: var(--sidebar-hover);
     border-left-color: var(--accent-color);
+    transform: translateX(0);
 }
 
 .nav-link.active-nav-link {
@@ -253,43 +273,98 @@ body {
 }
 
 .nav-link i {
-    width: 14px;
+    width: 16px;
     height: 14px;
     font-size: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-right: 8px;
+    margin-right: 10px;
+    flex-shrink: 0;
+    font-size: 14px;
+    text-align: center;
+    transition: all 0.3s ease;
+    position: relative;
+    left: 0;
+}
+
+.sidebar .nav-link i {
+    width: 30px !important; 
+    height: 30px !important; 
+    font-size: 19px !important; 
+    margin-right: 10px !important; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
     flex-shrink: 0;
 }
 
 .sidebar.collapsed .nav-link i {
-    margin-right: 0; /* Убираем отступ справа при свернутом состоянии */
-    width: 18px;
+    margin-right: 0; 
+    width: 20px;
     height: 18px;
     font-size: 16px;
+    text-align: center;
+    transition: all 0.3s ease;
+    position: relative;
+    left: 0;
 }
 
 .nav-text {
     flex: 1;
     font-weight: 500;
     white-space: nowrap;
-    font-size: 13px;
+    font-size: 12px !important;
+    transition: all 0.3s ease;
+    overflow: hidden;
+    min-width: 0;
+    position: relative;
+    left: 0;
+    opacity: 1;
+    visibility: visible;
+    width: auto;
 }
 
 .sidebar.collapsed .nav-text {
     display: none;
+    opacity: 0;
+    visibility: hidden;
+    width: 0;
+    margin-left: 0;
+    transition: all 0.3s ease;
 }
 
-/* Sidebar footer */
+.sidebar.collapsed .settings-btn .nav-text,
+.sidebar.collapsed .logout-btn .nav-text {
+    opacity: 0;
+    visibility: hidden;
+    width: 0;
+    margin-left: 0;
+    transition: all 0.3s ease;
+    display: none;
+}
+
+.sidebar .nav-link .nav-text {
+    font-size: 12px !important;
+}
+
+.sidebar .nav-text { 
+    font-size: 11px !important; 
+}
+
 .sidebar-footer {
-    border-top: 1px solid var(--border-color);
-    padding: 12px;
+    border-top: none !important; 
     flex-shrink: 0;
+    padding: 20px;
+    margin-top: auto;
+    padding-left: 30px !important;
+    padding-bottom: 20px !important;
 }
 
 .sidebar.collapsed .sidebar-footer {
-    padding: 12px 8px;
+    padding: 15px 10px;
+    justify-content: center;
+    transition: all 0.3s ease;
 }
 
 .user-menu {
@@ -300,6 +375,7 @@ body {
 
 .sidebar.collapsed .user-menu {
     align-items: center;
+    gap: 4px !important; 
 }
 
 .settings-btn, .logout-btn {
@@ -319,6 +395,13 @@ body {
     justify-content: center;
     width: 36px;
     height: 36px;
+    padding-top: 6px !important; 
+    padding-bottom: 6px !important; 
+}
+
+.sidebar .settings-btn, .sidebar .logout-btn { 
+    padding-top: 6px !important; 
+    padding-bottom: 6px !important; 
 }
 
 .settings-btn:hover, .logout-btn:hover {
@@ -340,75 +423,20 @@ body {
 .sidebar.collapsed .settings-btn i, 
 .sidebar.collapsed .logout-btn i {
     margin-right: 0;
-    width: 18px;
+    width: 20px;
     height: 18px;
     font-size: 14px;
+    text-align: center;
+    transition: all 0.3s ease;
+    position: relative;
+    left: 0;
 }
-
-.sidebar.collapsed .settings-btn .nav-text,
-.sidebar.collapsed .logout-btn .nav-text {
-    display: none;
-}
-
-/* Ensure main content adjusts properly */
 
 .sidebar.collapsed + .main-content {
     margin-left: 60px;
     width: calc(100% - 60px);
 }
 
-/* Dashboard container */
-.dashboard-container {
-    display: flex;
-    min-height: 100vh;
-    background: var(--bg-primary);
-    width: 100%;
-    box-sizing: border-box;
-    overflow-x: hidden;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    .sidebar {
-        transform: translateX(-100%);
-        z-index: 1001;
-        transition: transform 0.3s ease;
-    }
-    
-    .sidebar.mobile-open {
-        transform: translateX(0);
-    }
-    
-    .main-content {
-        margin-left: 0;
-        width: 100%;
-    }
-    
-    .sidebar.collapsed + .main-content {
-        margin-left: 0;
-        width: 100%;
-    }
-    
-    /* Мобильный оверлей для сайдбара */
-    .sidebar::before {
-        content: '';
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.5);
-        z-index: -1;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-    }
-    
-    .sidebar.mobile-open::before {
-        opacity: 1;
-    }
-}
-
-/* Card styles */
 .card {
     background-color: var(--card-bg);
     border-color: var(--card-border);
@@ -420,7 +448,6 @@ body {
     box-shadow: 0 4px 20px rgba(0,0,0,0.15);
 }
 
-/* Form elements */
 .form-control, .form-select {
     background-color: var(--input-bg);
     border-color: var(--input-border);
@@ -439,7 +466,6 @@ body {
     color: var(--text-secondary);
 }
 
-/* Button styles */
 .btn {
     transition: all 0.3s ease;
 }
@@ -466,7 +492,6 @@ body {
     border-color: var(--text-primary);
 }
 
-/* Link styles */
 a {
     color: var(--link-color);
     transition: color 0.3s ease;
@@ -477,7 +502,6 @@ a:hover {
     text-decoration: none;
 }
 
-/* Text colors */
 .text-muted {
     color: var(--text-secondary) !important;
 }
@@ -502,9 +526,10 @@ a:hover {
     color: var(--info-color) !important;
 }
 
-/* Badge styles */
 .badge {
-    transition: all 0.3s ease;
+    transition: all 0.3s ease; 
+    font-size: 0.75em;
+    padding: 0.35em 0.65em;
 }
 
 .badge.bg-primary {
@@ -531,7 +556,6 @@ a:hover {
     background-color: var(--info-color) !important;
 }
 
-/* Table styles */
 .table {
     color: var(--text-primary);
 }
@@ -550,7 +574,6 @@ a:hover {
     background-color: var(--bg-secondary);
 }
 
-/* Modal styles */
 .modal-content {
     background-color: var(--card-bg);
     border-color: var(--card-border);
@@ -564,7 +587,6 @@ a:hover {
     border-top-color: var(--border-color);
 }
 
-/* Dropdown styles */
 .dropdown-menu {
     background-color: var(--card-bg);
     border-color: var(--card-border);
@@ -580,7 +602,6 @@ a:hover {
     color: var(--text-primary);
 }
 
-/* Alert styles */
 .alert {
     background-color: var(--card-bg);
     border-color: var(--card-border);
@@ -611,7 +632,6 @@ a:hover {
     color: var(--info-color);
 }
 
-/* Navigation tabs */
 .nav-tabs {
     border-bottom-color: var(--border-color);
 }
@@ -632,7 +652,6 @@ a:hover {
     background-color: var(--bg-primary);
 }
 
-/* Pagination */
 .pagination .page-link {
     background-color: var(--card-bg);
     border-color: var(--border-color);
@@ -651,7 +670,6 @@ a:hover {
     color: var(--button-text);
 }
 
-/* Custom scrollbar for dark theme */
 .theme-dark ::-webkit-scrollbar {
     width: 8px;
 }
@@ -667,11 +685,6 @@ a:hover {
 
 .theme-dark ::-webkit-scrollbar-thumb:hover {
     background: var(--text-secondary);
-}
-
-/* Dark theme sidebar adjustments */
-.theme-dark .sidebar {
-    border-right: 1px solid var(--border-color);
 }
 
 .theme-dark .sidebar-header {
@@ -692,21 +705,6 @@ a:hover {
     border-left-color: var(--accent-color);
 }
 
-/* Reset and base styles */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background-color: var(--bg-secondary);
-    color: var(--text-primary);
-    overflow-x: hidden;
-}
-
-/* Login page styles */
 .login-container {
     min-height: 100vh;
     display: flex;
@@ -715,20 +713,17 @@ body {
     position: relative;
 }
 
-
-
 .login-card {
     background: var(--card-bg);
-    border-radius: 70px; /* более круглые углы */
+    border-radius: 70px; 
     padding: 40px;
-    box-shadow: 0 10px 60px rgba(0, 0, 0, 0.3); /* более насыщённая тень */
+    box-shadow: 0 10px 60px rgba(0, 0, 0, 0.3); 
     width: 100%;
-    max-width: 680px; /* сделаем шире */
-    max-height: 500px; /* сделаем шире */
+    max-width: 680px; 
+    max-height: 500px; 
     position: relative;
     z-index: 1;
 }
-
 
 .login-header {
     text-align: center;
@@ -736,16 +731,12 @@ body {
     position: relative;
 }
 
-.logo-container {
-    margin-bottom: 20px;
-}
-
-/* Логотип в боковой панели */
 .sidebar .logo {
     width: 120px;
     height: auto;
     object-fit: contain;
     max-height: 80px;
+    filter: none;
 }
 
 .login-title {
@@ -776,9 +767,10 @@ body {
     margin-bottom: 30px;
 }
 
-
 .form-group {
     margin-bottom: 20px;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
 }
 
 .form-input {
@@ -834,20 +826,13 @@ body {
     border: 1px solid var(--danger-color);
 }
 
-/* Dashboard styles */
-.dashboard-container {
-    display: flex;
-    min-height: 100vh;
-    position: relative;
-}
-
 .sidebar {
-    width: 250px;
-    min-width: 250px;
-    max-width: 250px;
-    background: var(--sidebar-bg);
-    box-shadow: 2px 0 10px rgba(0, 0, 0.1);
-    transition: width 0.3s ease;
+    width: 300px;
+    min-width: 300px;
+    max-width: 300px;
+    background-color: var(--sidebar-bg) !important;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, .2);
+    transition: all 0.3s ease, background-color 0.3s ease !important;
     position: fixed;
     left: 0;
     top: 0;
@@ -856,15 +841,12 @@ body {
     flex-direction: column;
     height: 100vh;
     border-radius: 0 20px 20px 0;
-    box-sizing: border-box;
     overflow: hidden;
     flex-shrink: 0;
-}
-
-.sidebar.collapsed {
-    width: 60px;
-    min-width: 60px;
-    max-width: 60px;
+    color: var(--sidebar-text) !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    overflow-y: hidden !important;
 }
 
 .sidebar.collapsed .logo-container {
@@ -877,49 +859,9 @@ body {
     transition: all 0.3s ease;
 }
 
-.sidebar.collapsed .sidebar-toggle {
-    right: 15px;
-    transform: translateY(-50%);
-    background: rgba(100, 181, 246, 0.1);
-    padding: 10px;
-    border-radius: 50%;
-    transition: all 0.3s ease;
-}
-
-.sidebar.collapsed .sidebar-toggle i {
-    transform: rotate(180deg);
-    transition: transform 0.3s ease;
-}
-
 .sidebar.collapsed .sidebar-toggle:hover {
     background: rgba(100, 181, 246, 0.2);
     transform: translateY(-50%) scale(1.1);
-    transition: all 0.3s ease;
-}
-
-.sidebar.collapsed .nav-text {
-    opacity: 0;
-    visibility: hidden;
-    width: 0;
-    margin-left: 0;
-    transition: all 0.3s ease;
-}
-
-.sidebar.collapsed .settings-btn .nav-text,
-.sidebar.collapsed .logout-btn .nav-text {
-    opacity: 0;
-    visibility: hidden;
-    width: 0;
-    margin-left: 0;
-    transition: all 0.3s ease;
-}
-
-
-
-.sidebar.collapsed .sidebar-header {
-    padding: 15px 10px;
-    justify-content: center;
-    min-height: 60px;
     transition: all 0.3s ease;
 }
 
@@ -929,144 +871,11 @@ body {
     transition: all 0.3s ease;
 }
 
-.sidebar.collapsed .sidebar-footer {
-    padding: 15px 10px;
-    justify-content: center;
-    transition: all 0.3s ease;
-}
-
-.sidebar-header {
-    padding: 20px;
-    border-bottom: 1px solid var(--border-color);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: relative;
-}
-
-.logo-container {
-    transition: all 0.3s ease;
-    transform-origin: left center;
-}
-
-.logo {
-    height: 40px;
-    width: auto;
-}
-
-.sidebar-toggle {
-    background: none;
-    border: none;
-    color: var(--accent-color);
-    cursor: pointer;
-    padding: 8px;
-    border-radius: 6px;
-    transition: all 0.3s ease;
-    font-size: 18px;
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 101;
-}
-
-.sidebar-toggle i {
-    transition: transform 0.3s ease;
-}
-
-/* Убираем дублирующийся стиль */
-
-.sidebar.collapsed .sidebar-toggle {
-    right: 15px;
-    background: rgba(100, 181, 246, 0.1);
-    padding: 10px;
-    border-radius: 50%;
-    transition: all 0.3s ease;
-}
-
-.sidebar.collapsed .sidebar-toggle:hover {
-    background: rgba(25, 118, 210, 0.2);
-    transform: translateY(-50%) scale(1.1);
-    transition: all 0.3s ease;
-}
-
-.sidebar-toggle:hover {
-    background: rgba(25, 118, 210, 0.15);
-    color: var(--accent-hover);
-    transform: translateY(-50%) scale(1.1);
-    transition: all 0.3s ease;
-}
-
-.sidebar-nav {
-    padding: 20px 0;
-    flex: 1;
-    overflow-y: auto;
-    /* Фиксируем позицию навигации */
-    position: relative;
-}
-
-.nav-list {
-    list-style: none;
-    position: relative;
-}
-
-.nav-item {
-    margin-bottom: 5px;
-    position: relative;
-}
-
-.nav-link {
-    display: flex;
-    align-items: center;
-    padding: 15px 20px;
-    color: var(--text-secondary);
-    text-decoration: none;
-    transition: all 0.3s ease;
-    position: relative;
-    box-sizing: border-box;
-    width: 100%;
-    min-width: 0;
-    overflow: hidden;
-}
-
-.nav-link:hover {
-    background: var(--sidebar-hover);
-    color: var(--accent-color);
-    transform: translateX(0);
-}
-
 .nav-item.active .nav-link {
     background: var(--accent-color);
     color: var(--button-text);
     border-right: 3px solid var(--accent-color);
-    box-sizing: border-box;
     margin-right: -3px;
-}
-
-.nav-link i {
-    width: 20px;
-    margin-right: 15px;
-    text-align: center;
-    transition: all 0.3s ease;
-    flex-shrink: 0;
-    /* Фиксируем позицию иконки */
-    position: relative;
-    left: 0;
-}
-
-.nav-text {
-    transition: all 0.3s ease;
-    white-space: nowrap;
-    overflow: hidden;
-    flex: 1;
-    min-width: 0;
-    /* Фиксируем позицию текста */
-    position: relative;
-    left: 0;
-    /* Плавное исчезновение */
-    opacity: 1;
-    visibility: visible;
-    width: auto;
 }
 
 .settings-btn,
@@ -1081,7 +890,6 @@ body {
     width: 100%;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-sizing: border-box;
 }
 
 .settings-btn:hover,
@@ -1097,7 +905,6 @@ body {
     text-align: center;
     transition: all 0.3s ease;
     flex-shrink: 0;
-    /* Фиксируем позицию иконки */
     position: relative;
     left: 0;
 }
@@ -1109,26 +916,11 @@ body {
     overflow: hidden;
     flex: 1;
     min-width: 0;
-    /* Фиксируем позицию текста */
     position: relative;
     left: 0;
-    /* Плавное исчезновение */
     opacity: 1;
     visibility: visible;
     width: auto;
-}
-
-.sidebar-footer {
-    border-top: 1px solid var(--border-color);
-    padding: 20px;
-    margin-top: auto;
-    flex-shrink: 0;
-}
-
-.user-menu {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
 }
 
 .settings-btn,
@@ -1159,21 +951,16 @@ body {
 .main-content {
     flex: 1;
     padding: 30px;
-    margin-left: 250px;
-    transition: margin-left 0.3s ease;
+    margin-left: 300px;
+    transition: all 0.3s ease !important;
     min-height: 100vh;
-    width: calc(100% - 250px);
+    width: calc(100% - 300px);
     background: var(--bg-primary);
     color: var(--text-primary);
     position: relative;
-    box-sizing: border-box;
     overflow-x: hidden;
 }
 
-/* Globally fix AlmaUni logo position on all pages */
-
-
-/* Когда sidebar свернут */
 body.sidebar-collapsed .main-content {
     margin-left: 60px;
     width: calc(100% - 60px);
@@ -1202,159 +989,49 @@ body.sidebar-collapsed .main-content {
 }
 
 .dashboard-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    display: grid !important; 
+    grid-template-columns: repeat(3, auto) !important; 
+    justify-content: start !important; 
     grid-template-rows: repeat(2, auto);
-    gap: 25px;
     height: auto;
-    max-width: 900px;
-    padding: 30px;
+    max-width: 640px;
+    padding: 0 !important; 
     margin: 0 auto;
     justify-items: center;
     align-items: center;
     width: 100%;
-    box-sizing: border-box;
+    gap: 0 !important;
+    column-gap: 0 !important; 
+    row-gap: 0 !important; 
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-/* Responsive design */
-@media (max-width: 1200px) {
-    .dashboard-grid {
-        grid-template-columns: repeat(3, 1fr);
-        grid-template-rows: repeat(2, auto);
-        gap: 20px;
-        max-width: 800px;
-        padding: 25px;
-    }
-    
-    .dashboard-link {
-        width: 220px;
-        height: 180px;
-    }
-}
-
-@media (max-width: 768px) {
-    .sidebar {
-        width: 60px;
-    }
-    
-    .sidebar .nav-text {
-        display: none;
-    }
-    
-    .sidebar .logo-container {
-        display: none;
-    }
-    
-    .sidebar .settings-btn span,
-    .sidebar .logout-btn span {
-        display: none;
-    }
-    
-    .main-content {
-        padding: 4px !important;
-        margin: 0 !important;
-        width: 100%;
-        box-sizing: border-box;
-    }
-    
-    .dashboard-grid {
-        grid-template-columns: repeat(2, 1fr);
-        grid-template-rows: auto;
-        height: auto;
-        gap: 2px !important;
-        padding: 2px !important;
-        max-width: 100%;
-        width: 100%;
-    }
-    
-    .dashboard-link {
-        width: 100%;
-        height: 60px;
-        min-width: 0;
-        font-size: 12px;
-    }
-    
-    .dashboard-img {
-        max-width: 80%;
-        max-height: 80%;
-    }
-    
-    /* Для очень маленьких экранов */
-    @media (max-width: 480px) {
-        .dashboard-grid {
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1px !important;
-            padding: 1px !important;
-            max-width: 100%;
-        }
-        
-        .dashboard-link {
-            width: 100%;
-            height: 50px;
-            font-size: 11px;
-        }
-        
-        .dashboard-img {
-            max-width: 70%;
-            max-height: 70%;
-        }
-    }
-    
-
-    
-    .content-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 15px;
-    }
-    
-    .greeting h1 {
-        font-size: 24px;
-    }
-    
-    .login-card {
-        margin: 20px;
-        padding: 30px;
-    }
-    
-    .social-login {
-        flex-direction: column;
-    }
-}
 .dashboard-link {
-  display: block;
-  text-decoration: none;
-  width: 250px;
-  height: 200px;
-  text-align: center;
+    display: inline-block !important; 
+    text-decoration: none;
+    width: auto !important; 
+    height: auto !important; 
+    text-align: center;
+    padding: 0 !important; 
+    margin: 0 !important; 
+    background: transparent !important; 
 }
 
 .dashboard-img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  transition: transform 0.2s ease;
-  display: block;
-  margin: 0 auto;
+    width: auto !important; 
+    height: auto !important; 
+    max-width: 100% !important;
+    max-height: 100% !important;
+    object-fit: contain;
+    transition: transform 0.2s ease;
+    display: block !important; 
+    
+    margin: 0 !important; 
 }
 
 .dashboard-img:hover {
   transform: scale(1.05);
 }
 
-/* Логотип на странице входа - только для десктопа */
 .desktop-login .page-logo-container {
     position: fixed;
     top: 30px;
@@ -1377,30 +1054,6 @@ body.sidebar-collapsed .main-content {
     margin: 0;
 }
 
-/* Скрываем логотип на мобильных устройствах */
-@media (max-width: 767px) {
-    .desktop-login .page-logo-container {
-        display: none !important;
-    }
-}
-
-
-.nav-link {
-    padding: 10px 16px; /* было 15px 20px */
-    font-size: 13px;    /* уменьшенный шрифт */
-}
-
-.nav-link i {
-    width: 16px;        /* уменьшенная иконка */
-    margin-right: 10px;
-    font-size: 14px;
-}
-
-.nav-text {
-    font-size: 13px;
-}
-
-/* Уменьшаем кнопки в footer */
 .settings-btn,
 .logout-btn {
     padding: 8px 10px;
@@ -1432,9 +1085,8 @@ body.sidebar-collapsed .main-content {
     text-decoration: underline;
 }
 
-
 .social-btn img {
-    width: 100%; /* или фиксированная ширина */
+    width: 100%;
     max-width: 300px;
     cursor: pointer;
     display: block;
@@ -1444,10 +1096,11 @@ body.sidebar-collapsed .main-content {
     opacity: 0.5;
     pointer-events: none;
 }
+
 .provider-img {
-    border: none;           /* убираем рамку */
-    width: 200px;           /* фиксированная ширина кнопки */
-    height: auto;           /* сохраняем пропорции */
+    border: none;           
+    width: 200px;          
+    height: auto;           
     display: block;
     margin: 0 auto;
 }
@@ -1463,94 +1116,17 @@ body.sidebar-collapsed .main-content {
     pointer-events: none;
 }
 
-
 .language-icon {
-    width: 64px;  /* или меньше, если нужно ещё компактнее */
+    width: 64px;  
     height: auto;
 }
+
 .language {
     position: absolute;
     top: -7px;
     right: 3px;
 }
 
-/* Responsive sidebar styles */
-@media (max-width: 768px) {
-    .dashboard-container {
-        flex-direction: column;
-        width: 100%;
-        margin: 0 !important;
-        padding: 0 !important;
-        box-sizing: border-box;
-    }
-    
-    .sidebar {
-        width: 60px;
-        position: fixed;
-        left: 0;
-        top: 0;
-        z-index: 1000;
-        border-radius: 0 10px 10px 0;
-    }
-    
-    .sidebar.collapsed {
-        width: 60px;
-        height: 100vh;
-    }
-    
-    .sidebar .nav-text {
-        display: none;
-    }
-    
-    .sidebar .logo-container {
-        display: none;
-    }
-    
-    .sidebar .settings-btn span,
-    .sidebar .logout-btn span {
-        display: none;
-    }
-    
-    .sidebar .nav-link {
-        justify-content: center;
-        padding: 15px 8px;
-    }
-    
-    .sidebar .nav-link i {
-        margin-right: 0;
-        font-size: 18px;
-    }
-    
-    .sidebar .settings-btn,
-    .sidebar .logout-btn {
-        justify-content: center;
-        padding: 12px 8px;
-    }
-    
-    .sidebar .settings-btn i,
-    .sidebar .logout-btn i {
-        margin-right: 0;
-        font-size: 16px;
-    }
-    
-    .main-content {
-        width: 100%;
-        margin-left: 60px;
-        padding: 10px;
-        box-sizing: border-box;
-    }
-    
-    .fixed-almau-logo {
-        right: 20px !important;
-        top: 15px !important;
-    }
-    
-    .sidebar-toggle {
-        display: none;
-    }
-}
-
-/* Fixes for text width issues */
 .about-content {
     max-width: 1200px !important;
     margin: 0 auto !important;
@@ -1569,7 +1145,7 @@ body.sidebar-collapsed .main-content {
 .history-text {
     flex: 1 !important;
     max-width: 60% !important;
-    min-width: 0 !important; /* Allow flex item to shrink */
+    min-width: 0 !important;
     word-wrap: break-word !important;
     overflow-wrap: break-word !important;
     overflow-x: hidden !important;
@@ -1598,7 +1174,6 @@ body.sidebar-collapsed .main-content {
     max-width: 100% !important;
 }
 
-/* Mission and values text control */
 .mission-values {
     display: flex !important;
     gap: 60px !important;
@@ -1623,7 +1198,6 @@ body.sidebar-collapsed .main-content {
     white-space: normal !important;
 }
 
-/* Admin form field width control */
 .form-control, .form-select, textarea.form-control {
     max-width: 100% !important;
     word-wrap: break-word !important;
@@ -1636,7 +1210,6 @@ textarea.form-control {
     max-height: 300px !important;
 }
 
-/* Prevent admin page horizontal scroll */
 .form-section {
     overflow-x: hidden !important;
 }
@@ -1646,7 +1219,6 @@ textarea.form-control {
     margin: 0 auto !important;
 }
 
-/* Custom icons for mission and values */
 .circle-icon {
     width: 150px;
     height: 150px;
@@ -1668,7 +1240,6 @@ textarea.form-control {
     object-fit: cover;
 }
 
-/* Иконки для светлой и темной темы */
 .light-theme-icon {
     display: block;
 }
@@ -1677,7 +1248,6 @@ textarea.form-control {
     display: none;
 }
 
-/* Темная тема */
 [data-theme="dark"] .light-theme-icon {
     display: none;
 }
@@ -1686,23 +1256,6 @@ textarea.form-control {
     display: block;
 }
 
-/* Responsive text handling */
-@media (max-width: 768px) {
-    .history-text {
-        max-width: 100% !important;
-    }
-    
-    .history-content {
-        flex-direction: column !important;
-    }
-    
-    .history-image {
-        flex: none !important;
-        width: 100% !important;
-    }
-}
-
-/* Admin panel specific fixes */
 .admin-panel {
     overflow-x: hidden !important;
     max-width: 100vw !important;
@@ -1734,7 +1287,6 @@ textarea.form-control {
     overflow-wrap: break-word !important;
 }
 
-/* Summernote editor width control */
 .note-editor {
     max-width: 100% !important;
     overflow-x: hidden !important;
@@ -1751,7 +1303,6 @@ textarea.form-control {
     overflow-wrap: break-word !important;
 }
 
-/* Additional Summernote editor fixes */
 .note-editor.note-frame {
     max-width: 100% !important;
     overflow-x: hidden !important;
@@ -1778,18 +1329,11 @@ textarea.form-control {
     max-width: 100% !important;
 }
 
-/* Form field container fixes */
-.form-group {
-    max-width: 100% !important;
-    overflow-x: hidden !important;
-}
-
 .form-control:focus {
     max-width: 100% !important;
     overflow-x: hidden !important;
 }
 
-/* Tab content fixes */
 .tab-content {
     max-width: 100% !important;
     overflow-x: hidden !important;
@@ -1800,67 +1344,6 @@ textarea.form-control {
     overflow-x: hidden !important;
 }
 
-/* Responsive design for about page */
-@media (max-width: 768px) {
-    .about-content {
-        padding: 15px !important;
-        max-width: 100% !important;
-    }
-    
-    .history-content {
-        flex-direction: column !important;
-        gap: 20px !important;
-    }
-    
-    .history-text {
-        max-width: 100% !important;
-        order: 2 !important; /* Text below image on mobile */
-    }
-    
-    .history-image {
-        flex: none !important;
-        width: 100% !important;
-        max-width: 100% !important;
-        order: 1 !important; /* Image above text on mobile */
-    }
-    
-    .history-image img {
-        width: 100% !important;
-        height: 200px !important;
-    }
-    
-    .mission-values {
-        flex-direction: column !important;
-        gap: 40px !important;
-    }
-    
-    .mission-card, .values-card {
-        max-width: 100% !important;
-    }
-    
-    .leadership-cards {
-        flex-direction: column !important;
-        gap: 40px !important;
-    }
-}
-
-@media (max-width: 480px) {
-    .about-content {
-        padding: 10px !important;
-    }
-    
-    .history-section h2,
-    .leadership-section h2 {
-        font-size: 20px !important;
-    }
-    
-    .mission-card h3, 
-    .values-card h3 {
-        font-size: 24px !important;
-    }
-}
-
-/* Feedback admin page styles */
 .feedback-subject {
     max-width: 300px;
     word-wrap: break-word;
@@ -1886,7 +1369,6 @@ textarea.form-control {
     justify-content: center;
 }
 
-/* Table responsive fixes */
 .table-responsive {
     overflow-x: auto;
     max-width: 100%;
@@ -1898,7 +1380,6 @@ textarea.form-control {
     max-width: 200px;
 }
 
-/* Modal fixes */
 .modal-body {
     max-width: 100%;
     overflow-x: hidden;
@@ -1913,33 +1394,9 @@ textarea.form-control {
     padding: 0 15px;
 }
 
-/* Badge improvements */
-.badge {
-    font-size: 0.75em;
-    padding: 0.35em 0.65em;
-}
-
-/* Button improvements */
 .btn-sm {
     padding: 0.25rem 0.5rem;
     font-size: 0.875rem;
-}
-
-.sidebar.collapsed .nav-link {
-    justify-content: flex-start;
-    padding: 15px 20px;
-    position: relative;
-    transition: all 0.3s ease;
-}
-
-.sidebar.collapsed .nav-link i {
-    margin-right: 0;
-    width: 20px;
-    text-align: center;
-    transition: all 0.3s ease;
-    /* Иконка остается на своем месте */
-    position: relative;
-    left: 0;
 }
 
 .sidebar.collapsed .settings-btn,
@@ -1947,30 +1404,12 @@ textarea.form-control {
     justify-content: flex-start;
     padding: 15px 20px;
     transition: all 0.3s ease;
-}
-
-.sidebar.collapsed .settings-btn i,
-.sidebar.collapsed .logout-btn i {
-    margin-right: 0;
-    width: 20px;
-    text-align: center;
-    transition: all 0.3s ease;
-    /* Иконка остается на своем месте */
-    position: relative;
-    left: 0;
 }
 
 .sidebar.collapsed .nav-item {
     margin-bottom: 1px;
 }
 
-.sidebar.collapsed .nav-link {
-    justify-content: flex-start;
-    padding: 10px 15px;
-    position: relative;
-    transition: all 0.3s ease;
-}
-
 .sidebar.collapsed .settings-btn,
 .sidebar.collapsed .logout-btn {
     justify-content: flex-start;
@@ -1978,17 +1417,10 @@ textarea.form-control {
     transition: all 0.3s ease;
 }
 
-/* Dark theme logo override */
 .theme-dark .sidebar .logo {
-    filter: brightness(0) invert(1); /* Делаем логотип белым */
+    filter: brightness(0) invert(1);
 }
 
-/* Light theme logo (обычное состояние) */
-.sidebar .logo {
-    filter: none;
-}
-
-/* Dark theme styles for About page */
 .theme-dark .about-content {
     color: var(--text-primary);
 }
@@ -2023,7 +1455,6 @@ textarea.form-control {
     color: var(--text-primary);
 }
 
-/* Dark theme styles for Documents and Processes pages */
 .theme-dark .search-input {
     background: transparent !important;
     border: 2px solid var(--text-primary) !important;
@@ -2103,181 +1534,6 @@ textarea.form-control {
     color: var(--button-text) !important;
 }
 
-/* Мобильные стили - убираем рамки категорий */
-@media (max-width: 768px) {
-    .category-filters {
-        border: none !important;
-        background: transparent !important;
-    }
-    
-    .theme-dark .category-filters {
-        border: none !important;
-        background: transparent !important;
-    }
-    
-    /* Мобильная кнопка "Назад" */
-    .mobile-back-btn {
-        position: fixed;
-        top: 20px;
-        left: 20px;
-        z-index: 1001;
-        background: #ffffff;
-        border-radius: 50%;
-        width: 40px;
-        height: 40px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-        border: 1px solid #e0e0e0;
-        pointer-events: auto;
-    }
-    
-    /* Центрируем заголовки на мобильных устройствах */
-    .content-header {
-        text-align: center !important;
-        padding-top: 80px !important; /* Увеличенный отступ сверху для кнопки "Назад" */
-        margin-top: 0 !important;
-    }
-    
-    .content-header h1,
-    .content-header .greeting h1,
-    .content-header .page-title,
-    .content-header .greeting {
-        margin: 0 auto !important;
-        text-align: center !important;
-        width: 100% !important;
-    }
-    
-    /* Убираем flex-позиционирование на мобильных */
-    .content-header {
-        display: block !important;
-        justify-content: center !important;
-        align-items: center !important;
-        flex-direction: column !important;
-    }
-    
-    /* Переопределяем все возможные стили content-header на мобильных */
-    .content-header * {
-        text-align: center !important;
-    }
-    
-    /* Убираем user-info на мобильных, чтобы не мешало центрированию */
-    .user-info {
-        display: none !important;
-    }
-    
-    /* Убеждаемся, что основной контент не сдвигается */
-    .main-content {
-        padding-left: 0 !important;
-        margin-left: 0 !important;
-        position: relative !important;
-    }
-    
-    /* Убираем любые отступы слева, которые могут сдвигать контент */
-    .dashboard-container,
-    .main-content,
-    .content-header {
-        margin-left: 0 !important;
-        padding-left: 0 !important;
-    }
-    
-    .mobile-back-btn .back-link {
-        color: #333333;
-        text-decoration: none;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-        height: 100%;
-    }
-    
-    .mobile-back-btn i {
-        font-size: 18px;
-    }
-    
-    /* Темная тема для кнопки "Назад" */
-    .theme-dark .mobile-back-btn {
-        background: #ffffff !important;
-        border-color: #404040 !important;
-    }
-    
-    .theme-dark .mobile-back-btn .back-link {
-        color: #333333 !important;
-    }
-    
-    /* Мобильные кнопки внизу */
-    .mobile-bottom-buttons {
-        position: fixed;
-        bottom: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 1001;
-        display: flex;
-        gap: 10px;
-        padding: 0 20px;
-    }
-    
-    .mobile-btn {
-        background: var(--accent-color);
-        color: white;
-        text-decoration: none;
-        padding: 10px 16px;
-        border-radius: 20px;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        font-weight: 500;
-        font-size: 13px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-        transition: all 0.3s ease;
-        white-space: nowrap;
-    }
-    
-    .mobile-btn:hover {
-        background: var(--accent-hover);
-        transform: translateY(-2px);
-        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-    }
-    
-    .mobile-btn i {
-        font-size: 14px;
-    }
-    
-    /* Скрываем кнопку "Назад" на главной странице */
-    .dashboard-page .mobile-back-btn {
-        display: none !important;
-    }
-    
-    /* На dashboard кнопки располагаются по 2 в ряд */
-    .dashboard-page .mobile-bottom-buttons {
-        flex-wrap: wrap;
-        justify-content: center;
-        max-width: 300px;
-    }
-    
-    .dashboard-page .mobile-btn {
-        flex: 1;
-        min-width: 120px;
-        max-width: 140px;
-    }
-    
-    /* Темная тема для мобильных кнопок */
-    .theme-dark .mobile-back-btn {
-        background: var(--accent-color) !important;
-    }
-    
-    .theme-dark .mobile-btn {
-        background: var(--accent-color) !important;
-        color: white !important;
-    }
-    
-    .theme-dark .mobile-btn:hover {
-        background: var(--accent-hover) !important;
-    }
-}
-
-/* Dark theme styles for Contacts and Map page */
 .theme-dark .map-content {
     color: var(--text-primary);
 }
@@ -2327,7 +1583,6 @@ textarea.form-control {
     color: var(--text-primary) !important;
 }
 
-/* Additional contact page elements */
 .theme-dark .contact-section {
     background: transparent !important;
     color: var(--text-primary) !important;
@@ -2373,7 +1628,6 @@ textarea.form-control {
     color: var(--text-primary) !important;
 }
 
-/* Dark theme styles for Feedback and FAQ pages */
 .theme-dark .feedback-form {
     background: transparent !important;
     border: 2px solid var(--text-primary) !important;
@@ -2468,7 +1722,6 @@ textarea.form-control {
     color: var(--button-text) !important;
 }
 
-/* General dark theme styles for all pages */
 .theme-dark .page-content {
     color: var(--text-primary);
 }
@@ -2559,7 +1812,6 @@ textarea.form-control {
     color: var(--text-primary) !important;
 }
 
-/* Dark theme styles for Processes page specific elements */
 .theme-dark .processes-header h1,
 .theme-dark .processes-header h2,
 .theme-dark .processes-header p {
@@ -2587,7 +1839,6 @@ textarea.form-control {
     color: var(--text-primary) !important;
 }
 
-/* Override any white backgrounds for process containers */
 .theme-dark .process-container {
     background: transparent !important;
     border: 2px solid var(--text-primary) !important;
@@ -2601,7 +1852,6 @@ textarea.form-control {
     background: transparent !important;
 }
 
-/* Aggressive dark theme overrides to ensure no white backgrounds */
 .theme-dark .bg-white,
 .theme-dark .bg-light {
     background-color: transparent !important;
@@ -2617,7 +1867,6 @@ textarea.form-control {
     background-color: transparent !important;
 }
 
-/* Override any specific text colors */
 .theme-dark .text-dark,
 .theme-dark .text-black {
     color: var(--text-primary) !important;
@@ -2627,7 +1876,6 @@ textarea.form-control {
     color: var(--text-secondary) !important;
 }
 
-/* Sidebar navigation styles */
 .sidebar .nav-link {
     color: var(--sidebar-text);
     transition: all 0.3s ease;
@@ -2635,8 +1883,12 @@ textarea.form-control {
     align-items: center;
     padding: 12px 16px;
     text-decoration: none;
-    border-radius: 8px;
+    border-radius: 8px !important; 
     margin: 2px 8px;
+    font-size: 11px !important; 
+    line-height: 1.0 !important; 
+    margin: 3px 6px !important; 
+    padding: 4px 16px !important; 
 }
 
 .sidebar .nav-link:hover {
@@ -2653,42 +1905,25 @@ textarea.form-control {
     background-color: var(--accent-hover);
 }
 
-.sidebar .nav-link i {
-    width: 20px;
-    height: 20px;
-    font-size: 18px;
-    margin-right: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-}
 
 .sidebar .nav-link span {
     font-weight: 500;
     white-space: nowrap;
 }
 
-/* Sidebar sections */
 .sidebar-section {
-    padding: 16px 8px 8px 8px;
+    padding: 8px 6px 4px 6px !important;
 }
 
 .sidebar-section h6 {
     color: var(--sidebar-text);
-    font-size: 0.75rem;
+    font-size: 0.68rem !important; 
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    margin-bottom: 8px;
+    margin-bottom: 4px !important;
     padding-left: 8px;
     opacity: 0.7;
-}
-
-/* Dark theme specific overrides for main elements */
-.theme-dark body {
-    background-color: var(--bg-primary) !important;
-    color: var(--text-primary) !important;
 }
 
 .theme-dark .main-content {
@@ -2696,12 +1931,9 @@ textarea.form-control {
     color: var(--text-primary) !important;
 }
 
-.theme-dark .dashboard-container {
-    background-color: var(--bg-primary) !important;
-    color: var(--text-primary) !important;
-}
-
 .theme-dark .sidebar {
+    border-right: 1px solid var(--border-color);
+    transition: all 0.3s ease, background-color 0.3s ease !important;
     background-color: var(--sidebar-bg) !important;
     color: var(--sidebar-text) !important;
 }
@@ -2884,79 +2116,18 @@ textarea.form-control {
     background: var(--card-bg) !important;
 }
 
-/* Fix for sidebar flash during theme switching */
-.sidebar {
-    transition: all 0.3s ease, background-color 0.3s ease !important;
-    background-color: var(--sidebar-bg) !important;
-    color: var(--sidebar-text) !important;
-    /* Предотвращаем мигание при загрузке */
-    opacity: 1 !important;
-    visibility: visible !important;
-}
-
-.theme-dark .sidebar {
-    background-color: var(--sidebar-bg) !important;
-    color: var(--sidebar-text) !important;
-    transition: all 0.3s ease, background-color 0.3s ease !important;
-}
-
-/* Дополнительные стили для предотвращения мигания */
-.dashboard-container {
-    transition: all 0.3s ease !important;
-}
-
-.main-content {
-    transition: all 0.3s ease !important;
-}
-
-/* Ensure smooth transitions for all theme-related elements */
-* {
-    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease !important;
-}
-
-/* Mobile dashboard spacing overrides: keep horizontal/vertical gaps at 10px */
-@media (max-width: 768px) {
-    .dashboard-grid {
-        column-gap: 10px !important;
-        row-gap: 10px !important;
-        padding-left: 0 !important;
-        padding-right: 0 !important;
-        margin-left: 0 !important;
-        margin-right: 0 !important;
-    }
-    .dashboard-link {
-        margin: 0 !important;
-    }
-}
-
-@media (max-width: 480px) {
-    .dashboard-grid {
-        column-gap: 10px !important;
-        row-gap: 10px !important;
-        padding-left: 0 !important;
-        padding-right: 0 !important;
-        margin-left: 0 !important;
-        margin-right: 0 !important;
-    }
-}
-
-/* Additional fixes for settings page */
 .theme-dark .content-header h1 {
-    color: #ffffff !important;
     font-weight: bold !important;
 }
 
 .theme-dark .content-header h2 {
-    color: #ffffff !important;
     font-weight: bold !important;
 }
 
 .theme-dark .content-header h3 {
-    color: #ffffff !important;
     font-weight: bold !important;
 }
 
-/* Fix for messages in dark theme */
 .theme-dark .message {
     background: transparent !important;
     border: 2px solid var(--text-primary) !important;
@@ -2972,83 +2143,40 @@ textarea.form-control {
 .theme-dark .message i {
     color: inherit !important;
 }
-  
-  /* Sidebar compact overrides: make items shorter to avoid scrolling */
-  .sidebar .nav-link {
-      padding: 6px 10px !important; /* was ~12-16px */
-      font-size: 12px !important;
-      line-height: 1.1 !important;
-      margin: 2px 6px !important; /* tighter gaps */
-  }
-  .sidebar .nav-link i {
-      width: 16px !important;
-      height: 16px !important;
-      font-size: 14px !important;
-      margin-right: 8px !important;
-  }
-  .sidebar .nav-link .nav-text,
-  .nav-text {
-      font-size: 12px !important;
-  }
-  .sidebar-section { padding: 8px 6px 4px 6px !important; }
-  .sidebar-section h6 { font-size: 0.68rem !important; margin-bottom: 4px !important; }
-  .sidebar-footer .settings-btn,
-  .sidebar-footer .logout-btn {
-      padding: 6px 8px !important;
-      font-size: 12px !important;
-  }
-  .sidebar-footer .settings-btn i,
-  .sidebar-footer .logout-btn i { font-size: 14px !important; width: 16px !important; margin-right: 6px !important; }
 
-  /* Make sidebar even more compact: hide big logo, compress header/footer */
-  .sidebar-header { padding: 6px 6px !important; min-height: 0 !important; }
-  .sidebar-header { border-bottom: none !important; }
-  .sidebar .logo-container { display: none !important; }
-  .sidebar-toggle { top: 16px !important; }
-  .sidebar-nav { padding: 6px 0 !important; }
-  .sidebar .nav-link { padding: 4px 8px !important; font-size: 11px !important; }
-  .sidebar .nav-link i { width: 14px !important; height: 14px !important; font-size: 13px !important; margin-right: 6px !important; }
-  .sidebar .nav-text { font-size: 11px !important; }
-  .sidebar-footer { padding: 6px !important; border-top: none !important; }
-  .sidebar-footer .settings-btn, .sidebar-footer .logout-btn { padding: 6px 8px !important; font-size: 11px !important; }
+.sidebar-footer .settings-btn, 
+.sidebar-footer .logout-btn { 
+    padding: 6px 8px !important; 
+    font-size: 11px !important; 
+}
 
-  /* Promo link under nav list: visible when open, hidden when collapsed */
-  .sidebar .nav-list + a { display: block !important; margin: 8px 12px !important; }
-  .sidebar.collapsed .nav-list + a { display: none !important; }
-  body.sidebar-collapsed .sidebar .nav-list + a { display: none !important; }
+.sidebar-footer .settings-btn i,
+.sidebar-footer .logout-btn i { 
+    font-size: 14px !important; 
+    width: 16px !important; 
+    margin-right: 6px !important; 
+}
 
-  /* Resolve style conflicts: ensure no vertical scrollbar and tighter spacing */
-  .sidebar { overflow-y: hidden !important; }
-  .sidebar-nav { overflow: hidden !important; padding-top: 4px !important; padding-bottom: 4px !important; }
-  .sidebar .nav-item { margin: 4px 6px !important; }
-  /* немного отступаем контент ссылки от левого края и добавим вертикальный зазор между пунктами */
-  /* Reduce button height ~0.7x by shrinking vertical padding and line-height */
-  .sidebar .nav-link { padding: 4px 16px !important; margin: 3px 6px !important; font-size: 11px !important; line-height: 1.0 !important; border-radius: 8px !important; }
-  .sidebar .nav-link i { width: 14px !important; height: 14px !important; font-size: 12px !important; margin-right: 6px !important; }
-  .sidebar .nav-text { font-size: 11px !important; }
-  .sidebar-footer { padding-top: 4px !important; padding-bottom: 6px !important; border-top: none !important; }
-  .sidebar-footer .user-menu { gap: 4px !important; }
-  .sidebar-footer .settings-btn, .sidebar-footer .logout-btn { padding: 6px 8px !important; font-size: 11px !important; }
+.sidebar .logo-container { 
+    display: none !important; 
+}
 
-  /* Offset settings button from bottom and left by 100px */
-  .sidebar-footer {
-      padding-left: 30px !important;
-      padding-bottom: 20px !important;
-  }
+.sidebar .nav-list + a { 
+    display: block !important; 
+    margin: 8px 12px !important; 
+}
 
-  /* Dashboard tiles: make images/tiles larger and reduce gaps to 5px */
-  .dashboard-grid { gap: 5px !important; }
-  .dashboard-link { width: 300px !important; height: 220px !important; }
-  .dashboard-img { max-width: 100% !important; max-height: 100% !important; }
+.sidebar.collapsed .nav-list + a { 
+    display: none !important; 
+}
 
-  /* Adjust sidebar icon size (reduce ~1.5x from previous) */
-  .sidebar .nav-link i {
-      width: 30px !important;
-      height: 30px !important;
-      font-size: 19px !important;
-      margin-right: 10px !important;
-  }
+body.sidebar-collapsed .sidebar .nav-list + a { 
+    display: none !important; 
+}
 
+.sidebar .nav-item { 
+    margin: 4px 6px !important; 
+}
 
 .fixed-almau-logo {
     position: fixed !important;
@@ -3056,57 +2184,446 @@ textarea.form-control {
     right: 30px !important;
     z-index: 1000 !important;
     width: 120px !important;
-    pointer-events: none; /* avoid blocking clicks below */
+    pointer-events: none; 
 }
 
-/* Global page logo (non-fixed, scrolls with content) */
 .page-logo {
-    position: absolute;
-    top: 32px;
-    right: 30px;
-    z-index: 10;
-    width: 160px; /* ~1.5x of original 100px */
-    height: auto;
-    pointer-events: none;
+    background-color: var(--bg-primary);
+    display: flex;
+    justify-content: flex-end;
+    padding: 50px 30px 0 0;
 }
 
-/* === Sidebar collapsed width and alignment fixes === */
-/* Keep collapsed width wider so icons fit, and keep vertical positions unchanged */
-.sidebar.collapsed { width: 80px !important; min-width: 80px !important; max-width: 80px !important; }
-@media (min-width: 992px) {
-  .sidebar.collapsed + .main-content { margin-left: 80px !important; width: calc(100% - 80px) !important; }
-  body.sidebar-collapsed .main-content { margin-left: 80px !important; width: calc(100% - 80px) !important; }
+.sidebar.collapsed .nav-list { 
+    margin-top: 135px !important; 
 }
+
+@media (max-width: 1200px) {
+    .dashboard-grid {
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: repeat(2, auto);
+        gap: 20px;
+        max-width: 800px;
+        padding: 25px;
+    }
+    
+    .dashboard-link {
+        width: 220px;
+        height: 180px;
+    }
+}
+
+
+@media (max-width: 768px) {
+    .category-filters {
+        border: none !important;
+        background: transparent !important;
+    }
+    
+    .theme-dark .category-filters {
+        border: none !important;
+        background: transparent !important;
+    }
+    
+    .mobile-back-btn {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        z-index: 1001;
+        background: #ffffff;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        border: 1px solid #e0e0e0;
+        pointer-events: auto;
+    }
+    
+    .content-header {
+        text-align: center !important;
+        padding-top: 80px !important; 
+        margin-top: 0 !important;
+        display: block !important;
+        justify-content: center !important;
+        align-items: center !important;
+        flex-direction: column !important;
+    }
+    
+    .content-header h1,
+    .content-header .greeting h1,
+    .content-header .page-title,
+    .content-header .greeting {
+        margin: 0 auto !important;
+        text-align: center !important;
+        width: 100% !important;
+    }
+    
+    .content-header * {
+        text-align: center !important;
+    }
+    
+    .user-info {
+        display: none !important;
+    }
+    
+    .main-content {
+        position: relative !important;
+    }
+    
+    .dashboard-container,
+    .main-content,
+    .content-header {
+        margin-left: 0 !important;
+        padding-left: 0 !important;
+    }
+    
+    .mobile-back-btn .back-link {
+        color: #333333;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+    }
+    
+    .mobile-back-btn i {
+        font-size: 18px;
+    }
+    
+    .theme-dark .mobile-back-btn {
+        background: #ffffff !important;
+        border-color: #404040 !important;
+    }
+    
+    .theme-dark .mobile-back-btn .back-link {
+        color: #333333 !important;
+    }
+    
+    .mobile-bottom-buttons {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1001;
+        display: flex;
+        gap: 10px;
+        padding: 0 20px;
+    }
+    
+    .mobile-btn {
+        background: var(--accent-color);
+        color: white;
+        text-decoration: none;
+        padding: 10px 16px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-weight: 500;
+        font-size: 13px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        transition: all 0.3s ease;
+        white-space: nowrap;
+    }
+    
+    .mobile-btn:hover {
+        background: var(--accent-hover);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+    
+    .mobile-btn i {
+        font-size: 14px;
+    }
+    
+    .dashboard-page .mobile-back-btn {
+        display: none !important;
+    }
+    
+    .dashboard-page .mobile-bottom-buttons {
+        flex-wrap: wrap;
+        justify-content: center;
+        max-width: 300px;
+    }
+    
+    .dashboard-page .mobile-btn {
+        flex: 1;
+        min-width: 120px;
+        max-width: 140px;
+    }
+    
+    .theme-dark .mobile-back-btn {
+        background: var(--accent-color) !important;
+    }
+    
+    .theme-dark .mobile-btn {
+        background: var(--accent-color) !important;
+        color: white !important;
+    }
+    
+    .theme-dark .mobile-btn:hover {
+        background: var(--accent-hover) !important;
+    }
+    
+    .sidebar.mobile-open {
+        transform: translateX(0);
+    }
+    
+    .sidebar.collapsed + .main-content {
+        margin-left: 0;
+        width: 100%;
+    }
+    
+    .sidebar::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: -1;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    
+    .sidebar.mobile-open::before {
+        opacity: 1;
+    }
+  
+    .sidebar .settings-btn span,
+    .sidebar .logout-btn span {
+        display: none;
+    }
+    
+    .dashboard-link {
+        width: 100%;
+        height: 60px;
+        min-width: 0;
+        font-size: 12px;
+        margin: 0 !important;
+    }
+    
+    .dashboard-img {
+        max-width: 80%;
+        max-height: 80%;
+    }
+    
+    .content-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+    
+    .greeting h1 {
+        font-size: 24px;
+    }
+    
+    .login-card {
+        margin: 20px;
+        padding: 30px;
+    }
+    
+    .social-login {
+        flex-direction: column;
+    }
+
+    .dashboard-container {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .sidebar {
+        width: 60px;
+        position: fixed;
+        left: 0;
+        top: 0;
+        z-index: 1000;
+        border-radius: 0 10px 10px 0;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+    }
+    
+    .sidebar.collapsed {
+        width: 60px;
+        height: 100vh;
+    }
+    
+    .sidebar .nav-text {
+        display: none;
+    }
+    
+    .sidebar .logo-container {
+        display: none;
+    }
+    
+    .sidebar .settings-btn span,
+    .sidebar .logout-btn span {
+        display: none;
+    }
+    
+    .sidebar .nav-link {
+        justify-content: center;
+        padding: 15px 8px;
+    }
+    
+    .sidebar .nav-link i {
+        margin-right: 0;
+        font-size: 18px;
+    }
+    
+    .sidebar .settings-btn,
+    .sidebar .logout-btn {
+        justify-content: center;
+        padding: 12px 8px;
+    }
+    
+    .sidebar .settings-btn i,
+    .sidebar .logout-btn i {
+        margin-right: 0;
+        font-size: 16px;
+    }
+    
+    .main-content {
+        width: 100%;
+        margin-left: 60px;
+        padding: 10px;
+        padding: 4px !important;
+        margin: 0 !important;
+    }
+    
+    .fixed-almau-logo {
+        right: 20px !important;
+        top: 15px !important;
+    }
+    
+    .sidebar-toggle {
+        display: none;
+    }
+
+    .history-text {
+        max-width: 100% !important;
+        order: 2 !important; 
+    }
+    
+    .history-content {
+        flex-direction: column !important;
+        gap: 20px !important;
+    }
+    
+    .history-image {
+        flex: none !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        order: 1 !important; 
+    }
+
+    .about-content {
+        padding: 15px !important;
+        max-width: 100% !important;
+    }
+    
+    .history-image img {
+        width: 100% !important;
+        height: 200px !important;
+    }
+    
+    .mission-values {
+        flex-direction: column !important;
+        gap: 40px !important;
+    }
+    
+    .mission-card, .values-card {
+        max-width: 100% !important;
+    }
+    
+    .leadership-cards {
+        flex-direction: column !important;
+        gap: 40px !important;
+    }
+
+    .dashboard-grid {
+        column-gap: 10px !important;
+        row-gap: 10px !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        grid-template-rows: auto;
+        height: auto;
+        gap: 2px !important;
+        padding: 2px !important;
+        max-width: 100%;
+        width: 100%;
+        grid-template-columns: repeat(2, auto) !important; 
+    }
+
+    .desktop-login .page-logo-container {
+        display: none !important;
+    }
+
+}
+
+@media (max-width: 480px) {
+    .dashboard-grid {
+        column-gap: 10px !important;
+        row-gap: 10px !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        grid-template-columns: repeat(2, auto) !important; 
+    }
+
+    .about-content {
+        padding: 10px !important;
+    }
+    
+    .history-section h2,
+    .leadership-section h2 {
+        font-size: 20px !important;
+    }
+    
+    .mission-card h3, 
+    .values-card h3 {
+        font-size: 24px !important;
+    }
+
+    .dashboard-link {
+        width: 100%;
+        height: 50px;
+        font-size: 11px;
+    }
+    
+    .dashboard-img {
+        max-width: 70%;
+        max-height: 70%;
+    }
+
+}
+
 @media (max-width: 991.98px) {
-  .sidebar.collapsed + .main-content,
-  body.sidebar-collapsed .main-content { margin-left: 0 !important; width: 100% !important; }
+    .sidebar.collapsed + .main-content, body.sidebar-collapsed .main-content { 
+        margin-left: 0 !important; 
+        width: 100% !important; 
+    }
 }
 
-/* Keep header compact in both states so items start near the top */
-.sidebar-header { min-height: 0 !important; padding-top: 6px !important; padding-bottom: 6px !important; }
-.sidebar.collapsed .sidebar-header { min-height: 0 !important; padding-top: 6px !important; padding-bottom: 6px !important; }
-
-/* Keep nav paddings identical in both states to avoid vertical shifts */
-.sidebar .sidebar-nav, .sidebar.collapsed .sidebar-nav { padding-top: 6px !important; padding-bottom: 6px !important; }
-.sidebar .nav-link, .sidebar.collapsed .nav-link { padding-top: 6px !important; padding-bottom: 6px !important; }
-.sidebar .settings-btn, .sidebar .logout-btn,
-.sidebar.collapsed .settings-btn, .sidebar.collapsed .logout-btn { padding-top: 6px !important; padding-bottom: 6px !important; }
-
-/* Collapsed-only: move icon list down by 100px */
-.sidebar.collapsed .nav-list { margin-top: 135px !important; }
-
-/* === Dashboard tiles: let link size follow image size exactly === */
-.dashboard-link { display: inline-block !important; width: auto !important; height: auto !important; padding: 0 !important; margin: 0 !important; background: transparent !important; }
-.dashboard-img { display: block !important; width: auto !important; height: auto !important; max-width: 100% !important; max-height: 100% !important; margin: 0 !important; }
-
-/* === Dashboard: 3 columns (3x2 for 6 tiles), minimal spacing === */
-.dashboard-grid { display: grid !important; grid-template-columns: repeat(3, auto) !important; justify-content: start !important; gap: 0 !important; column-gap: 0 !important; row-gap: 0 !important; padding: 0 !important; }
-.dashboard-link { margin: 0 !important; }
-@media (max-width: 768px) { .dashboard-grid { grid-template-columns: repeat(2, auto) !important; } }
-@media (max-width: 480px) { .dashboard-grid { grid-template-columns: repeat(2, auto) !important; } }
-
-/* === Dashboard desktop alignment and scale === */
 @media (min-width: 992px) {
-    .dashboard-grid { margin-top: 60px !important; margin-left: 80px !important; }
-    .dashboard-img { width: 100% !important; height: auto !important; }
+    .sidebar.collapsed + .main-content { 
+        margin-left: 80px !important; 
+        width: calc(100% - 80px) !important; 
+    }
+
+    body.sidebar-collapsed .main-content { 
+        margin-left: 80px !important; 
+        width: calc(100% - 80px) !important; 
+    }
+    .dashboard-img { width: 100% !important; 
+        height: auto !important; 
+    }
 }

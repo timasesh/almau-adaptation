@@ -313,3 +313,6 @@ msgstr "Hide"
 
 msgid "Открыть"
 msgstr "Open"
+
+msgid "Инструкции по работе"
+msgstr "Work instructions"

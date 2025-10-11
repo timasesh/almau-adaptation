@@ -5,37 +5,16 @@
 
 {% block title %}Главная - Adaptation AlmaU{% endblock %}
 
-{% block extra_css %}
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<style>
-    .greeting h1 { font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; font-weight: 300; }
-</style>
-{% endblock %}
 
 {% block content %}
 <style>
-    .page-logo {
-        position: absolute;
-        top: 32px;
-        right: 30px;
-        z-index: 10;
-        width: 160px; /* match global size */
-        pointer-events: none;
-    }
-.greeting {
-    margin-top: 100px;
-    margin-bottom: -50px;
-    margin-left: 100px;
-}
 </style>
 <div class="dashboard-container dashboard-page">
     {% include 'main/sidebar.html' %}
     
     <!-- Main content -->
     <div class="main-content" id="mainContent" style="position: relative;">
-        <img src="{% static 'images/almauni.svg' %}" alt="AlmaUni" class="page-logo">
+         
         <div class="content-header">
             <div class="greeting">
                 <h1>{{ greeting }}, {{ user_name }}!</h1>

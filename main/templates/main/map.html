@@ -29,7 +29,7 @@
     <!-- Main content -->
     <div class="main-content" id="mainContent" style="position: relative;">
         <!-- Top right logo (scrolls with page) -->
-        <img src="{% static 'images/almauni.svg' %}" alt="AlmaUni" class="page-logo">
+         
 
                         <h1 class="page-title">{% trans "Контакты и карта" %}</h1>
 
@@ -110,16 +110,6 @@
 </div>
 
 <style>
-    /* Шрифт страницы Контакты и карта */
-    @font-face {
-        font-family: 'Helvetica Neue';
-        src: local('Helvetica Neue'), local('HelveticaNeue');
-        font-display: swap;
-    }
-
-    .main-content, .main-content * {
-        font-family: 'Helvetica Neue', Arial, Helvetica, sans-serif !important;
-    }
     /* Вернем корректный шрифт для иконок Font Awesome,
        чтобы они не пропадали из-за общего переопределения шрифта */
     .main-content .fa, 
