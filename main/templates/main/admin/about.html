@@ -196,7 +196,7 @@
                         </div>
                     {% endif %}
                     <input type="file" class="form-control" name="history_image_3" accept="image/*">
-                    <small class="form-text text-muted">Поддерживаемые форматы: JPG, PNG, GIF. Рекомендуемый размер: 800x600px</small>
+                    <small class="form-text text-muted">Поддерживаемые форматы: JPG, PNG, SVG.</small>
                 </div>
                 
                 <button type="submit" class="btn btn-primary">
@@ -422,7 +422,7 @@
         // Автоматическое изменение размера текстовых полей
         $('textarea.simple-textarea').each(function() {
             this.style.height = 'auto';
-            this.style.height = (this.scrollHeight) + 'px';
+            this.style.height = 300 + 'px';
         });
         
         $('textarea.simple-textarea').on('input', function() {

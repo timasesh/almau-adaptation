@@ -1,3 +1,4 @@
+import re
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
 from main.models import Position, Profile
@@ -7,7 +8,7 @@ import requests
 
 
 class Command(BaseCommand):
-    help = "Выгружает всех сотрудников из Entra ID и синхронизирует с локальной базой Django"
+    help = "Выгружает сотрудников из Entra ID и синхронизирует с локальной базой Django"
 
     def handle(self, *args, **options):
         self.stdout.write(self.style.NOTICE("🔄 Начало синхронизации сотрудников из Entra ID..."))
@@ -37,7 +38,7 @@ class Command(BaseCommand):
         employees = []
         next_link = graph_url
 
-        # --- 2️⃣ Пагинация (Microsoft Graph выдаёт по 100 записей) ---
+        # --- 2️⃣ Пагинация ---
         while next_link:
             resp = requests.get(next_link, headers=headers)
             if resp.status_code != 200:
@@ -48,19 +49,28 @@ class Command(BaseCommand):
             employees.extend(data.get("value", []))
             next_link = data.get("@odata.nextLink")
 
-        self.stdout.write(f"📥 Получено записей: {len(employees)}")
+        self.stdout.write(self.style.NOTICE(f"📥 Получено записей: {len(employees)}"))
 
         updated = 0
         created = 0
+        skipped = 0
+
+        # --- Регулярка: буква.тест@almau.edu.kz ---
+        pattern = re.compile(r"^[a-zA-Z]\.[a-zA-Z0-9_-]+@almau\.edu\.kz$", re.IGNORECASE)
+
+        valid_employees = [e for e in employees if e.get("mail") and pattern.match(e["mail"])]
+        self.stdout.write(self.style.NOTICE(f"✅ Подходит по шаблону email: {len(valid_employees)}"))
 
         # --- 3️⃣ Обработка сотрудников ---
-        for emp in employees:
+        for emp in valid_employees:
+            email = emp.get("mail")
             username = emp.get("userPrincipalName", "").split("@")[0]
-            email = emp.get("mail") or f"{username}@almau.kz"
             full_name = emp.get("displayName") or username
             job_title = emp.get("jobTitle") or "Без должности"
 
             if not username:
+                skipped += 1
+                self.stdout.write(self.style.WARNING(f"⚠️ Пропущен: {email} — нет username"))
                 continue
 
             # --- Django User ---
@@ -73,14 +83,16 @@ class Command(BaseCommand):
                 }
             )
 
-            if not is_created:
+            if is_created:
+                created += 1
+                self.stdout.write(self.style.SUCCESS(f"➕ Создан новый пользователь: {username} ({email})"))
+            else:
                 user.email = email
                 user.first_name = full_name.split(" ")[0]
                 user.last_name = " ".join(full_name.split(" ")[1:])
                 user.save()
                 updated += 1
-            else:
-                created += 1
+                self.stdout.write(self.style.HTTP_INFO(f"✏️ Обновлён: {username} ({email})"))
 
             # --- Position & Profile ---
             pos, _ = Position.objects.get_or_create(name=job_title)
@@ -88,7 +100,10 @@ class Command(BaseCommand):
             if profile.position != pos:
                 profile.position = pos
                 profile.save()
+                self.stdout.write(f"   ↳ Обновлена должность: {pos.name}")
 
-        self.stdout.write(self.style.SUCCESS(f"✅ Создано {created}, обновлено {updated} сотрудников"))
+        self.stdout.write(self.style.SUCCESS("──────────────"))
+        self.stdout.write(self.style.SUCCESS(f"✅ Создано: {created}"))
+        self.stdout.write(self.style.SUCCESS(f"📝 Обновлено: {updated}"))
+        self.stdout.write(self.style.WARNING(f"🚫 Пропущено: {skipped}"))
         self.stdout.write(self.style.SUCCESS(f"📅 Завершено: {datetime.now()}"))
-

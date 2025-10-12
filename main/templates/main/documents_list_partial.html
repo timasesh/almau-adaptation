@@ -1,27 +1,29 @@
 {% load document_filters %}
 {% load i18n %}
 {% load translation_tags %}
-{% for document in documents %}
-    <div class="document-card" style="border-radius: 15px; border:1px solid #72B2FF; padding: 16px; display:flex; align-items:flex-start; justify-content:space-between; gap:16px; box-shadow:none;">
-        <div class="document-info" style="flex:1;">
-            <h3 class="document-title" style="margin:0 0 6px 0;">{{ document|get_title:current_language }}</h3>
-            <div class="document-category" style="font-size:13px;color:#777;">{{ document.category|get_category_name:current_language }}</div>
-        </div>
-        <div class="document-meta" style="display:flex; flex-direction:column; align-items:flex-end; gap:8px;">
-            <span class="document-date">{{ document.created_at|date:"d.m.Y" }}</span>
+
+{% if documents %}
+    {% for document in documents %}
+        <div class="document-card">
+            <div class="document-info">
+                <h3 class="document-title">{{ document|get_title:current_language }}</h3>
+                <div class="document-category">{{ document.category|get_category_name:current_language }}</div>
+            </div>
             <div>
-                <a href="{% url 'main:document_detail' document.id %}" class="download-btn" style="background:none;color:#024080;border-radius:0;padding:0;text-decoration:underline;">{% trans "Открыть" %}</a>
+                <a href="{% url 'main:document_detail' document.id %}" class="download-btn">{% trans "Открыть" %}</a>
             </div>
         </div>
-    </div>
-{% empty %}
-    <div class="no-documents">
-        <i class="fas fa-file-alt"></i>
-        <h3>{% t "Документы не найдены" %}</h3>
-        <p>{% if search_query or current_category %}
-            {% t "Попробуйте изменить критерии поиска" %} {% t "или очистить фильтры" %}.
-        {% else %}
-            {% t "В данный момент документы отсутствуют" %}.
-        {% endif %}</p>
-    </div>
-{% endfor %} 
+    {% endfor %} 
+    {% else %}
+        <div class="no-documents">
+            <i class="fas fa-file-alt"></i>
+            <h3>{% t "Документы не найдены" %}</h3>
+            <p>
+                {% if search_query or current_category %}
+                    {% t "Попробуйте изменить критерии поиска" %} {% t "или очистить фильтры" %}.
+                {% else %}
+                    {% t "В данный момент документы отсутствуют" %}.
+                {% endif %}
+            </p>
+        </div>
+{% endif %}

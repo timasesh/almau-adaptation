@@ -75,14 +75,14 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label">Должности (кому доступна инструкция)</label>
-          <select name="allowed_positions" multiple class="form-select">
-            {% for pos in positions %}
-              <option value="{{ pos.id }}">{{ pos.name }}</option>
-            {% endfor %}
-          </select>
-          <small class="text-muted">Удерживайте Ctrl (или Cmd на Mac), чтобы выбрать несколько</small>
-        </div>
+  <label class="form-label">Категория инструкции</label>
+  <select name="category" class="form-select" required>
+    {% for value, label in Instruction.CATEGORY_CHOICES %}
+      <option value="{{ value }}">{{ label }}</option>
+    {% endfor %}
+  </select>
+</div>
+
 
         <button type="submit" class="btn btn-primary">Сохранить</button>
       </form>
@@ -170,13 +170,13 @@
                   </div>
 
                   <div class="mb-2">
-                    <label class="form-label">Должности (кому доступна инструкция)</label>
-                    <select name="allowed_positions" multiple class="form-select">
-                      {% for pos in positions %}
-                        <option value="{{ pos.id }}" {% if pos in i.allowed_positions.all %}selected{% endif %}>{{ pos.name }}</option>
-                      {% endfor %}
-                    </select>
-                  </div>
+  <label class="form-label">Категория</label>
+  <select name="category" class="form-select">
+    {% for value, label in Instruction.CATEGORY_CHOICES %}
+      <option value="{{ value }}" {% if i.category == value %}selected{% endif %}>{{ label }}</option>
+    {% endfor %}
+  </select>
+</div>
 
                   <button type="submit" class="btn btn-primary">Сохранить изменения</button>
                 </form>

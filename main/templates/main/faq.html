@@ -9,7 +9,6 @@
 {% block content %}
 <div class="dashboard-container">
     <script>
-    // Немедленное применение темы
     (function() {
         const savedTheme = localStorage.getItem('selectedTheme') || 'light';
         if (savedTheme === 'dark') {
@@ -27,54 +26,25 @@
     </script>
     {% include 'main/sidebar.html' %}
     
-    <!-- Main content -->
-    <div class="main-content" id="mainContent" style="position: relative;">
-        <!-- Нефиксированный логотип (SVG) -->
-         
-        
-        <div class="content-header" style="margin-left: 100px; margin-top: 20px;">
-            <div class="greeting">
-                <h1>{% trans "Часто задаваемые вопросы" %}</h1>
-            </div>
-        </div>
+    <div class="main-content" id="mainContent">
         
         <div class="faq-content">
-            <div class="faq-description">
-                <h2>{% trans "Задайте свой вопрос" %}</h2>
-            </div>
 
-            <!-- Поиск -->
-            <div class="search-section">
-                <form method="GET" class="search-form" id="searchForm">
-                    <div class="search-input-wrapper">
-                        <input type="text" 
-                               name="search" 
-                               id="searchInput"
-                               value="{{ search_query }}" 
-                               placeholder="{% trans 'Поиск по вопросам' %}" 
-                               class="search-input">
-                        <button type="submit" class="search-btn">
-                            <i class="fas fa-search"></i>
-                        </button>
-                    </div>
-                    {% if current_category %}
-                        <input type="hidden" name="category" value="{{ current_category }}" id="categoryInput">
-                    {% endif %}
-                </form>
-                
-                <div class="tags-section">
-                    <button class="tag-btn" id="tagBtn">
-                        {% trans "Категории" %}
-                    </button>
+            <div class="content-header">
+                <div class="greeting">
+                    <h1>{% trans "Часто задаваемые вопросы" %}</h1>
                 </div>
             </div>
-            
-            <!-- Фильтры по категориям -->
+
+            <div class="faq-description">
+                <h2>{% trans "Получите ответы на свои вопросы" %}</h2>
+            </div>
+
             <div class="category-filters">
                 <div class="filter-tabs">
                     <a href="{% url 'main:faq' %}{% if search_query %}?search={{ search_query }}{% endif %}" 
                        class="filter-tab {% if not current_category %}active{% endif %}">
-                        <i class="fas fa-filter"></i>
+                        <i class="fas fa-close"></i>
                     </a>
                     {% for category in categories %}
                         <a href="{% url 'main:faq' %}?category={{ category.id }}{% if search_query %}&search={{ search_query }}{% endif %}" 
@@ -85,8 +55,7 @@
                 </div>
             </div>
             
-            <!-- Список FAQ -->
-            <div class="faq-list" id="faqList">
+            <div class="faq-list {% if not faqs %}no-faqs{% endif %}" id="faqList">
                 {% include 'main/faq_list_partial.html' %}
             </div>
         </div>
@@ -94,16 +63,13 @@
 </div>
 
 <script>
-// Немедленное применение темы при загрузке страницы
 document.addEventListener('DOMContentLoaded', function() {
     const savedTheme = localStorage.getItem('selectedTheme') || 'light';
     
-    // Применяем тему немедленно
     if (typeof applyTheme === 'function') {
         applyTheme(savedTheme);
     }
     
-    // Показываем страницу после применения темы
     setTimeout(() => {
         document.documentElement.classList.add('theme-loaded');
     }, 50);
@@ -111,7 +77,6 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <style>
-/* Исправляем позиционирование логотипа AlmaUni справа сверху */
 .content-header {
     display: flex;
     justify-content: space-between;
@@ -122,68 +87,24 @@ document.addEventListener('DOMContentLoaded', function() {
 
 .user-info {
     position: relative;
-    flex-shrink: 0; /* Не сжимать */
-}
-
-.fixed-almau-logo {
-    position: fixed !important;
-    top: 32px !important;
-    right: 30px !important; /* Фиксированная позиция справа сверху */
-    z-index: 1000 !important;
-    width: 120px !important;
-    height: auto !important;
-    display: block !important;
-}
-
-.sidebar {
-    width: 250px; /* фиксированная ширина */
-    min-width: 250px;
-    max-width: 250px;
-    transition: all 0.3s ease;
-    overflow-x: hidden;
-}
-
-.sidebar-nav .nav-link {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.sidebar .nav-text {
-    display: inline-block;
-    max-width: 180px; /* ограничение по ширине текста */
-    overflow: hidden;
-    text-overflow: ellipsis;
-    vertical-align: middle;
-}
-
-/* На мобильных устройствах */
-@media (max-width: 768px) {
-    .fixed-almau-logo {
-        right: 20px !important;
-        top: 15px !important;
-    }
+    flex-shrink: 0; 
 }
 
 .faq-content {
-    max-width: 1200px;
+    max-width: 640px;
     margin: 0 auto;
-    padding: 20px;
 }
-@media (min-width: 992px) { .faq-content { margin-left: 80px; } }
 
 .faq-description {
-    margin-bottom: 30px;
+    margin-bottom: 19px;
 }
 
 .faq-description h2 {
-    font-size: 24px;
-    font-weight: 500;
-    color: #333;
+    font-size: 20px;
+    font-weight: 400;
     margin: 0;
 }
 
-/* Поиск */
 .search-section {
     margin-bottom: 30px;
     display: flex;
@@ -211,12 +132,8 @@ document.addEventListener('DOMContentLoaded', function() {
     font-size: 16px;
     background: rgba(135, 206, 235, 0.3);
     transition: all 0.3s ease;
-    color: #333;
 }
 
-.search-input::placeholder {
-    color: #666;
-}
 
 .search-input:focus {
     outline: none;
@@ -242,10 +159,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
 .search-btn:hover {
     background: rgba(0, 0, 0, 0.1);
-    color: #333;
 }
 
-/* Кнопка тегов */
 .tags-section {
     flex-shrink: 0;
 }
@@ -263,12 +178,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
 .tag-btn:hover {
     background: #e0e0e0;
-    color: #333;
 }
 
-/* Фильтры */
 .category-filters {
-    margin-bottom: 40px;
+    margin-bottom: 27px;
     position: relative;
 }
 
@@ -278,7 +191,6 @@ document.addEventListener('DOMContentLoaded', function() {
     align-items: center;
     overflow-x: auto;
     overflow-y: hidden;
-    padding: 10px 140px 10px 0;
     scroll-behavior: smooth;
     scrollbar-width: none;
     -ms-overflow-style: none;
@@ -286,50 +198,44 @@ document.addEventListener('DOMContentLoaded', function() {
     -webkit-overflow-scrolling: touch;
 }
 
-/* Скрытие скроллбара для WebKit браузеров */
 .filter-tabs::-webkit-scrollbar {
     display: none;
 }
 
 .filter-tab {
-    padding: 12px 24px;
+    text-align: center;
+    min-height: 40px;
+    min-width: 40px;
+    padding: 11px 10px;
     text-decoration: none;
     color: #000;
     background: #f8f9fa;
-    border: none;
-    border-radius: 25px;
+    border: 1px solid rgba(170, 170, 170, 1);
+    border-radius: 20px;
     transition: all 0.3s ease;
-    font-weight: 500;
     white-space: nowrap;
-    font-size: 16px;
+    font-size: 14px;
     flex-shrink: 0;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     scroll-snap-align: start;
 }
 
 .filter-tab:hover {
-    color: #1976D2;
-    background: #e3f2fd;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background: rgba(179, 217, 255, 1);
 }
 
 .filter-tab.active {
-    color: white;
-    background: #1976D2;
-    border: none;
+    background: rgba(179, 217, 255, 1);
 }
 
 .filter-tab i {
     font-size: 12px;
 }
-
-/* Список FAQ */
 .faq-list {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 16px 24px;
-    max-width: 1100px;
+    gap: 10px;
+    max-width: 640px;
     transition: opacity 0.3s ease;
 }
 
@@ -337,8 +243,10 @@ document.addEventListener('DOMContentLoaded', function() {
     background: white;
     border-radius: 15px;
     overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
     transition: all 0.3s ease;
+    border: 2px solid rgba(114, 178, 255, 1);
+
 }
 
 .faq-item:hover {
@@ -346,7 +254,7 @@ document.addEventListener('DOMContentLoaded', function() {
 }
 
 .faq-question {
-    padding: 20px 25px;
+    padding: 18px 40px;
     cursor: pointer;
     display: flex;
     justify-content: space-between;
@@ -366,7 +274,6 @@ document.addEventListener('DOMContentLoaded', function() {
 .faq-question-text {
     font-size: 18px;
     font-weight: 500;
-    color: #333;
     margin: 0;
     flex: 1;
     padding-right: 20px;
@@ -444,7 +351,6 @@ document.addEventListener('DOMContentLoaded', function() {
 .no-faq h3 {
     font-size: 24px;
     margin-bottom: 10px;
-    color: #333;
 }
 
 .no-faq p {
@@ -503,87 +409,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 }
 
-/* Темная тема */
-@media (prefers-color-scheme: dark) {
-    .faq-description h2 {
-        color: white !important;
-    }
-    
-    .faq-item {
-        border: 2px solid white !important;
-        background: transparent !important;
-    }
-    
-    .faq-question {
-        background: transparent !important;
-        color: white !important;
-    }
-    
-    .faq-question-text {
-        color: white !important;
-    }
-    
-    .faq-answer {
-        background: transparent !important;
-        color: white !important;
-    }
-    
-    .faq-answer-text {
-        color: white !important;
-    }
-    
-    .faq-meta {
-        background: transparent !important;
-        color: white !important;
-        border-color: white !important;
-    }
-    
-    .faq-expand-icon {
-        color: white !important;
-    }
-}
-
-/* Светлая тема */
-@media (prefers-color-scheme: light) {
-    .faq-description h2 {
-        color: #333333 !important;
-    }
-    
-    .faq-item {
-        border: 2px solid #e0e0e0 !important;
-        background: white !important;
-    }
-    
-    .faq-question {
-        background: white !important;
-        color: #333333 !important;
-    }
-    
-    .faq-question-text {
-        color: #333333 !important;
-    }
-    
-    .faq-answer {
-        background: #f8f9fa !important;
-        color: #555555 !important;
-    }
-    
-    .faq-answer-text {
-        color: #555555 !important;
-    }
-    
-    .faq-meta {
-        background: #f0f8ff !important;
-        color: #666666 !important;
-        border-color: #e0e0e0 !important;
-    }
-    
-    .faq-expand-icon {
-        color: #666666 !important;
-    }
-}
-
-/* Принудительное переопределение цветов */
 body.theme-dark .faq-description h2 {
     color: white !important;
 }
@@ -610,21 +435,6 @@ body.theme-dark .faq-expand-icon {
     color: white !important;
 }
 
-body.theme-light .faq-description h2 {
-    color: #333333 !important;
-}
-
-body.theme-light .faq-item {
-    border: 2px solid #e0e0e0 !important;
-    background: white !important;
-}
-
-body.theme-light .faq-question,
-body.theme-light .faq-question-text {
-    color: #333333 !important;
-    background: white !important;
-}
-
 body.theme-light .faq-answer,
 body.theme-light .faq-answer-text {
     color: #555555 !important;
@@ -644,12 +454,10 @@ body.theme-light .faq-expand-icon {
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // AJAX поиск без перезагрузки страницы
     const searchInput = document.getElementById('searchInput');
     const faqList = document.getElementById('faqList');
     let searchTimeout;
     
-    // Функция для выполнения поиска
     function performSearch() {
         if (!searchInput || !faqList) return;
         
@@ -659,7 +467,6 @@ document.addEventListener('DOMContentLoaded', function() {
         
         console.log('Выполняется поиск FAQ:', { searchValue, currentCategory });
         
-        // Строим URL для API запроса
         let apiUrl = new URL('/api/faq/search/', window.location.origin);
         
         if (searchValue) {
@@ -672,23 +479,18 @@ document.addEventListener('DOMContentLoaded', function() {
         
         console.log('API URL:', apiUrl.toString());
         
-        // Показываем индикатор загрузки
         faqList.style.opacity = '0.6';
         
-        // Выполняем AJAX запрос
         fetch(apiUrl.toString())
             .then(response => response.json())
             .then(data => {
                 console.log('Ответ API:', data);
                 if (data.success) {
-                    // Обновляем список FAQ без перезагрузки страницы
                     faqList.innerHTML = data.html;
                     faqList.style.opacity = '1';
                     
-                    // Переинициализируем обработчики событий для новых элементов
                     initializeFAQHandlers();
                     
-                    // Обновляем URL для возможности делиться ссылками
                     const pageUrl = new URL(window.location.href);
                     pageUrl.search = '';
                     
@@ -700,7 +502,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         pageUrl.searchParams.set('category', currentCategory);
                     }
                     
-                    // Обновляем URL без перезагрузки страницы
                     history.pushState(null, '', pageUrl.toString());
                 }
             })
@@ -723,7 +524,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Обработка кликов по фильтрам категорий
     const filterTabs = document.querySelectorAll('.filter-tab');
     
     filterTabs.forEach(tab => {
@@ -814,14 +614,11 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Инициализируем обработчики при загрузке страницы
     initializeFAQHandlers();
     
-    // Функция для принудительного применения цветов FAQ
     function applyFAQColors() {
         const body = document.body;
         const faqDescription = document.querySelector('.faq-description h2');
-        const faqItems = document.querySelectorAll('.faq-item');
         const faqQuestions = document.querySelectorAll('.faq-question, .faq-question-text');
         const faqAnswers = document.querySelectorAll('.faq-answer, .faq-answer-text');
         const faqMetas = document.querySelectorAll('.faq-meta');
@@ -829,10 +626,6 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (body.classList.contains('theme-dark')) {
             if (faqDescription) faqDescription.style.color = 'white';
-            faqItems.forEach(item => {
-                item.style.border = '2px solid white';
-                item.style.background = 'transparent';
-            });
             faqQuestions.forEach(q => {
                 q.style.color = 'white';
                 q.style.background = 'transparent';
@@ -848,13 +641,9 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             faqExpandIcons.forEach(icon => icon.style.color = 'white');
         } else {
-            if (faqDescription) faqDescription.style.color = '#333333';
-            faqItems.forEach(item => {
-                item.style.border = '2px solid #e0e0e0';
-                item.style.background = 'white';
-            });
+            if (faqDescription) faqDescription.style.color = '#000';
             faqQuestions.forEach(q => {
-                q.style.color = '#333333';
+                q.style.color = '#000';
                 q.style.background = 'white';
             });
             faqAnswers.forEach(a => {
@@ -870,10 +659,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Применяем цвета сразу при загрузке
     applyFAQColors();
     
-    // Применяем цвета при изменении темы
     const observer = new MutationObserver(function(mutations) {
         mutations.forEach(function(mutation) {
             if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
@@ -887,7 +674,6 @@ document.addEventListener('DOMContentLoaded', function() {
         attributeFilter: ['class']
     });
     
-    // Применяем цвета после AJAX обновления списка FAQ
     const originalPerformSearch = performSearch;
     performSearch = function() {
         originalPerformSearch.call(this);

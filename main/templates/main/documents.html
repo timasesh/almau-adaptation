@@ -9,7 +9,6 @@
 {% block content %}
 <div class="dashboard-container">
     <script>
-    // Немедленное применение темы
     (function() {
         const savedTheme = localStorage.getItem('selectedTheme') || 'light';
         if (savedTheme === 'dark') {
@@ -27,19 +26,17 @@
     </script>
     {% include 'main/sidebar.html' %}
     
-    <!-- Main content -->
     <div class="main-content" id="mainContent" style="position: relative;">
-        <!-- Нефиксированный логотип (SVG) -->
-         
         
-        <div class="content-header" style="margin-left: 80px; margin-top: 20px;">
-            <div class="greeting">
-                <h1>{% trans "Документация" %}</h1>
-            </div>
-        </div>
+        
         
         <div class="documents-content">
-            <!-- Поиск -->
+            <div class="content-header" style="font-weight: 400; margin-bottom: 24px">
+                <div class="greeting">
+                    <h1>{% trans "Документация" %}</h1>
+                </div>
+            </div>
+
             <div class="search-section">
                 <form method="GET" class="search-form" id="searchForm">
                     <div class="search-input-wrapper">
@@ -47,7 +44,7 @@
                                name="search" 
                                id="searchInput"
                                value="{{ search_query }}" 
-                               placeholder="{% trans 'Начать поиск' %}" 
+                               placeholder="{% trans 'Поиск по документам' %}" 
                                class="search-input">
                         <button type="submit" class="search-btn">
                             <i class="fas fa-search"></i>
@@ -57,11 +54,10 @@
                 </form>
             </div>
             
-            <!-- Фильтры по категориям -->
             <div class="category-filters">
                 <div class="filter-tabs">
                     <a href="{% url 'main:documents' %}{% if search_query %}?search={{ search_query }}{% endif %}" 
-                       class="filter-tab {% if not current_category %}active{% endif %}">
+                       class="filter-tab {% if not current_category %}active{% endif %} deleteall">
                         <i class="fas fa-times"></i>
                     </a>
                     {% for category in categories %}
@@ -72,9 +68,8 @@
                     {% endfor %}
                 </div>
             </div>
-            
-            <!-- Список документов -->
-            <div class="documents-list" id="documentsList">
+
+            <div class="documents-list {% if not documents %}no-documents{% endif %}" id="documentsList">
                 {% include 'main/documents_list_partial.html' %}
             </div>
         </div>
@@ -82,16 +77,13 @@
 </div>
 
 <script>
-// Немедленное применение темы при загрузке страницы
 document.addEventListener('DOMContentLoaded', function() {
     const savedTheme = localStorage.getItem('selectedTheme') || 'light';
     
-    // Применяем тему немедленно
     if (typeof applyTheme === 'function') {
         applyTheme(savedTheme);
     }
     
-    // Показываем страницу после применения темы
     setTimeout(() => {
         document.documentElement.classList.add('theme-loaded');
     }, 50);
@@ -99,70 +91,18 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <style>
-/* Исправляем позиционирование логотипа AlmaUni справа сверху */
-.content-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 30px;
-    position: relative;
-}
-
 .user-info {
     position: relative;
-    flex-shrink: 0; /* Не сжимать */
-}
-
-.fixed-almau-logo {
-    position: fixed !important;
-    top: 32px !important;
-    right: 30px !important; /* Фиксированная позиция справа сверху */
-    z-index: 1000 !important;
-    width: 120px !important;
-    height: auto !important;
-    display: block !important;
-}
-.sidebar {
-    width: 250px; /* фиксированная ширина */
-    min-width: 250px;
-    max-width: 250px;
-    transition: all 0.3s ease;
-    overflow-x: hidden;
-}
-
-.sidebar-nav .nav-link {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.sidebar .nav-text {
-    display: inline-block;
-    max-width: 180px; /* ограничение по ширине текста */
-    overflow: hidden;
-    text-overflow: ellipsis;
-    vertical-align: middle;
-}
-
-
-/* На мобильных устройствах */
-@media (max-width: 768px) {
-    .fixed-almau-logo {
-        right: 20px !important;
-        top: 15px !important;
-    }
+    flex-shrink: 0; 
 }
 
 .documents-content {
-    max-width: 1200px;
+    max-width: 640px;
     margin: 0 auto;
-    padding: 20px;
 }
-@media (min-width: 992px) { .documents-content { margin-left: 80px; } }
 
-/* Поиск */
 .search-section {
-    margin-bottom: 30px;
+    margin-bottom: 24px;
 }
 
 .search-form {
@@ -176,14 +116,16 @@ document.addEventListener('DOMContentLoaded', function() {
 }
 
 .search-input {
-    width: 100%;
-    padding: 15px 20px;
-    padding-right: 60px;
-    border: 2px solid #e0e0e0;
-    border-radius: 30px;
+    width: 330px;
+    padding: 7px 20px;
+    border: 1px solid rgba(114, 178, 255, 1);
+    border-radius: 20px;
     font-size: 16px;
-    background: #f8f9fa;
+    background: white;
     transition: all 0.3s ease;
+}
+.search-input::placeholder{
+    color: black;
 }
 
 .search-input:focus {
@@ -195,10 +137,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
 .search-btn {
     position: absolute;
-    right: 10px;
-    background: #1976D2;
+    right: 280px;
     border: none;
-    color: white;
+    color: black;
+    background: inherit;
     width: 40px;
     height: 40px;
     border-radius: 50%;
@@ -209,62 +151,58 @@ document.addEventListener('DOMContentLoaded', function() {
     transition: background 0.3s ease;
 }
 
-.search-btn:hover {
-    background: #1565C0;
-}
-
-/* Фильтры */
 .category-filters {
-    margin-bottom: 40px;
+    margin-bottom: 24px;
     position: relative;
 }
 
 .filter-tabs {
-    display: flex;
-    gap: 15px;
-    align-items: center;
-    overflow-x: auto;
-    overflow-y: hidden;
-    padding: 10px 140px 10px 0;
-    scroll-behavior: smooth;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-    scroll-snap-type: x proximity;
-    -webkit-overflow-scrolling: touch;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 10px 140px 10px 0;
+  scroll-behavior: smooth;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch; 
+  scrollbar-width: none;
 }
 
-/* Скрытие скроллбара для WebKit браузеров */
 .filter-tabs::-webkit-scrollbar {
-    display: none;
+  display: none;
+}
+
+.deleteall{
+    padding: 0 !important;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .filter-tab {
     padding: 12px 24px;
     text-decoration: none;
     color: #000;
-    background: #f8f9fa;
     border: none;
-    border-radius: 25px;
+    border-radius: 20px;
     transition: all 0.3s ease;
-    font-weight: 500;
+    font-weight: 400;
     white-space: nowrap;
-    font-size: 16px;
+    font-size: 14px;
     flex-shrink: 0;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(170, 170, 170, 1);
     scroll-snap-align: start;
 }
 
 .filter-tab:hover {
-    color: #1976D2;
-    background: #e3f2fd;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background: rgba(179, 217, 255, 1);
 }
 
 .filter-tab.active {
-    color: white;
-    background: #1976D2;
-    border: none;
+    background: rgba(179, 217, 255, 1);
 }
 
 .filter-tab i {
@@ -275,68 +213,62 @@ document.addEventListener('DOMContentLoaded', function() {
 .documents-list {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-    max-width: 1100px;
+    gap: 10px;
+    max-width: 640px;
     transition: opacity 0.3s ease;
 }
 
-.document-card {
-    background: white;
-    border-radius: 15px;
-    padding: 20px 25px;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    transition: none;
-    border: 1px solid #72B2FF;
-    box-shadow: none;
+.documents-list.no-documents {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
 }
 
-.document-card:hover {
-    /* Убираем hover эффекты */
+.document-card {
+    flex-direction: column;
+    background: white;
+    border-radius: 20px;
+    padding: 20px 25px;
+    display: flex;
+    transition: none;
+    border: 1px solid rgba(77, 77, 77, 1);
+    box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.15);
+}
+
+.document-card:hover{
+    border: 1px solid rgba(114, 178, 255, 1);
+    outline: 1px solid rgba(114, 178, 255, 1);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
 }
 
 .document-info {
     flex: 1;
     display: flex;
     flex-direction: column;
+    margin-bottom: 10px;
 }
 
 .document-title {
-    font-size: 18px;
+    font-size: 14px;
     font-weight: 400;
     color: #000;
-    margin-bottom: 8px;
-    line-height: 1.2;
+    margin-bottom: 10px;
 }
 
 .document-category {
-    font-size: 14px;
+    font-size: 12px;
     color: #000;
     margin: 0;
     font-weight: 400;
 }
 
-.document-meta {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 8px;
-    text-align: right;
-}
-
-.document-date {
-    font-size: 16px;
-    color: #000;
-    font-weight: 400;
-    margin: 0;
-}
 
 .download-btn {
     background: none;
     border: none;
-    color: #024080;
-    font-size: 14px;
+    color: rgba(2, 64, 128, 1);
+    font-size: 12px;
     font-weight: 400;
     text-decoration: underline;
     display: inline;
@@ -346,7 +278,7 @@ document.addEventListener('DOMContentLoaded', function() {
     margin: 0;
 }
 
-.download-btn:hover { color: #013366; }
+.download-btn:hover { text-decoration: none; }
 
 .download-btn i {
     font-size: 14px;
@@ -390,14 +322,6 @@ document.addEventListener('DOMContentLoaded', function() {
         gap: 15px;
         padding: 16px 20px;
     }
-    
-    .document-meta {
-        width: 100%;
-        align-items: flex-start;
-        text-align: left;
-        gap: 10px;
-    }
-    
     .filter-tabs {
         gap: 10px;
         padding: 8px 0;
@@ -421,9 +345,7 @@ document.addEventListener('DOMContentLoaded', function() {
         color: white !important;
     }
     
-    .document-date {
-        color: white !important;
-    }
+    
 }
 
 /* Светлая тема */
@@ -432,19 +354,15 @@ document.addEventListener('DOMContentLoaded', function() {
         color: #000000 !important;
     }
     
-    .document-date {
-        color: #000000 !important;
-    }
+    
 }
 
 /* Принудительное переопределение цветов */
-body.theme-dark .document-title,
-body.theme-dark .document-date {
+body.theme-dark .document-title{
     color: white !important;
 }
 
-body.theme-light .document-title,
-body.theme-light .document-date {
+body.theme-light .document-title{
     color: #000000 !important;
 }
 </style>
@@ -493,23 +411,23 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(data => {
                 console.log('API ответ:', data);
                 if (data.success) {
-                    // Обновляем список документов без перезагрузки страницы
+                    // Обновляем HTML списка
                     documentsList.innerHTML = data.html;
                     documentsList.style.opacity = '1';
-                    
-                    // Обновляем URL для возможности делиться ссылками
+
+                    // 👇 Проверяем, пустой ли список после обновления
+                    const hasDocuments = data.html.includes('document-card');
+                    if (hasDocuments) {
+                        documentsList.classList.remove('no-documents');
+                    } else {
+                        documentsList.classList.add('no-documents');
+                    }
+
+                    // Обновляем URL
                     const pageUrl = new URL(window.location.href);
                     pageUrl.search = '';
-                    
-                    if (searchValue) {
-                        pageUrl.searchParams.set('search', searchValue);
-                    }
-                    
-                    if (currentCategory) {
-                        pageUrl.searchParams.set('category', currentCategory);
-                    }
-                    
-                    // Обновляем URL без перезагрузки страницы
+                    if (searchValue) pageUrl.searchParams.set('search', searchValue);
+                    if (currentCategory) pageUrl.searchParams.set('category', currentCategory);
                     history.pushState(null, '', pageUrl.toString());
                 }
             })
@@ -581,14 +499,11 @@ document.addEventListener('DOMContentLoaded', function() {
     function applyDocumentColors() {
         const body = document.body;
         const documentTitles = document.querySelectorAll('.document-title');
-        const documentDates = document.querySelectorAll('.document-date');
         
         if (body.classList.contains('theme-dark')) {
             documentTitles.forEach(title => title.style.color = 'white');
-            documentDates.forEach(date => date.style.color = 'white');
         } else {
             documentTitles.forEach(title => title.style.color = '#000000');
-            documentDates.forEach(date => date.style.color = '#000000');
         }
     }
     
@@ -617,4 +532,25 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 });
 </script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+    const filterTabs = document.querySelector('.filter-tabs');
+    if (!filterTabs) return;
+
+    filterTabs.addEventListener(
+        'wheel',
+        (e) => {
+        if (Math.abs(e.deltaY) < Math.abs(e.deltaX)) return;
+        e.preventDefault();
+
+        const scrollAmount = e.deltaY * 2;
+        filterTabs.scrollLeft += scrollAmount;
+        },
+        { passive: false }
+    );
+
+    });
+</script>
+
 {% endblock %}

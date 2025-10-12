@@ -2106,6 +2106,62 @@ textarea.form-control {
     font-weight: bold !important;
 }
 
+.doc-desktop .content-header{
+    justify-content: flex-start; 
+    gap: 30px;
+    margin-bottom: 15px !important;
+}
+
+.doc-desktop h1 {
+    font-weight: 400;
+    font-size: 24px;
+}
+
+.doc-desktop .secondary-back{
+    text-decoration: none;
+    color: black;
+    font-size: 40px;
+    line-height: 100%;
+}
+
+.doc-desktop__documentation{
+    font-weight: 400;
+    font-size: 20px;
+    margin-left: 43px;
+    margin-bottom: 43px
+}
+
+.doc-desktop__category{
+    font-size: 14px;
+    border: 1px solid rgba(170, 170, 170, 1);
+    padding: 11px 16px;
+    border-radius: 20px;
+    margin-bottom: 39px;
+    width: fit-content;
+}
+
+.doc-desktop__iframe{
+    width: 640px;
+}
+
+.doc-desktop__description{
+    margin-bottom: 48px;
+}
+
+.doc-desktop__container__iframe{
+    margin-bottom: 48px;
+}
+
+.documents-content h1{
+    font-weight: 400;
+    font-size: 24px;
+}
+
+.faq-content h1{
+    font-weight: 400;
+    font-size: 24px;
+}
+
 .theme-dark .content-header h3 {
     font-weight: bold !important;
 }
@@ -2205,6 +2261,27 @@ body.sidebar-collapsed .sidebar .nav-list + a {
     margin-bottom: 36px;
 }
 
+.doc-desktop{
+    max-width: 640px;
+    margin: 0 auto;
+    padding-bottom: 160px;
+}
+
+.doc-desktop__btn{
+    padding: 12px 30px;
+    font-weight: 400;
+    font-size: 14px;
+    background-color: rgba(2, 64, 128, 1);
+    border-radius: 20px;
+    text-decoration: none;
+    color: white;
+}
+
+.doc-desktop__btn:hover{
+    outline: 1px solid rgba(2, 64, 128, 1);
+    color: rgba(2, 64, 128, 1);
+    background: white;
+}
 
 @media (max-width: 1200px) {
     .dashboard-grid {
