@@ -6,20 +6,9 @@
 {% block title %}Об Университете - Adaptation AlmaU{% endblock %}
 
 {% block content %}
-<style>
-    .fixed-almau-logo {
-    position: fixed !important;
-    top: 32px !important;
-    right: 30px !important;
-    z-index: 1000 !important;
-    width: 80px !important;
-    height: auto !important;
-    display: block !important;
-}
-</style>
+
 <div class="dashboard-container">
     <script>
-    // Немедленное применение темы
     (function() {
         const savedTheme = localStorage.getItem('selectedTheme') || 'light';
         if (savedTheme === 'dark') {
@@ -37,63 +26,57 @@
     </script>
     {% include 'main/sidebar.html' %}
     
-    <!-- Main content -->
     <div class="main-content" id="mainContent" style="position: relative;">
-         
-        
-        <div class="content-header" style="margin-left: 80px; margin-top: 20px;">
-            <div class="greeting">
-                <h1>{% trans "Об университете" %}</h1>
-            </div>
-        </div>
-        
         <div class="about-content">
-            {% load static %}
-            <!-- История -->
-            <div class="history-section" style="text-align:center;">
-                <h2>{% trans "История" %}</h2>
-                <div class="history-text" style="max-width:720px;margin:0 auto;">
+            <div class="content-header">
+                <div class="greeting">
+                    <h1 style="font-weight: 400;">{% trans "Об университете" %}</h1>
+                </div>
+            </div>
+
+            <div class="history-section">
+
+                <h2 class="section-title">{% trans "История" %}</h2>
+                <div class="history-text">
                     {% if history_text %}
-                        <p class="history-paragraph" style="text-align:center;">{{ history_text|linebreaks }}</p>
+                        <p class="history-paragraph">{{ history_text|linebreaks }}</p>
                     {% else %}
-                        <p style="text-align:center;">{% trans "Lorem ipsum dolor sit amet consectetur. Velit erat pretium turpis scelerisque lobortis neque. Placerat suscipit fermentum sed ultrices sit nulla sed. Dignissim tempor egestas curabitur mauris et bibendum." %}</p>
+                        <p >{% trans "Lorem ipsum dolor sit amet consectetur. Velit erat pretium turpis scelerisque lobortis neque. Placerat suscipit fermentum sed ultrices sit nulla sed. Dignissim tempor egestas curabitur mauris et bibendum." %}</p>
                     {% endif %}
                 </div>
-                <div class="history-images" style="display:flex;gap:24px;justify-content:center;margin-top:16px;">
+                <div class="history-images"">
                     {% if history_obj and history_obj.image %}
-                        <img src="{{ history_obj.image.url }}" alt="История 1" style="width:200px;height:150px;border-radius:12px;object-fit:cover;">
+                        <img src="{{ history_obj.image.url }}" alt="История 1">
                     {% endif %}
                     {% if history_obj and history_obj.image_2 %}
-                        <img src="{{ history_obj.image_2.url }}" alt="История 2" style="width:200px;height:150px;border-radius:12px;object-fit:cover;">
+                        <img src="{{ history_obj.image_2.url }}" alt="История 2">
                     {% endif %}
                     {% if history_obj and history_obj.image_3 %}
-                        <img src="{{ history_obj.image_3.url }}" alt="История 3" style="width:200px;height:150px;border-radius:12px;object-fit:cover;">
+                        <img src="{{ history_obj.image_3.url }}" alt="История 3" >
                     {% endif %}
                 </div>
             </div>
             
-            <!-- Миссия и Ценности -->
-            <div class="mission-values" style="text-align:center;">
+            <div class="mission-values">
                 <div class="mission-card">
                     <h3>{% trans "Миссия" %}</h3>
                     {% if mission_text %}
-                        <p style="text-align:center;max-width:520px;margin:0 auto;">{{ mission_text|linebreaks }}</p>
+                        <p>{{ mission_text|linebreaks }}</p>
                     {% else %}
-                        <p style="text-align:center;max-width:520px;margin:0 auto;">{% trans "Миссия университета - подготовка высококвалифицированных специалистов для инновационной экономики Казахстана" %}</p>
+                        <p>{% trans "Миссия университета - подготовка высококвалифицированных специалистов для инновационной экономики Казахстана" %}</p>
                     {% endif %}
                 </div>
                 
                 <div class="values-card">
                     <h3>{% trans "Ценности" %}</h3>
                     {% if values_text %}
-                        <p style="text-align:center;max-width:520px;margin:0 auto;">{{ values_text|linebreaks }}</p>
+                        <p>{{ values_text|linebreaks }}</p>
                     {% else %}
-                        <p style="text-align:center;max-width:520px;margin:0 auto;">{% trans "Наши ценности: качество образования, инновации, международное сотрудничество и развитие личности" %}</p>
+                        <p>{% trans "Наши ценности: качество образования, инновации, международное сотрудничество и развитие личности" %}</p>
                     {% endif %}
                 </div>
             </div>
             
-            <!-- Руководство -->
             <div class="leadership-section">
                 <h2>{% trans "Руководство Университета" %}</h2>
                 <div class="leadership-cards">
@@ -133,60 +116,43 @@
 </div>
 
 <style>
-/* Фиксированный логотип AlmaUni */
-.fixed-almau-logo {
-    position: fixed !important;
-    top: 32px !important;
-    right: 30px !important; /* Фиксированная позиция справа сверху */
-    z-index: 1000 !important;
-    width: 120px !important; /* размер как у прежнего контейнера */
-    height: auto !important;
-    background: transparent !important;
-    padding: 0 !important;
-    border-radius: 0 !important;
-    box-shadow: none !important;
+
+.history-images{
+    margin-top: 41px;
+    display: flex;
+    gap: 20px;
+}
+.history-images img{
+    width: 200px;
+    height: 200px;
+    box-shadow: 0 4px 4px rgba(0,0,0,0.2);
+    object-fit: contain;
+    border-radius: 20px;
 }
 
-/* На мобильных устройствах */
-@media (max-width: 768px) {
-    .fixed-almau-logo {
-        right: 20px !important;
-        top: 15px !important;
-    }
-}
-
-.about-content {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-    text-align: center;
-}
-@media (min-width: 992px) { .about-content { margin-left: 80px; } }
-
-/* История */
 .history-section {
-    margin-bottom: 60px;
+    margin-bottom: 66px;
 }
 
 .history-section h2 {
-    font-size: 24px;
-    font-weight: 600;
-    margin-bottom: 30px;
-    color: #333;
+    font-size: 20px;
+    font-weight: 400;
+    margin-bottom: 18px;
+    color: black;
+    text-align: center;
 }
 
 .history-content { display: none; }
 
 .history-text {
     flex: 1;
-    max-width: 60%; /* Ограничиваем ширину текста */
     word-wrap: break-word; /* Перенос длинных слов */
     overflow-wrap: break-word; /* Современный способ переноса */
+    margin:0 auto;
 }
 
 .history-text p {
     font-size: 16px;
-    line-height: 1.6;
     color: #000000;
     text-align: center;
     word-wrap: break-word; /* Перенос длинных слов */
@@ -209,8 +175,8 @@
 /* Миссия и Ценности */
 .mission-values {
     display: flex;
-    gap: 60px;
-    margin-bottom: 80px;
+    gap: 40px;
+    margin-bottom: 66px;
     justify-content: center;
 }
 
@@ -277,20 +243,19 @@
 }
 
 .mission-card h3, .values-card h3 {
-    font-size: 32px;
-    font-weight: 600;
-    margin-bottom: 20px;
+    font-size: 20px;
+    font-weight: 400;
+    margin-bottom: 18px;
     color: #000000;
 }
 
 .mission-card p, .values-card p {
     font-size: 16px;
-    line-height: 1.6;
     color: #000000;
     text-align: center;
-    word-wrap: break-word; /* Перенос длинных слов */
-    overflow-wrap: break-word; /* Современный способ переноса */
-    max-width: 100%; /* Текст не может быть шире контейнера */
+    word-wrap: break-word; 
+    overflow-wrap: break-word; 
+    max-width: 100%; 
 }
 
 /* Руководство */
@@ -299,15 +264,14 @@
 }
 
 .leadership-section h2 {
-    font-size: 32px;
-    font-weight: 600;
-    margin-bottom: 50px;
-    color: #333;
+    font-size: 20px;
+    font-weight: 400;
+    margin-bottom: 41px;
 }
 
 .leadership-cards {
     display: flex;
-    gap: 100px;
+    gap: 130px;
     justify-content: center;
 }
 
@@ -316,40 +280,35 @@
 }
 
 .leader-avatar {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    border: 4px solid #1976D2;
+    width: 200px;
+    height: 200px;
+    border-radius: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto 20px;
-    color: #1976D2;
-    font-size: 50px;
-    background: white;
+    margin-bottom: 23px;
 }
 
 .leader-card h3 {
-    font-size: 24px;
-    font-weight: 600;
-    color: #333;
+    font-size: 20px;
+    font-weight: 400;
+    color: black;
 }
 
 .leader-photo {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-radius: 50%;
+    box-shadow: 0 4px 4px rgba(0,0,0,0.2);
+    border-radius: 20px;
 }
 
 .leader-name {
     margin-top: 8px;
-    font-size: 14px;
-    color: #666;
+    font-size: 16px;
     text-align: center;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
     .history-content {
         flex-direction: column;
@@ -370,37 +329,7 @@
     }
 }
 
-/* Темная тема */
-@media (prefers-color-scheme: dark) {
-    .about-content .history-section h2 {
-        color: white !important;
-    }
-    
-    .about-content .leadership-section h2 {
-        color: white !important;
-    }
-    
-    .about-content .leader-card h3 {
-        color: white !important;
-    }
-}
 
-/* Светлая тема */
-@media (prefers-color-scheme: light) {
-    .about-content .history-section h2 {
-        color: #333333 !important;
-    }
-    
-    .about-content .leadership-section h2 {
-        color: #333333 !important;
-    }
-    
-    .about-content .leader-card h3 {
-        color: #000000 !important;
-    }
-}
-
-/* Принудительное переопределение цветов */
 body.theme-dark .about-content .history-section h2,
 body.theme-dark .about-content .leadership-section h2,
 body.theme-dark .about-content .leader-card h3,
@@ -408,23 +337,18 @@ body.theme-dark .about-content .leader-name {
     color: white !important;
 }
 
-body.theme-light .about-content .leader-name {
-    color: #666 !important;
-}
-
 body.theme-light .about-content .history-section h2,
 body.theme-light .about-content .leadership-section h2,
 body.theme-light .about-content .leader-card h3 {
-    color: #333333 !important;
+    color: black;
 }
 
 body.theme-light .about-content .leader-card h3 {
-    color: #000000 !important;
+    color: black;
 }
 </style>
 
 <script>
-// Принудительное применение цветов при загрузке страницы
 document.addEventListener('DOMContentLoaded', function() {
     function applyThemeColors() {
         const body = document.body;
@@ -437,16 +361,14 @@ document.addEventListener('DOMContentLoaded', function() {
             if (leadershipH2) leadershipH2.style.color = 'white';
             leaderH3s.forEach(h3 => h3.style.color = 'white');
         } else {
-            if (historyH2) historyH2.style.color = '#333333';
-            if (leadershipH2) leadershipH2.style.color = '#333333';
+            if (historyH2) historyH2.style.color = '#000000';
+            if (leadershipH2) leadershipH2.style.color = '#000000';
             leaderH3s.forEach(h3 => h3.style.color = '#000000');
         }
     }
     
-    // Применяем цвета сразу
     applyThemeColors();
     
-    // Применяем цвета при изменении темы
     const observer = new MutationObserver(function(mutations) {
         mutations.forEach(function(mutation) {
             if (mutation.type === 'attributes' && mutation.attributeName === 'class') {

@@ -1,126 +1,57 @@
 {% extends 'main/base.html' %}
-{% load static %}
-{% load i18n %}
-{% load translation_tags %}
+{% load static i18n translation_tags %}
 
 {% block title %}Главная - Adaptation AlmaU{% endblock %}
 
-
 {% block content %}
-<style>
-</style>
 <div class="dashboard-container dashboard-page">
     {% include 'main/sidebar.html' %}
     
-    <!-- Main content -->
     <div class="main-content" id="mainContent" style="position: relative;">
          
-        <div class="content-header">
-            <div class="greeting">
-                <h1>{{ greeting }}, {{ user_name }}!</h1>
+        <div class="memo-container">
+            <div class="content-header">
+                <div class="greeting">
+                    <h1>{{ greeting }}, {{ user_name }}!</h1>
+                </div>
             </div>
-        </div>
-        
-        <div class="dashboard-grid">
-            <a href="{% url 'main:about' %}" class="dashboard-link">
-                {% if current_language == 'en' %}
-                    {% with img_path='images/1-eng.svg' %}
-                    <img src="{% static img_path %}" alt="{% trans 'Об университете' %}" class="dashboard-img">
-                    {% endwith %}
-                {% elif current_language == 'kk' %}
-                    {% with img_path='images/1-kz.svg' %}
-                    <img src="{% static img_path %}" alt="{% trans 'Об университете' %}" class="dashboard-img">
-                    {% endwith %}
-                {% else %}
-                    {% with img_path='images/1.svg' %}
-                    <img src="{% static img_path %}" alt="{% trans 'Об университете' %}" class="dashboard-img">
-                    {% endwith %}
-                {% endif %}
-            </a>
-
-            <a href="{% url 'main:lessons' %}" class="dashboard-link">
-                {% if current_language == 'en' %}
-                    {% with img_path='images/2-eng.svg' %}
-                    <img src="{% static img_path %}" alt="{% trans 'Памятка сотрудника' %}" class="dashboard-img">
-                    {% endwith %}
-                {% elif current_language == 'kk' %}
-                    {% with img_path='images/2-kz.svg' %}
-                    <img src="{% static img_path %}" alt="{% trans 'Памятка сотрудника' %}" class="dashboard-img">
-                    {% endwith %}
-                {% else %}
-                    {% with img_path='images/2.svg' %}
-                    <img src="{% static img_path %}" alt="{% trans 'Памятка сотрудника' %}" class="dashboard-img">
-                    {% endwith %}
-                {% endif %}
-            </a>
-
-            <a href="{% url 'main:documents' %}" class="dashboard-link">
-                {% if current_language == 'en' %}
-                    {% with img_path='images/3-eng.svg' %}
-                    <img src="{% static img_path %}" alt="{% trans 'Документация' %}" class="dashboard-img">
-                    {% endwith %}
-                {% elif current_language == 'kk' %}
-                    {% with img_path='images/3-kz.svg' %}
-                    <img src="{% static img_path %}" alt="{% trans 'Документация' %}" class="dashboard-img">
-                    {% endwith %}
-                {% else %}
-                    {% with img_path='images/3.svg' %}
-                    <img src="{% static img_path %}" alt="{% trans 'Документация' %}" class="dashboard-img">
-                    {% endwith %}
-                {% endif %}
-            </a>
-
-            <a href="{% url 'main:tour' %}" class="dashboard-link">
-                {% if current_language == 'en' %}
-                    {% with img_path='images/4-eng.svg' %}
-                    <img src="{% static img_path %}" alt="{% trans '3D тур по университету' %}" class="dashboard-img">
-                    {% endwith %}
-                {% elif current_language == 'kk' %}
-                    {% with img_path='images/4-kz.svg' %}
-                    <img src="{% static img_path %}" alt="{% trans '3D тур по университету' %}" class="dashboard-img">
-                    {% endwith %}
-                {% else %}
-                    {% with img_path='images/4.svg' %}
-                    <img src="{% static img_path %}" alt="{% trans '3D тур по университету' %}" class="dashboard-img">
-                    {% endwith %}
-                {% endif %}
-            </a>
-
-            <a href="{% url 'main:faq' %}" class="dashboard-link">
-                {% if current_language == 'en' %}
-                    {% with img_path='images/5-eng.svg' %}
-                    <img src="{% static img_path %}" alt="{% trans 'Часто задаваемые вопросы' %}" class="dashboard-img">
-                    {% endwith %}
-                {% elif current_language == 'kk' %}
-                    {% with img_path='images/5-kz.svg' %}
-                    <img src="{% static img_path %}" alt="{% trans 'Часто задаваемые вопросы' %}" class="dashboard-img">
-                    {% endwith %}
-                {% else %}
-                    {% with img_path='images/5.svg' %}
-                    <img src="{% static img_path %}" alt="{% trans 'Часто задаваемые вопросы' %}" class="dashboard-img">
-                    {% endwith %}
-                {% endif %}
-            </a>
-
-            <a href="{% url 'main:feedback' %}" class="dashboard-link">
-                {% if current_language == 'en' %}
-                    {% with img_path='images/6-eng.svg' %}
-                    <img src="{% static img_path %}" alt="{% trans 'Обратная связь' %}" class="dashboard-img">
-                    {% endwith %}
-                {% elif current_language == 'kk' %}
-                    {% with img_path='images/6-kz.svg' %}
-                    <img src="{% static img_path %}" alt="{% trans 'Обратная связь' %}" class="dashboard-img">
-                    {% endwith %}
-                {% else %}
-                    {% with img_path='images/6.svg' %}
-                    <img src="{% static img_path %}" alt="{% trans 'Обратная связь' %}" class="dashboard-img">
-                    {% endwith %}
-                {% endif %}
-            </a>
+            
+            <div class="dashboard-grid">
+                <a href="{% url 'main:about' %}" class="dashboard-link">
+                    <h3 class="dashboard-link__title">{% trans "Об университете" %}</h3>
+                    <img src="{% static 'images/1.svg' %}" alt="{% trans 'Об университете' %}" class="dashboard-img">
+                </a>
+    
+                <a href="{% url 'main:lessons' %}" class="dashboard-link">
+                    <h3 class="dashboard-link__title">{% trans "Инструкции по работе" %}</h3>
+                    <img src="{% static 'images/2.svg' %}" alt="{% trans 'Об университете' %}" class="dashboard-img">
+                </a>
+    
+                <a href="{% url 'main:documents' %}" class="dashboard-link">
+                    <h3 class="dashboard-link__title">{% trans "Документация" %}</h3>
+                    <img src="{% static 'images/3.svg' %}" alt="{% trans 'Об университете' %}" class="dashboard-img">
+                </a>
+    
+                <a href="{% url 'main:tour' %}" class="dashboard-link">
+                    <h3 class="dashboard-link__title">{% trans "3D тур по университету" %}</h3>
+                    <img src="{% static 'images/4.svg' %}" alt="{% trans 'Об университете' %}" class="dashboard-img">
+                </a>
+    
+                <a href="{% url 'main:faq' %}" class="dashboard-link">
+                    <h3 class="dashboard-link__title">{% trans "Часто задаваемые вопросы" %}</h3>
+                    <img src="{% static 'images/5.svg' %}" alt="{% trans 'Об университете' %}" class="dashboard-img">
+                </a>
+    
+                <a href="{% url 'main:feedback' %}" class="dashboard-link">
+                    <h3 class="dashboard-link__title">{% trans "Обратная связь" %}</h3>
+                    <img src="{% static 'images/6.svg' %}" alt="{% trans 'Об университете' %}" class="dashboard-img">
+                </a>
+    
+            </div>
+            
         </div>
     </div>
     
-    <!-- Background decorative elements -->
 </div>
 
 {% endblock %}

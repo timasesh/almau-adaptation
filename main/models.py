@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 from django.utils import timezone
+from django.core.exceptions import ValidationError
 
 
 # Create your models here.
@@ -9,6 +10,20 @@ from django.utils import timezone
 class Position(models.Model):
     """Справочник должностей (может подтягиваться из AD)"""
     name = models.CharField(max_length=128, unique=True)
+
+    group = models.CharField(
+        max_length=50,
+        choices=[
+            ('it', 'IT'),
+            ('hr', 'HR'),
+            ('aup', 'АУП'),
+            ('pps', 'ППС'),
+            ('buh', 'Бухгалтерия'),
+        ],
+        blank=True,
+        null=True,
+        verbose_name="Группа подразделения"
+    )
 
     class Meta:
         verbose_name = "Должность"
@@ -22,13 +37,26 @@ class Profile(models.Model):
     """Профиль пользователя с должностью"""
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
     position = models.ForeignKey(Position, null=True, blank=True, on_delete=models.SET_NULL)
-
+    
     def __str__(self):
         return self.user.username
 
 
 class Instruction(models.Model):
     """Модель инструкции"""
+    CATEGORY_CHOICES = [
+        ('platonus', 'Platonus'),
+        ('helpdesk', 'HelpDesk'),
+        ('documentolog', 'Documentolog'),
+    ]
+
+    category = models.CharField(
+        max_length=50,
+        choices=CATEGORY_CHOICES,
+        default='almauni',
+        verbose_name="Категория"
+    )
+
     title = models.CharField(max_length=200, verbose_name="Название инструкции")
     title_en = models.CharField(max_length=200, blank=True, verbose_name="Название (English)")
     title_kk = models.CharField(max_length=200, blank=True, verbose_name="Название (Қазақша)")
@@ -1284,3 +1312,19 @@ class Editor(models.Model):
         return self.is_active and self.user.is_active
 
 
+
+def validate_svg_or_image(file):
+    name = file.name.lower()
+    if not (name.endswith('.svg') or name.endswith('.png') or name.endswith('.jpg') or name.endswith('.jpeg')):
+        raise ValidationError('Разрешены только SVG, PNG или JPG файлы.')
+
+class Service(models.Model):
+    title = models.CharField(max_length=100)
+    description_ru = models.TextField()
+    description_kk = models.TextField()
+    description_en = models.TextField()
+    icon = models.FileField(upload_to='services/icons/', validators=[validate_svg_or_image])
+    url = models.URLField(blank=True, help_text="Ссылка на сервис (может быть внутренней или внешней)")
+
+    def __str__(self):
+        return self.title

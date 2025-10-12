@@ -15,7 +15,7 @@ from django.views.generic import DetailView, ListView
 from .models import (
     History, Mission, Values, ContactInfo, 
     FAQCategory, FAQ, Process, Instruction, 
-    Teacher, Feedback, Document, DocumentCategory, Leader, Lesson, LessonCompletion, LessonProgress, LessonCategory, Editor
+    Teacher, Feedback, Document, DocumentCategory, Leader, Lesson, LessonCompletion, LessonProgress, LessonCategory, Editor, Service, Profile
 )
 
 # Import forms
@@ -215,76 +215,68 @@ def dashboard_view(request):
 @login_required
 def lessons_view(request):
     """Вкладка Уроки с современным дизайном"""
-    # Получаем уроки из базы данных
     lessons = list(Lesson.objects.filter(is_active=True).order_by('-created_at'))
-    
-    # Получаем все активные категории
     categories = LessonCategory.objects.filter(is_active=True).order_by('order_index', 'name')
-    
-    # Получаем параметры поиска и фильтрации
+
     search_query = request.GET.get('search', '')
-    difficulty_filter = 'all'
     category_filter = request.GET.get('category', '')
-    
-    # Фильтруем по категории
+
     if category_filter:
         lessons = [l for l in lessons if l.category and str(l.category.id) == category_filter]
-    
-    # Фильтруем по уровню сложности
-    # Уровни сложности отключены
-    
+
     if search_query:
-        # Поиск без учета регистра для латиницы и кириллицы
         search_query = search_query.lower()
-        
-        # Фильтруем уроки
-        lessons = [l for l in lessons if 
-                  search_query in l.title.lower() or 
-                  search_query in getattr(l, 'title_en', '').lower() or 
-                  search_query in getattr(l, 'title_kk', '').lower() or 
-                  search_query in l.description.lower() or 
-                  search_query in getattr(l, 'description_en', '').lower() or 
-                  search_query in getattr(l, 'description_kk', '').lower()]
-    
-    # Если уроков нет, просто показываем пустой список
-    # Тестовые уроки теперь создаются в admin_lessons_view
-    
-    # Добавляем информацию о завершении уроков и прогрессе для каждого урока
-    # Получаем прогресс для всех уроков
+        lessons = [
+            l for l in lessons
+            if search_query in l.title.lower()
+            or search_query in getattr(l, 'title_en', '').lower()
+            or search_query in getattr(l, 'title_kk', '').lower()
+            or search_query in l.description.lower()
+            or search_query in getattr(l, 'description_en', '').lower()
+            or search_query in getattr(l, 'description_kk', '').lower()
+        ]
+
+    # ---- Прогресс уроков ----
     lesson_progress = {}
     for lesson in lessons:
-        # Убеждаемся, что урок сохранен в базе данных
         if lesson.pk is None:
             lesson.save()
-        
         lesson.is_completed = lesson.is_completed_by_user(request.user)
         lesson.can_complete = lesson.can_be_completed_by_user(request.user)
         lesson_progress[lesson.id] = lesson.get_or_create_progress(request.user)
-    
-    # Инструкции для раздела "Памятка сотрудника" (2 тестовых если нет данных)
-    instr_qs = list(Instruction.objects.filter(is_active=True)[:2])
-    if not instr_qs:
-        try:
-            i1 = Instruction.objects.create(
-                title="Инструкция по работе с порталом",
-                description="Сервис работает по принципу ‘Единого окна’, где сотрудник может найти все, что нужно.")
-            i2 = Instruction.objects.create(
-                title="Как использовать сервисы AlmaU",
-                description="Обзор сервисов: Rent, HelpDesk, Booking, Documentolog и др.")
-            instr_qs = [i1, i2]
-        except Exception:
-            instr_qs = []
+
+    # ---- Получаем профиль и позицию пользователя ----
+    profile = Profile.objects.filter(user=request.user).select_related('position').first()
+    position = profile.position if profile else None
+    position_group = position.group if position else None
+    position_name = position.name if position else "Без должности"
+
+    # ---- Фильтруем инструкции по доступу ----
+    instructions_qs = Instruction.objects.filter(is_active=True)
+    if position:
+        instructions_qs = instructions_qs.filter(
+            models.Q(allowed_positions=position) |  # конкретная должность
+            models.Q(allowed_positions__group=position_group)  # или по группе
+        ).distinct()
+    else:
+        # Если без должности, показываем только общие (без ограничений)
+        instructions_qs = instructions_qs.filter(allowed_positions=None)
+
+    instructions = list(instructions_qs.order_by('-created_at'))
+
+    # ---- Сервисы ----
+    services = Service.objects.all()
 
     return render(request, 'main/lessons.html', {
         'lessons': lessons,
         'lesson_progress': lesson_progress,
         'categories': categories,
         'search_query': search_query,
-        'difficulty_filter': difficulty_filter,
-        'category_filter': category_filter,
         'current_language': request.session.get('django_language', 'ru'),
         'current_page': 'lessons',
-        'instructions': instr_qs
+        'instructions': instructions,
+        'services': services,
+        'position_name': position_name,
     })
 
 def instruction_detail_api(request, instruction_id):
@@ -1706,26 +1698,30 @@ def admin_about_view(request):
     }
     return render(request, 'main/admin/about.html', context)
 
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.db import models
+from .models import Instruction, Position
+
 @login_required
 def admin_memo_view(request):
     """Админка для страницы 'Памятка сотрудника'"""
     if not request.user.is_staff:
         return redirect('main:admin_login')
 
-    from .models import Instruction
-
     instructions = Instruction.objects.all().order_by('-created_at')
+    positions = Position.objects.all().order_by('name')
 
     if request.method == 'POST':
         action = request.POST.get('action')
         instruction_id = request.POST.get('instruction_id')
 
+        # === Создание / обновление ===
         if action in ('create', 'update'):
-            if instruction_id:
-                instruction = Instruction.objects.get(pk=instruction_id)
-            else:
-                instruction = Instruction()
+            instruction = Instruction.objects.get(pk=instruction_id) if instruction_id else Instruction()
 
+            # основные поля
             instruction.title = request.POST.get('title', '')
             instruction.description = request.POST.get('description', '')
             instruction.title_en = request.POST.get('title_en', '')
@@ -1733,19 +1729,24 @@ def admin_memo_view(request):
             instruction.title_kk = request.POST.get('title_kk', '')
             instruction.description_kk = request.POST.get('description_kk', '')
 
-            if 'video' in request.FILES:
-                instruction.video = request.FILES['video']
-            if 'pdf_file' in request.FILES:
-                instruction.pdf_file = request.FILES['pdf_file']
-            if 'pdf_file_en' in request.FILES:
-                instruction.pdf_file_en = request.FILES['pdf_file_en']
-            if 'pdf_file_kk' in request.FILES:
-                instruction.pdf_file_kk = request.FILES['pdf_file_kk']
+            # файлы
+            for field in ('video', 'pdf_file', 'pdf_file_en', 'pdf_file_kk'):
+                if field in request.FILES:
+                    setattr(instruction, field, request.FILES[field])
 
             instruction.save()
+
+            # 👇 сохраняем ManyToMany (позиции)
+            position_ids = request.POST.getlist('allowed_positions')
+            if position_ids:
+                instruction.allowed_positions.set(position_ids)
+            else:
+                instruction.allowed_positions.clear()
+
             messages.success(request, 'Инструкция сохранена')
             return redirect('main:admin_memo')
 
+        # === Удаление ===
         if action == 'delete' and instruction_id:
             Instruction.objects.filter(pk=instruction_id).delete()
             messages.success(request, 'Инструкция удалена')
@@ -1755,8 +1756,173 @@ def admin_memo_view(request):
         'current_page': 'admin_memo',
         'active_tab': 'memo',
         'instructions': instructions,
+        'positions': positions,  # 👈 передаём список должностей
     }
     return render(request, 'main/admin/memo.html', context)
+
+
+@login_required
+def admin_instruction_visibility_view(request):
+    if not request.user.is_staff:
+        return redirect('main:admin_login')
+
+    from django.http import JsonResponse
+    from .models import Instruction, Position
+
+    groups = {
+        'buh': 'Бухгалтерия',
+        'it': 'IT',
+        'hr': 'HR',
+        'aup': 'АУП',
+        'pps': 'ППС',
+    }
+
+    positions = Position.objects.filter(group__in=groups.keys()).order_by('name')
+    instructions_by_category = {}
+    for cat, label in Instruction.CATEGORY_CHOICES:
+        instructions_by_category[label] = Instruction.objects.filter(category=cat).order_by('title')
+
+    # === формируем словарь видимости
+    visibility_map = {}
+    for instruction in Instruction.objects.all():
+        visibility_map[instruction.id] = {}
+        for code in groups.keys():
+            visibility_map[instruction.id][code] = instruction.allowed_positions.filter(group=code).exists()
+
+    # === AJAX обновление
+    if request.method == 'POST':
+        instruction_id = request.POST.get('instruction_id')
+        group_code = request.POST.get('group_code')
+        checked = request.POST.get('checked') == 'true'
+
+        if instruction_id and group_code:
+            instruction = Instruction.objects.get(pk=instruction_id)
+            # все позиции этой группы
+            group_positions = Position.objects.filter(group=group_code)
+            if checked:
+                instruction.allowed_positions.add(*group_positions)
+            else:
+                instruction.allowed_positions.remove(*group_positions)
+            return JsonResponse({'success': True})
+
+    return render(request, 'main/admin/instruction_visibility.html', {
+        'groups': groups,
+        'instructions_by_category': instructions_by_category,
+        'visibility_map': visibility_map,
+        'active_tab': 'instruction_visibility'
+    })
+
+@login_required
+def admin_roles_view(request):
+    """Кастомная панель назначения ролей (поиск/фильтр через AJAX)"""
+    if not request.user.is_staff:
+        return redirect('main:admin_login')
+
+    positions = Position.objects.all().order_by('group', 'name')
+
+    context = {
+        'current_page': 'admin_roles',
+        'active_tab': 'roles',
+        'positions': positions,
+    }
+    return render(request, 'main/admin/roles_lazy.html', context)
+
+
+from django.core.paginator import Paginator
+from django.http import JsonResponse
+
+@login_required
+def admin_roles_data(request):
+    """Возвращает JSON со списком пользователей для AJAX"""
+    if not request.user.is_staff:
+        return JsonResponse({'error': 'unauthorized'}, status=403)
+
+    query = request.GET.get('q', '')
+    page_number = int(request.GET.get('page', 1))
+
+    users_qs = User.objects.select_related('profile', 'profile__position').order_by('username')
+    if query:
+        users_qs = users_qs.filter(
+            models.Q(username__icontains=query)
+            | models.Q(first_name__icontains=query)
+            | models.Q(last_name__icontains=query)
+            | models.Q(email__icontains=query)
+        )
+
+    paginator = Paginator(users_qs, 50)  # по 50 записей на страницу
+    page = paginator.get_page(page_number)
+
+    data = []
+    for u in page:
+        pos = getattr(u.profile.position, 'name', None) if hasattr(u, 'profile') and u.profile.position else None
+        grp = getattr(u.profile.position, 'get_group_display', lambda: None)()
+        data.append({
+            'id': u.id,
+            'username': u.username,
+            'full_name': u.get_full_name() or '',
+            'email': u.email,
+            'position': pos,
+            'group': grp,
+        })
+
+    return JsonResponse({
+        'users': data,
+        'has_next': page.has_next(),
+        'page': page_number,
+    })
+
+@login_required
+def admin_roles_update(request):
+    """AJAX: назначение должности пользователю"""
+    if not request.user.is_staff:
+        return JsonResponse({'error': 'unauthorized'}, status=403)
+
+    user_id = request.POST.get('user_id')
+    position_id = request.POST.get('position_id')
+
+    try:
+        user = User.objects.get(pk=user_id)
+        position = Position.objects.get(pk=position_id) if position_id else None
+        profile, _ = Profile.objects.get_or_create(user=user)
+        profile.position = position
+        profile.save()
+        return JsonResponse({'success': True})
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=400)
+
+@login_required
+def admin_positions_view(request):
+    """Управление должностями и группами подразделений"""
+    if not request.user.is_staff:
+        return redirect('main:admin_login')
+
+    positions = Position.objects.all().order_by('group', 'name')
+
+    if request.method == 'POST':
+        pos_id = request.POST.get('pos_id')
+        name = request.POST.get('name', '').strip()
+        group = request.POST.get('group', '').strip() or None
+
+        # Создание или обновление
+        if pos_id:
+            pos = Position.objects.get(pk=pos_id)
+            pos.name = name
+            pos.group = group
+            pos.save()
+            messages.success(request, f'Должность «{name}» обновлена.')
+        else:
+            Position.objects.create(name=name, group=group)
+            messages.success(request, f'Добавлена новая должность «{name}».')
+        return redirect('main:admin_positions')
+
+    context = {
+        'positions': positions,
+        'groups': dict(Position._meta.get_field('group').choices),
+        'current_page': 'admin_positions',
+        'active_tab': 'positions',
+    }
+    return render(request, 'main/admin/positions.html', context)
+
 
 @login_required
 def admin_map_view(request):

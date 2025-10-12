@@ -2,14 +2,6 @@
 {% load i18n %}
 {% load translation_tags %}
 
-<style>
-    .sidebar-brand-logo { width: 60px; height: auto; display: block; margin: 0 140px 0 auto; }
-    .sidebar.collapsed .sidebar-brand { display: none; }
-    .sidebar-brand{
-        margin-top: 85px;
-    }
-</style>
-<!-- Sidebar -->
 <div class="sidebar" id="sidebar">
     <div class="sidebar-header">
         <div class="logo-container">
@@ -41,7 +33,7 @@
             <li class="nav-item {% if current_page == 'lessons' %}active{% endif %}">
                 <a href="{% url 'main:lessons' %}" class="nav-link {% if current_page == 'lessons' %}active-nav-link{% endif %}">
                     <i class="fa-regular fa-bookmark"></i>
-                    <span class="nav-text">{% t "Памятка сотрудника" %}</span>
+                    <span class="nav-text">{% trans "Инструкции по работе" %}</span>
                 </a>
             </li>
             <li class="nav-item {% if current_page == 'documents' %}active{% endif %}">
@@ -72,6 +64,19 @@
             </li>
         </ul>
     </nav>
+
+     <!-- <form action="/i18n/setlang/" method="post" style="margin: 20px;">
+    {% csrf_token %}
+    <input name="next" type="hidden" value="{{ request.path }}">
+    <select name="language">
+        <option value="ru">Русский</option>
+        <option value="en">English</option>
+        <option value="kk">Қазақша</option>
+    </select>
+    <button type="submit">OK</button>
+</form>
+
+<p>Current language: {{ LANGUAGE_CODE }}</p> -->
     
     <div class="sidebar-footer">
         <div class="user-menu">

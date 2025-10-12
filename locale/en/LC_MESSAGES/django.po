@@ -167,9 +167,6 @@ msgstr "Who is this message for?"
 msgid "HR"
 msgstr "HR"
 
-msgid "IT поддержка"
-msgstr "IT support"
-
 msgid "Тип обращения"
 msgstr "Type of message"
 
@@ -316,3 +313,21 @@ msgstr "Open"
 
 msgid "Инструкции по работе"
 msgstr "Work instructions"
+
+msgid "3D тур по университету"
+msgstr "3D tour of the university"
+
+msgid "Контакты"
+msgstr "Contacts"
+
+msgid "Смотреть подробнее"
+msgstr "View more"
+
+msgid "Предпросмотр"
+msgstr "Preview"
+
+msgid "На данный момент инструкции не загружены, пожалуйста, ждите их появления."
+msgstr "The instructions are not uploaded yet, please wait for their appearance."
+
+msgid "Доступные сервисы"
+msgstr "Available services"

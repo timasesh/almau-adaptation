@@ -257,6 +257,15 @@
             <a href="{% url 'main:admin_memo' %}" class="list-group-item bg-dark text-white {% if active_tab == 'memo' %}active{% endif %}">
                 <i class="fa-regular fa-bookmark me-2"></i>Памятка сотрудника
             </a>
+            <a href="{% url 'main:admin_instruction_visibility' %}" class="list-group-item bg-dark text-white {% if active_tab == 'instruction_visibility' %}active{% endif %}">
+                <i class="fa-regular fa-bookmark me-2"></i>Видимость инструкций
+            </a>
+            <a href="{% url 'main:admin_roles' %}" class="list-group-item bg-dark text-white {% if active_tab == 'roles' %}active{% endif %}">
+                <i class="fas fa-user-shield me-1"></i>Роли пользователей
+            </a>
+            <a href="{% url 'main:admin_positions' %}" class="list-group-item bg-dark text-white {% if active_tab == 'positions' %}active{% endif %}">
+                <i class="fas fa-sitemap me-1"></i> Должности и группы
+            </a>
             <a href="{% url 'main:admin_documents' %}" class="list-group-item bg-dark text-white {% if active_tab == 'documents' %}active{% endif %}">
                 <i class="fas fa-file-alt me-2"></i>Документация
             </a>
@@ -269,7 +278,6 @@
             <a href="{% url 'main:admin_feedback' %}" class="list-group-item bg-dark text-white {% if active_tab == 'feedback' %}active{% endif %}">
                 <i class="fas fa-comments me-2"></i>Обратная связь
             </a>
-            
         </div>
         
         <div class="sidebar-section-title">Управление персоналом</div>

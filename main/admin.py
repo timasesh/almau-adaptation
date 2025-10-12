@@ -4,8 +4,8 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 from .models import Teacher, Document, DocumentCategory, Instruction, Process, Feedback, FAQ, FAQCategory, History, \
-    Mission, Values, Leader, ContactInfo, Lesson, LessonCompletion, LessonProgress, LessonCategory, LessonSlide
-
+    Mission, Values, Leader, ContactInfo, Lesson, LessonCompletion, LessonProgress, LessonCategory, LessonSlide, Service
+from django.utils.safestring import mark_safe
 
 class TeacherInline(admin.StackedInline):
     """Inline для отображения информации о преподавателе в админке пользователя"""
@@ -664,3 +664,19 @@ class LessonProgressAdmin(admin.ModelAdmin):
             'classes': ('collapse',)
         }),
     )
+
+
+
+
+@admin.register(Service)
+class ServiceAdmin(admin.ModelAdmin):
+    list_display = ('title', 'icon_preview', 'url')
+    readonly_fields = ('icon_preview',)
+
+    def icon_preview(self, obj):
+        if obj.icon and obj.icon.name.lower().endswith('.svg'):
+            return mark_safe(f'<img src="{obj.icon.url}" height="50">')
+        elif obj.icon:
+            return mark_safe(f'<img src="{obj.icon.url}" height="50">')
+        return "—"
+    icon_preview.short_description = "Иконка"

@@ -1,0 +1,97 @@
+{% extends 'main/admin/base.html' %}
+{% load static %}
+
+{% block title %}Должности и группы — Админка{% endblock %}
+{% block heading %}Должности и группы{% endblock %}
+
+{% block content %}
+<div class="card">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <h5 class="mb-0">Список должностей</h5>
+    <button class="btn btn-primary btn-sm" data-bs-toggle="collapse" data-bs-target="#addPositionForm">
+      <i class="fas fa-plus me-1"></i>Добавить должность
+    </button>
+  </div>
+  <div id="addPositionForm" class="collapse p-3 border-top">
+    <form method="post" class="row g-2 align-items-center">
+      {% csrf_token %}
+      <input type="hidden" name="pos_id" value="">
+      <div class="col-md-5">
+        <input type="text" name="name" class="form-control" placeholder="Название должности" required>
+      </div>
+      <div class="col-md-4">
+        <select name="group" class="form-select">
+          <option value="">Без группы</option>
+          {% for code, label in groups.items %}
+            <option value="{{ code }}">{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-3 text-end">
+        <button type="submit" class="btn btn-success">Сохранить</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="card-body">
+    {% if positions %}
+      <div class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Название</th>
+              <th>Группа</th>
+              <th class="text-end">Действия</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for pos in positions %}
+              <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ pos.name }}</td>
+                <td>
+                  {% if pos.group %}
+                    <span class="badge bg-info text-dark">{{ pos.get_group_display }}</span>
+                  {% else %}
+                    <span class="text-muted">—</span>
+                  {% endif %}
+                </td>
+                <td class="text-end">
+                  <button class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#edit{{ pos.id }}">Редактировать</button>
+                </td>
+              </tr>
+              <tr class="collapse" id="edit{{ pos.id }}">
+                <td colspan="4">
+                  <form method="post" class="border rounded p-3 bg-light">
+                    {% csrf_token %}
+                    <input type="hidden" name="pos_id" value="{{ pos.id }}">
+                    <div class="row g-2">
+                      <div class="col-md-5">
+                        <input type="text" name="name" class="form-control" value="{{ pos.name }}" required>
+                      </div>
+                      <div class="col-md-4">
+                        <select name="group" class="form-select">
+                          <option value="">Без группы</option>
+                          {% for code, label in groups.items %}
+                            <option value="{{ code }}" {% if pos.group == code %}selected{% endif %}>{{ label }}</option>
+                          {% endfor %}
+                        </select>
+                      </div>
+                      <div class="col-md-3 text-end">
+                        <button type="submit" class="btn btn-primary">Сохранить</button>
+                      </div>
+                    </div>
+                  </form>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p class="text-muted">Пока нет должностей.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

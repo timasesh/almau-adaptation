@@ -1,0 +1,60 @@
+{% extends 'main/admin/base.html' %}
+{% load static custom_tags %}
+
+
+{% block content %}
+<div class="card">
+  <div class="card-body">
+    {% for category, instructions in instructions_by_category.items %}
+      <h6 class="mt-4 text-uppercase fw-bold">{{ category }}</h6>
+      <table class="table table-bordered align-middle text-center mb-4">
+        <thead>
+          <tr>
+            <th class="text-start">Инструкция</th>
+            {% for code, label in groups.items %}
+              <th>{{ label }}</th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for instr in instructions %}
+            <tr>
+            <td class="text-start">{{ instr.title }}</td>
+            {% for code, label in groups.items %}
+                {% with vis=visibility_map|get_item:instr.id %}
+                {% if vis|get_item:code %}
+                    <td><input type="checkbox" class="form-check-input visibility-toggle"
+                            data-instruction="{{ instr.id }}" data-group="{{ code }}" checked></td>
+                {% else %}
+                    <td><input type="checkbox" class="form-check-input visibility-toggle"
+                            data-instruction="{{ instr.id }}" data-group="{{ code }}"></td>
+                {% endif %}
+                {% endwith %}
+            {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+      </table>
+    {% endfor %}
+  </div>
+</div>
+
+<script>
+document.querySelectorAll('.visibility-toggle').forEach(cb => {
+  cb.addEventListener('change', async (e) => {
+    const checkbox = e.target;
+    const instructionId = checkbox.dataset.instruction;
+    const groupCode = checkbox.dataset.group;
+    const checked = checkbox.checked;
+
+    const formData = new FormData();
+    formData.append('instruction_id', instructionId);
+    formData.append('group_code', groupCode);
+    formData.append('checked', checked);
+    formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+
+    await fetch('', { method: 'POST', body: formData });
+  });
+});
+</script>
+{% endblock %}

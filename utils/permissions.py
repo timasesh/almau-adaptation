@@ -1,4 +1,3 @@
-# utils/permissions.py
 from django.http import HttpResponseForbidden
 
 

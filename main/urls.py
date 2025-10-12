@@ -44,6 +44,12 @@ urlpatterns = [
     # Admin Panel - Content Management
     path('admin-panel/about/', views.admin_about_view, name='admin_about'),
     path('admin-panel/memo/', views.admin_memo_view, name='admin_memo'),
+    path('admin-panel/instruction-visibility/', views.admin_instruction_visibility_view, name='admin_instruction_visibility'),
+    path('admin-panel/roles/', views.admin_roles_view, name='admin_roles'),
+    path('admin-panel/roles/data/', views.admin_roles_data, name='admin_roles_data'),
+    path('admin-panel/roles/update/', views.admin_roles_update, name='admin_roles_update'),
+    path('admin-panel/positions/', views.admin_positions_view, name='admin_positions'),
+
     path('admin-panel/map/', views.admin_map_view, name='admin_map'),
     path('admin-panel/faq/', views.admin_faq_view, name='admin_faq'),
     path('admin-panel/feedback/', views.admin_feedback_view, name='admin_feedback'),

@@ -1,0 +1,96 @@
+{% extends 'main/admin/base.html' %}
+{% load static %}
+
+{% block title %}Назначение ролей{% endblock %}
+{% block heading %}Назначение ролей{% endblock %}
+
+{% block content %}
+<div class="card p-3">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <input id="searchInput" type="text" class="form-control w-50" placeholder="Поиск пользователя...">
+    <div id="loading" class="text-muted ms-3" style="display:none">Загрузка...</div>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-hover align-middle" id="usersTable">
+      <thead class="table-light">
+        <tr>
+          <th>Логин</th>
+          <th>ФИО</th>
+          <th>Email</th>
+          <th>Должность</th>
+          <th>Группа</th>
+          <th width="200">Изменить</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+  <div class="text-center my-3">
+    <button id="loadMore" class="btn btn-outline-secondary" style="display:none;">Загрузить ещё</button>
+  </div>
+</div>
+
+<script>
+const tableBody = document.querySelector('#usersTable tbody');
+const searchInput = document.querySelector('#searchInput');
+const loadMoreBtn = document.querySelector('#loadMore');
+const loadingEl = document.querySelector('#loading');
+
+let page = 1;
+let query = '';
+let hasNext = false;
+
+async function loadUsers(reset=false) {
+  loadingEl.style.display = 'inline';
+  if (reset) { page = 1; tableBody.innerHTML = ''; }
+  const res = await fetch(`{% url 'main:admin_roles_data' %}?page=${page}&q=${query}`);
+  const data = await res.json();
+  loadingEl.style.display = 'none';
+  data.users.forEach(u => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${u.username}</td>
+      <td>${u.full_name || '—'}</td>
+      <td>${u.email || '—'}</td>
+      <td>${u.position || '—'}</td>
+      <td>${u.group || '—'}</td>
+      <td>
+        <select class="form-select form-select-sm position-select" data-user="${u.id}">
+          <option value="">— Без должности —</option>
+          {% for pos in positions %}
+          <option value="{{ pos.id }}">{{ pos.name }} ({{ pos.get_group_display }})</option>
+          {% endfor %}
+        </select>
+      </td>`;
+    tableBody.appendChild(tr);
+  });
+  hasNext = data.has_next;
+  loadMoreBtn.style.display = hasNext ? 'inline-block' : 'none';
+}
+
+searchInput.addEventListener('input', e => {
+  query = e.target.value;
+  loadUsers(true);
+});
+
+loadMoreBtn.addEventListener('click', () => {
+  page += 1;
+  loadUsers();
+});
+
+tableBody.addEventListener('change', async e => {
+  if (e.target.classList.contains('position-select')) {
+    const userId = e.target.dataset.user;
+    const posId = e.target.value;
+    const fd = new FormData();
+    fd.append('user_id', userId);
+    fd.append('position_id', posId);
+    fd.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+    await fetch(`{% url 'main:admin_roles_update' %}`, { method: 'POST', body: fd });
+  }
+});
+
+loadUsers(true);
+</script>
+{% endblock %}

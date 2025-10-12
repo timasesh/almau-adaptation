@@ -74,6 +74,16 @@
           <input type="file" name="video" class="form-control" accept="video/*">
         </div>
 
+        <div class="mb-3">
+          <label class="form-label">Должности (кому доступна инструкция)</label>
+          <select name="allowed_positions" multiple class="form-select">
+            {% for pos in positions %}
+              <option value="{{ pos.id }}">{{ pos.name }}</option>
+            {% endfor %}
+          </select>
+          <small class="text-muted">Удерживайте Ctrl (или Cmd на Mac), чтобы выбрать несколько</small>
+        </div>
+
         <button type="submit" class="btn btn-primary">Сохранить</button>
       </form>
     </div>
@@ -88,6 +98,7 @@
           <thead>
             <tr>
               <th>Заголовок (RU)</th>
+              <th>Должности</th>
               <th>PDF RU</th>
               <th>PDF EN</th>
               <th>PDF KK</th>
@@ -99,6 +110,15 @@
             {% for i in instructions %}
             <tr>
               <td>{{ i.title }}</td>
+              <td>
+                {% if i.allowed_positions.all %}
+                  {% for p in i.allowed_positions.all %}
+                    <span class="badge bg-info text-dark">{{ p.name }}</span>
+                  {% endfor %}
+                {% else %}
+                  <span class="text-muted">Все</span>
+                {% endif %}
+              </td>
               <td>{% if i.pdf_file %}<span class="badge bg-success">есть</span>{% else %}<span class="badge bg-secondary">нет</span>{% endif %}</td>
               <td>{% if i.pdf_file_en %}<span class="badge bg-success">есть</span>{% else %}<span class="badge bg-secondary">нет</span>{% endif %}</td>
               <td>{% if i.pdf_file_kk %}<span class="badge bg-success">есть</span>{% else %}<span class="badge bg-secondary">нет</span>{% endif %}</td>
@@ -114,7 +134,7 @@
               </td>
             </tr>
             <tr class="collapse" id="edit{{ i.id }}">
-              <td colspan="6">
+              <td colspan="7">
                 <form method="post" enctype="multipart/form-data" class="border rounded p-3 bg-light">
                   {% csrf_token %}
                   <input type="hidden" name="action" value="update">
@@ -144,7 +164,20 @@
                     </div>
                   </div>
 
-                  <div class="mb-2"><label class="form-label">Видео</label><input type="file" name="video" class="form-control" accept="video/*"></div>
+                  <div class="mb-2">
+                    <label class="form-label">Видео</label>
+                    <input type="file" name="video" class="form-control" accept="video/*">
+                  </div>
+
+                  <div class="mb-2">
+                    <label class="form-label">Должности (кому доступна инструкция)</label>
+                    <select name="allowed_positions" multiple class="form-select">
+                      {% for pos in positions %}
+                        <option value="{{ pos.id }}" {% if pos in i.allowed_positions.all %}selected{% endif %}>{{ pos.name }}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+
                   <button type="submit" class="btn btn-primary">Сохранить изменения</button>
                 </form>
               </td>
@@ -159,5 +192,3 @@
   </div>
 </div>
 {% endblock %}
-
-
