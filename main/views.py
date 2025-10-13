@@ -1777,9 +1777,19 @@ def admin_instruction_visibility_view(request):
         'buh': 'Бухгалтерия',
         'it': 'IT',
         'hr': 'HR',
-        'aup': 'АУП',
+        'manager': 'Менеджеры',
         'pps': 'ППС',
+        'lawyers': 'Юристы',
+        'top': 'Топ-менеджмент',
+        'archive': 'Архив / Канцелярия',
+        'science': 'Наука и исследования',
+        'ib': 'ИБ',
+        'library': 'Библиотека',
+        'advisors': 'Эдвайзеры',
+        'dean': 'Декан / Академ. декан / Программ',
+        'career': 'Карьера и развитие студентов',
     }
+
 
     positions = Position.objects.filter(group__in=groups.keys()).order_by('name')
     instructions_by_category = {}
