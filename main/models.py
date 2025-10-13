@@ -5,8 +5,6 @@ from django.utils import timezone
 from django.core.exceptions import ValidationError
 
 
-# Create your models here.
-
 class Position(models.Model):
     """Справочник должностей (может подтягиваться из AD)"""
     name = models.CharField(max_length=128, unique=True)
@@ -14,11 +12,21 @@ class Position(models.Model):
     group = models.CharField(
         max_length=50,
         choices=[
+            ('buh', 'Бухгалтерия'),
             ('it', 'IT'),
             ('hr', 'HR'),
-            ('aup', 'АУП'),
+            ('manager', 'Менеджеры'),
             ('pps', 'ППС'),
-            ('buh', 'Бухгалтерия'),
+            ('lawyers', 'Юристы'),
+            ('top', 'Топ-менеджмент'),
+            ('archive', 'Архив / Канцелярия'),
+            ('science', 'Наука и исследования'),
+            ('ib', 'ИБ'),
+            ('library', 'Библиотека'),
+            ('advisors', 'Эдвайзеры'),
+            ('dean', 'Декан / Академ. декан / Программ'),
+            ('career', 'Карьера и развитие студентов'),
+            ('aup', 'АУП'),  
         ],
         blank=True,
         null=True,
