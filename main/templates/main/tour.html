@@ -1,6 +1,7 @@
 {% extends 'main/base.html' %}
 {% load static %}
 {% load i18n %}
+{% load translation_tags %}
 
 {% block title %}3D тур по университету - Adaptation AlmaU{% endblock %}
 
@@ -11,7 +12,7 @@
         <div class="tour-content">
             <div class="content-header">
                 <div class="greeting">
-                    <h1>{% trans "Часто задаваемые вопросы" %}</h1>
+                    <h1>{% t "3D тур по университету" %}</h1>
                 </div>
             </div>
             <div class="tour-embed-wrapper">
