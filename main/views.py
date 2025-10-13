@@ -253,14 +253,18 @@ def lessons_view(request):
 
     # ---- Фильтруем инструкции по доступу ----
     instructions_qs = Instruction.objects.filter(is_active=True)
+
+    # Если у пользователя есть должность — показываем инструкции для всех + для его позиции/группы
     if position:
         instructions_qs = instructions_qs.filter(
+            models.Q(allowed_positions=None) |  # без ограничений — видят все
             models.Q(allowed_positions=position) |  # конкретная должность
-            models.Q(allowed_positions__group=position_group)  # или по группе
+            models.Q(allowed_positions__group=position_group)  # или группа
         ).distinct()
     else:
-        # Если без должности, показываем только общие (без ограничений)
+        # Если без должности — показываем только общие
         instructions_qs = instructions_qs.filter(allowed_positions=None)
+
 
     instructions = list(instructions_qs.order_by('-created_at'))
 
