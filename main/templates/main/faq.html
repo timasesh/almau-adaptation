@@ -40,6 +40,23 @@
                 <h2>{% trans "Получите ответы на свои вопросы" %}</h2>
             </div>
 
+            <div class="search-section">
+                <form id="searchForm" class="search-form" method="get" action="{% url 'main:faq' %}">
+                    <div class="search-input-wrapper">
+                    <input 
+                        type="text" 
+                        id="searchInput" 
+                        name="search" 
+                        class="search-input" 
+                        placeholder="{% trans 'Введите ваш вопрос...' %}" 
+                        value="{{ search_query|default:'' }}">
+                    <button class="search-btn" type="submit">
+                        <i class="fas fa-search"></i>
+                    </button>
+                    </div>
+                </form>
+            </div>
+
             <div class="category-filters">
                 <div class="filter-tabs">
                     <a href="{% url 'main:faq' %}{% if search_query %}?search={{ search_query }}{% endif %}" 
@@ -77,12 +94,17 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <style>
-.content-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+
+.faq-list.no-faqs {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+
+.faq-content .content-header {
     margin-bottom: 30px;
-    position: relative;
 }
 
 .user-info {
@@ -93,6 +115,7 @@ document.addEventListener('DOMContentLoaded', function() {
 .faq-content {
     max-width: 640px;
     margin: 0 auto;
+    padding-bottom: 160px;
 }
 
 .faq-description {
@@ -124,29 +147,32 @@ document.addEventListener('DOMContentLoaded', function() {
 }
 
 .search-input {
-    width: 100%;
-    padding: 15px 20px;
-    padding-right: 60px;
-    border: none;
-    border-radius: 30px;
+    width: 330px;
+    padding: 7px 50px 7px 20px;
+    border: 1px solid rgba(114, 178, 255, 1);
+    border-radius: 20px;
     font-size: 16px;
-    background: rgba(135, 206, 235, 0.3);
+    background: white;
     transition: all 0.3s ease;
 }
 
+.search-input::placeholder{
+    color: black;
+}
 
 .search-input:focus {
     outline: none;
-    background: rgba(135, 206, 235, 0.4);
-    box-shadow: 0 0 0 3px rgba(135, 206, 235, 0.2);
+    border-color: #1976D2;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
 }
 
 .search-btn {
     position: absolute;
-    right: 10px;
-    background: transparent;
+    right: 280px;
     border: none;
-    color: #666;
+    color: black;
+    background: inherit;
     width: 40px;
     height: 40px;
     border-radius: 50%;
@@ -154,11 +180,7 @@ document.addEventListener('DOMContentLoaded', function() {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.3s ease;
-}
-
-.search-btn:hover {
-    background: rgba(0, 0, 0, 0.1);
+    transition: background 0.3s ease;
 }
 
 .tags-section {
@@ -231,58 +253,44 @@ document.addEventListener('DOMContentLoaded', function() {
 .filter-tab i {
     font-size: 12px;
 }
+
 .faq-list {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
     gap: 10px;
     max-width: 640px;
-    transition: opacity 0.3s ease;
 }
 
 .faq-item {
-    background: white;
-    border-radius: 15px;
-    overflow: hidden;
+    border-radius: 20px;
+    padding: 17px 18px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
     transition: all 0.3s ease;
     border: 2px solid rgba(114, 178, 255, 1);
-
-}
-
-.faq-item:hover {
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 }
 
 .faq-question {
-    padding: 18px 40px;
     cursor: pointer;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: white;
     transition: background 0.3s ease;
-}
-
-.faq-question:hover {
-    background: #f8f9fa;
-}
-
-.faq-question.active {
-    background: #f0f8ff;
+    margin-bottom: 10px;
 }
 
 .faq-question-text {
-    font-size: 18px;
-    font-weight: 500;
+    font-size: 14px;
+    font-weight: 400;
     margin: 0;
     flex: 1;
     padding-right: 20px;
 }
 
 .faq-expand-icon {
+    display: inline-block;
     font-size: 16px;
-    color: #666;
-    transition: transform 0.3s ease;
+    transition: transform .3s ease !important;
 }
 
 .faq-question.active .faq-expand-icon {
@@ -290,49 +298,41 @@ document.addEventListener('DOMContentLoaded', function() {
 }
 
 .faq-answer {
-    padding: 0 25px 20px;
-    background: #f8f9fa;
     display: none;
+    font-size: 14px;
+    max-height: 200px;
 }
 
 .faq-answer.active {
     display: block;
     animation: slideDown 0.3s ease;
+    overflow-x: auto;
+    margin-top: 20px;
+
 }
 
 @keyframes slideDown {
     from {
         opacity: 0;
         max-height: 0;
-        padding: 0 25px;
+        margin-top: -30px;
     }
     to {
         opacity: 1;
         max-height: 200px;
-        padding: 0 25px 20px;
+        margin-top: 20px;
     }
 }
 
 .faq-answer-text {
     font-size: 16px;
     line-height: 1.6;
-    color: #555;
     margin: 0;
 }
 
-.faq-meta {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    padding: 10px 25px;
-    background: #f0f8ff;
-    border-top: 1px solid #e0e0e0;
-    font-size: 14px;
-    color: #666;
-}
-
 .faq-category {
-    font-weight: 500;
+    font-weight: 400;
+    font-size: 14px;
 }
 
 /* Пустое состояние */
@@ -381,21 +381,9 @@ document.addEventListener('DOMContentLoaded', function() {
         gap: 12px;
     }
     
-    .faq-question {
-        padding: 16px 20px;
-    }
-    
     .faq-question-text {
         font-size: 16px;
         padding-right: 15px;
-    }
-    
-    .faq-answer {
-        padding: 0 20px 16px;
-    }
-    
-    .faq-meta {
-        padding: 8px 20px;
     }
     
     .filter-tabs {
@@ -421,34 +409,24 @@ body.theme-dark .faq-item {
 body.theme-dark .faq-question,
 body.theme-dark .faq-question-text,
 body.theme-dark .faq-answer,
-body.theme-dark .faq-answer-text,
-body.theme-dark .faq-meta {
+body.theme-dark .faq-answer-text {
     color: white !important;
     background: transparent !important;
-}
-
-body.theme-dark .faq-meta {
-    border-color: white !important;
 }
 
 body.theme-dark .faq-expand-icon {
     color: white !important;
 }
 
-body.theme-light .faq-answer,
-body.theme-light .faq-answer-text {
-    color: #555555 !important;
-    background: #f8f9fa !important;
-}
-
-body.theme-light .faq-meta {
-    color: #666666 !important;
-    background: #f0f8ff !important;
-    border-color: #e0e0e0 !important;
-}
 
 body.theme-light .faq-expand-icon {
     color: #666666 !important;
+}
+
+@media (max-width:450px){
+    .search-btn{
+        display: none !important;
+    }
 }
 </style>
 
@@ -488,20 +466,26 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (data.success) {
                     faqList.innerHTML = data.html;
                     faqList.style.opacity = '1';
-                    
+
+                    if (!data.html.trim() || data.html.includes('no-faq')) {
+                        faqList.classList.add('no-faqs');
+                    } else {
+                        faqList.classList.remove('no-faqs');
+                    }
+
                     initializeFAQHandlers();
-                    
+
                     const pageUrl = new URL(window.location.href);
                     pageUrl.search = '';
-                    
+
                     if (searchValue) {
                         pageUrl.searchParams.set('search', searchValue);
                     }
-                    
+
                     if (currentCategory) {
                         pageUrl.searchParams.set('category', currentCategory);
                     }
-                    
+
                     history.pushState(null, '', pageUrl.toString());
                 }
             })
@@ -526,6 +510,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     const filterTabs = document.querySelectorAll('.filter-tab');
     
+    const searchForm = document.getElementById('searchForm');
+    if (!searchForm) return; 
+
     filterTabs.forEach(tab => {
         tab.addEventListener('click', function(e) {
             e.preventDefault();
@@ -581,21 +568,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 const answer = faqItem.querySelector('.faq-answer');
                 const faqId = this.dataset.faqId;
                 
-                // Переключаем состояние
                 const isActive = this.classList.contains('active');
                 
                 if (!isActive) {
-                    // Закрываем все остальные
                     document.querySelectorAll('.faq-question.active').forEach(q => {
                         q.classList.remove('active');
                         q.closest('.faq-item').querySelector('.faq-answer').classList.remove('active');
                     });
                     
-                    // Открываем текущий
                     this.classList.add('active');
                     answer.classList.add('active');
                     
-                    // Увеличиваем счетчик просмотров
                     if (faqId) {
                         fetch(`/api/faq/${faqId}/views/`, {
                             method: 'POST',
@@ -606,7 +589,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         }).catch(error => console.error('Ошибка обновления счетчика:', error));
                     }
                 } else {
-                    // Закрываем текущий
                     this.classList.remove('active');
                     answer.classList.remove('active');
                 }
@@ -621,7 +603,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const faqDescription = document.querySelector('.faq-description h2');
         const faqQuestions = document.querySelectorAll('.faq-question, .faq-question-text');
         const faqAnswers = document.querySelectorAll('.faq-answer, .faq-answer-text');
-        const faqMetas = document.querySelectorAll('.faq-meta');
         const faqExpandIcons = document.querySelectorAll('.faq-expand-icon');
         
         if (body.classList.contains('theme-dark')) {
@@ -634,11 +615,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 a.style.color = 'white';
                 a.style.background = 'transparent';
             });
-            faqMetas.forEach(m => {
-                m.style.color = 'white';
-                m.style.background = 'transparent';
-                m.style.borderColor = 'white';
-            });
             faqExpandIcons.forEach(icon => icon.style.color = 'white');
         } else {
             if (faqDescription) faqDescription.style.color = '#000';
@@ -647,13 +623,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 q.style.background = 'white';
             });
             faqAnswers.forEach(a => {
-                a.style.color = '#555555';
-                a.style.background = '#f8f9fa';
-            });
-            faqMetas.forEach(m => {
-                m.style.color = '#666666';
-                m.style.background = '#f0f8ff';
-                m.style.borderColor = '#e0e0e0';
+                a.style.color = 'black';
+                a.style.background = 'white';
             });
             faqExpandIcons.forEach(icon => icon.style.color = '#666666');
         }

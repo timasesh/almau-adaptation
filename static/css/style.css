@@ -224,7 +224,11 @@ body {
     margin: 0;
     padding: 0;
     position: relative;
-    margin-top: 62px;
+    margin-top: 55px;
+    height: calc(100% - 225px);
+    justify-content: space-between;
+    flex-direction: column;
+    display: flex;
 }
 
 .nav-item {
@@ -310,18 +314,17 @@ body {
 }
 
 .nav-text {
+    display: inline-block;
     flex: 1;
-    font-weight: 00;
-    white-space: nowrap;
+    max-width: 200px;
+    font-weight: 300;
     font-size: 12px !important;
     transition: all 0.3s ease;
     overflow: hidden;
-    min-width: 0;
     position: relative;
     left: 0;
     opacity: 1;
     visibility: visible;
-    width: auto;
 }
 
 .sidebar.collapsed .nav-text {
@@ -399,15 +402,6 @@ body {
     padding-bottom: 6px !important; 
 }
 
-.sidebar .settings-btn, .sidebar .logout-btn { 
-    padding-top: 6px !important; 
-    padding-bottom: 6px !important; 
-}
-
-.settings-btn:hover, .logout-btn:hover {
-    background: var(--sidebar-hover);
-    border-color: var(--border-color);
-}
 
 .settings-btn i, .logout-btn i {
     width: 18px;
@@ -886,12 +880,6 @@ a {
     transition: all 0.3s ease;
 }
 
-.settings-btn:hover,
-.logout-btn:hover {
-    background: var(--bg-secondary);
-    color: var(--accent-color);
-}
-
 .settings-btn i,
 .logout-btn i {
     width: 20px;
@@ -1027,8 +1015,8 @@ body.sidebar-collapsed .main-content {
 .dashboard-img {
     width: auto !important; 
     height: auto !important; 
-    max-width: 100% !important;
-    max-height: 100% !important;
+    max-width: 100% ;
+    max-height: 100% ;
     object-fit: contain;
     transition: transform 0.2s ease;
     display: block !important; 
@@ -1139,6 +1127,7 @@ body.sidebar-collapsed .main-content {
     max-width: 640px ;
     margin: 0 auto ;
     overflow-x: hidden;
+    padding-bottom: 160px;
 }
 
 .history-content {
@@ -2182,12 +2171,6 @@ textarea.form-control {
     color: inherit !important;
 }
 
-.sidebar-footer .settings-btn, 
-.sidebar-footer .logout-btn { 
-    padding: 6px 8px !important; 
-    font-size: 11px !important; 
-}
-
 .sidebar-footer .settings-btn i,
 .sidebar-footer .logout-btn i { 
     font-size: 14px !important; 
@@ -2243,10 +2226,10 @@ body.sidebar-collapsed .sidebar .nav-list + a {
 }
 
 .sidebar-brand-logo { 
-    width: 60px; 
+    width: 186px; 
     height: auto; 
     display: block; 
-    margin: 0 140px 0 auto; 
+    margin: 0 53px 0 auto; 
 }
 
 .sidebar.collapsed .sidebar-brand { 
@@ -2254,7 +2237,7 @@ body.sidebar-collapsed .sidebar .nav-list + a {
 }
 
 .sidebar-brand{
-    margin-top: 85px;
+    margin-top: 129px;
 }
 
 .dashboard-container .content-header{
@@ -2663,9 +2646,25 @@ body.sidebar-collapsed .sidebar .nav-list + a {
         margin-right: 0 !important;
         grid-template-columns: repeat(2, auto) !important; 
     }
+    .leader-photo{
+        width: 200px !important;
+        height: 200px !important;
+    }
+    .leader-avatar {
+        width: 200px !important;
+        height: 200px !important;
+    }
+    .leadership-cards{
+        gap: 20px !important;
+    }
+    .leader-card{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
 
     .about-content {
-        padding: 10px !important;
+        padding: 30px !important;
     }
     
     .history-section h2,
@@ -2679,14 +2678,45 @@ body.sidebar-collapsed .sidebar .nav-list + a {
     }
 
     .dashboard-link {
-        width: 100%;
-        height: 50px;
+        width: 130px;
+        height: 130px;
         font-size: 11px;
+        border-radius: 20px;
+        padding: 0 10px;
+    }
+    .dashboard-link__title{
+        font-size: 10px;
+        margin-top: 25px;
+        margin-bottom: 13px;
     }
     
     .dashboard-img {
-        max-width: 70%;
+        max-width: 55%;
         max-height: 70%;
+    }
+
+    .memo-container{
+        max-width: 280px;
+    }
+    .greeting h1{
+        font-weight: 400;
+    }
+    .page-logo{
+        padding: 36px 30px 0 0;
+    }
+    .page-logo img{
+        width: 130px;
+    }
+    .profile-contacts__data{
+        flex-direction: column;
+        gap: 10px !important;
+    }
+    .history-images img{
+        width: 100px !important;
+        height: 100px !important;
+    }
+    .history-images{
+        justify-content: space-between !important;
     }
 
 }

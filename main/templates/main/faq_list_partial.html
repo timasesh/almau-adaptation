@@ -8,7 +8,8 @@
                 <h3 class="faq-question-text">{{ faq|get_faq_question:current_language }}</h3>
                 <i class="fas fa-chevron-down faq-expand-icon"></i>
             </div>
-            <div class="faq-meta"><span class="faq-category">{{ faq.category|get_category_name:current_language }}</span></div>
+            <!-- <div class="faq-meta"> -->
+                <span class="faq-category">{{ faq.category|get_category_name:current_language }}</span>
             <div class="faq-answer">
                 <p class="faq-answer-text">{{ faq|get_faq_answer:current_language|linebreaks }}</p>
             </div>

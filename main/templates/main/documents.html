@@ -44,7 +44,7 @@
                                name="search" 
                                id="searchInput"
                                value="{{ search_query }}" 
-                               placeholder="{% trans 'Поиск по документам' %}" 
+                               placeholder="{% t 'Поиск по документам' %}" 
                                class="search-input">
                         <button type="submit" class="search-btn">
                             <i class="fas fa-search"></i>
@@ -99,6 +99,7 @@ document.addEventListener('DOMContentLoaded', function() {
 .documents-content {
     max-width: 640px;
     margin: 0 auto;
+    padding-bottom: 160px;
 }
 
 .search-section {
@@ -117,7 +118,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 .search-input {
     width: 330px;
-    padding: 7px 20px;
+    padding: 7px 50px 7px 20px;
     border: 1px solid rgba(114, 178, 255, 1);
     border-radius: 20px;
     font-size: 16px;

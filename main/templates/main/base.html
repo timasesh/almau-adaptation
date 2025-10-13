@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 {% load static i18n %}
 {% get_current_language as LANGUAGE_CODE %}
+{% load translation_tags %}
 <html lang="{{ LANGUAGE_CODE }}">
 <head>
     <meta charset="UTF-8">
@@ -48,11 +49,11 @@
     <div class="mobile-bottom-buttons" id="mobileBottomButtons" style="display: none;">
         <a href="{% url 'main:settings' %}" class="mobile-btn settings-btn">
             <i class="fas fa-cog"></i>
-            <span>Настройки</span>
+            <span>{% t "Настройки" %}</span>
         </a>
         <a href="{% url 'account_logout' %}" class="mobile-btn logout-btn">
             <i class="fas fa-sign-out-alt"></i>
-            <span>Выйти</span>
+            <span>{% t "Выход" %}</span>
         </a>
     </div>
 

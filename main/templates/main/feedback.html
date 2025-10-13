@@ -8,7 +8,6 @@
 {% block content %}
 <div class="dashboard-container">
     <script>
-    // Немедленное применение темы
     (function() {
         const savedTheme = localStorage.getItem('selectedTheme') || 'light';
         if (savedTheme === 'dark') {
@@ -35,7 +34,7 @@
                     <h1>{% t "Обратная связь" %}</h1>
                 </div>
             </div>
-            
+
             {% if messages %}
                 {% for message in messages %}
                     <div class="alert alert-{{ message.tags }}">
@@ -47,9 +46,8 @@
             <form method="POST" enctype="multipart/form-data" class="feedback-form" id="feedbackForm">
                 {% csrf_token %}
                 
-                <!-- 1. Тип обращения -->
                 <div class="form-group">
-                    <label class="form-label">{% t "1. Тип обращения" %} <span class="required">*</span></label>
+                    <label class="form-label">{% t "Тип обращения" %} <span class="required">*</span></label>
                     <div class="radio-group">
                         {% for value, label in type_choices %}
                             <label class="radio-option">
@@ -60,9 +58,8 @@
                     </div>
                 </div>
 
-                <!-- 2. Тема обращения -->
                 <div class="form-group">
-                    <label class="form-label" for="subject">{% t "2. Тема обращения" %} <span class="required">*</span></label>
+                    <label class="form-label" for="subject">{% t "Тема обращения" %} <span class="required">*</span></label>
                     <div class="input-wrapper">
                         <input type="text" 
                                id="subject" 
@@ -74,23 +71,20 @@
                     </div>
                 </div>
 
-                <!-- 3. Сообщение -->
                 <div class="form-group">
-                    <label class="form-label" for="message">{% t "3. Сообщение" %} <span class="required">*</span></label>
+                    <label class="form-label" for="message">{% t "Сообщение" %} <span class="required">*</span></label>
                     <div class="textarea-wrapper">
                         <textarea id="message" 
                                   name="message" 
                                   class="form-textarea" 
                                   placeholder="{% t 'Опишите ваше обращение как можно подробнее...' %}"
-                                  rows="6"
                                   required></textarea>
                         <i class="fas fa-edit textarea-icon"></i>
                     </div>
                 </div>
 
-                <!-- 4. Прикрепить файл -->
                 <div class="form-group">
-                    <label class="form-label">{% t "4. Прикрепите файл" %}</label>
+                    <label class="form-label">{% t "Прикрепите файл" %}</label>
                     <div class="file-upload-wrapper">
                         <input type="file" 
                                id="file" 
@@ -98,16 +92,16 @@
                                class="file-input" 
                                accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png">
                         <label for="file" class="file-upload-btn">
-                            <i class="fas fa-upload"></i>
                             {% t "Загрузить файл" %}
+                            <i class="fas fa-upload"></i>
+
                         </label>
                         <span class="file-name" id="fileName"></span>
                     </div>
                 </div>
 
-                <!-- 5. Ваши контакты -->
                 <div class="form-group">
-                    <label class="form-label">{% t "5. Ваши контакты" %}</label>
+                    <label class="form-label">{% t "Ваши контакты" %}</label>
                     <div class="contacts-row">
                         <div class="contact-input">
                             <div class="input-wrapper">
@@ -182,6 +176,7 @@ document.addEventListener('DOMContentLoaded', function() {
 .feedback-content {
     max-width: 640px;
     margin: 0 auto;
+    padding-bottom: 160px;
 }
 
 .alert {
@@ -203,24 +198,23 @@ document.addEventListener('DOMContentLoaded', function() {
     border: 1px solid #f5c6cb;
 }
 
-/* Форма */
 .feedback-form {
     background: white;
     border-radius: 15px;
-    padding: 30px;
+    padding: 23px 28px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(114, 178, 255, 1);
 }
 
 .form-group {
-    margin-bottom: 30px;
+    margin-bottom: 23px;
 }
 
 .form-label {
     display: block;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 500;
-    color: #333;
-    margin-bottom: 15px;
+    margin-bottom: 21px;
 }
 
 .required {
@@ -236,37 +230,37 @@ document.addEventListener('DOMContentLoaded', function() {
 }
 
 .radio-option {
+    width: 161px;
+    height: 37px;
     display: flex;
     align-items: center;
+    justify-content: center; /* добавил, чтобы текст центрировался */
     cursor: pointer;
-    padding: 12px 20px;
-    background: #f8f9fa;
-    border: 2px solid #e0e0e0;
-    border-radius: 25px;
+    border: 1px solid rgba(114, 177, 255, 1);
+    border-radius: 20px;
     transition: all 0.3s ease;
-    font-size: 16px;
-    font-weight: 500;
-}
-
-.radio-option:hover {
-    border-color: #1976D2;
-    background: #e3f2fd;
+    font-size: 14px;
+    position: relative; /* чтобы скрытый input не ломал layout */
 }
 
 .radio-option input[type="radio"] {
-    margin-right: 10px;
-    transform: scale(1.2);
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
 }
 
-.radio-option input[type="radio"]:checked + .radio-text {
-    color: #1976D2;
+.radio-option:hover {
+    background: rgba(2, 64, 128, 1);
+    border-color: rgba(2, 64, 128, 1);
+    color: white;
 }
 
 .radio-option:has(input[type="radio"]:checked) {
-    background: #1976D2;
-    border-color: #1976D2;
+    background: rgba(2, 64, 128, 1);
+    border-color: rgba(2, 64, 128, 1);
     color: white;
 }
+
 
 /* Поля ввода */
 .input-wrapper {
@@ -277,20 +271,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
 .form-input {
     width: 100%;
-    padding: 15px 20px;
-    padding-right: 50px;
-    border: 2px solid #e0e0e0;
-    border-radius: 30px;
-    font-size: 16px;
-    background: #f8f9fa;
+    padding: 12px 20px;
+    height: 40px;
+    border-radius: 20px;
+    font-size: 14px;
     transition: all 0.3s ease;
+    border: 1px solid black;
+}
+
+.form-input::placeholder{
+    font-size: 14px;
 }
 
 .form-input:focus {
     outline: none;
-    border-color: #1976D2;
+    border-color: rgba(2, 64, 128, 1);
     background: white;
-    box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
 }
 
 .input-icon {
@@ -310,22 +306,26 @@ document.addEventListener('DOMContentLoaded', function() {
 
 .form-textarea {
     width: 100%;
-    padding: 15px 20px;
-    padding-right: 50px;
-    border: 2px solid #e0e0e0;
+    padding: 9px 60px 9px 20px;
     border-radius: 20px;
-    font-size: 16px;
-    background: #f8f9fa;
+    font-size: 14px;
     transition: all 0.3s ease;
     resize: vertical;
-    min-height: 120px;
+    min-height: 62px;
+    font-family: "Inter";
+    border-color: black;
+}
+.form-textarea::placeholder{
+    font-size: 14px;
+    font-weight: normal;
+    color: rgba(77, 77, 77, 1);
+    font-family: "Inter";
 }
 
 .form-textarea:focus {
     outline: none;
-    border-color: #1976D2;
+    border-color: rgba(2, 64, 128, 1);
     background: white;
-    box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
 }
 
 .textarea-icon {
@@ -353,20 +353,20 @@ document.addEventListener('DOMContentLoaded', function() {
     align-items: center;
     gap: 10px;
     padding: 12px 24px;
-    background: #f8f9fa;
-    border: 2px solid #e0e0e0;
     border-radius: 25px;
-    color: #333;
-    font-size: 16px;
-    font-weight: 500;
+    font-size: 14px;
+    font-weight: 400;
     cursor: pointer;
     transition: all 0.3s ease;
+    border: 1px solid black;
+    width: 195px;
+    height: 40px;
 }
 
 .file-upload-btn:hover {
-    border-color: #1976D2;
-    background: #e3f2fd;
-    color: #1976D2;
+    border-color: rgba(2, 64, 128, 1);
+    background: rgba(2, 64, 128, 1);
+    color: white;
 }
 
 .file-name {
@@ -393,29 +393,27 @@ document.addEventListener('DOMContentLoaded', function() {
 .form-actions {
     display: flex;
     justify-content: flex-end;
-    margin-top: 40px;
+    margin-top: 18px;
 }
 
 .submit-btn {
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    padding: 15px 35px;
-    background: #4CAF50;
+    height: 36px;
+    padding: 0 29px;
+    background: rgba(2, 64, 128, 1);
     color: white;
     border: none;
-    border-radius: 25px;
-    font-size: 16px;
-    font-weight: 600;
+    border-radius: 40px;
+    font-size: 14px;
     cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
 }
 
 .submit-btn:hover {
-    background: #45a049;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(76, 175, 80, 0.4);
+    background: white;
+    color: rgba(2, 64, 128, 1);
+    outline: 1px solid rgba(2, 64, 128, 1);
 }
 
 /* Адаптивность */
@@ -431,10 +429,6 @@ document.addEventListener('DOMContentLoaded', function() {
     .radio-group {
         flex-direction: column;
         gap: 10px;
-    }
-    
-    .radio-option {
-        justify-content: flex-start;
     }
     
     .contacts-row {
@@ -489,20 +483,6 @@ body.theme-dark .radio-option:has(input[type="radio"]:checked) {
     color: #000 !important;
 }
 
-body.theme-dark .form-input,
-body.theme-dark .form-textarea {
-    background: transparent !important;
-    border-color: white !important;
-    color: white !important;
-}
-
-body.theme-dark .form-input:focus,
-body.theme-dark .form-textarea:focus {
-    border-color: white !important;
-    background: rgba(255, 255, 255, 0.1) !important;
-    color: white !important;
-}
-
 body.theme-dark .file-upload-btn {
     background: transparent !important;
     border-color: white !important;
@@ -521,58 +501,25 @@ body.theme-dark .textarea-icon {
     color: white !important;
 }
 
-body.theme-light .feedback-form {
-    background: white !important;
-    border: 2px solid #e0e0e0 !important;
-    color: #333333 !important;
-}
-
-body.theme-light .form-label {
-    color: #333333 !important;
-}
-
-body.theme-light .radio-option {
-    background: #f8f9fa !important;
-    border: 2px solid #e0e0e0 !important;
-    color: #333333 !important;
-}
-
-body.theme-light .radio-option:hover {
-    border-color: #1976D2 !important;
-    background: #e3f2fd !important;
-    color: #1976D2 !important;
-}
-
-body.theme-light .form-input,
-body.theme-light .form-textarea {
-    background: white !important;
-    border-color: #e0e0e0 !important;
-    color: #333333 !important;
-}
-
-body.theme-light .form-input:focus,
-body.theme-light .form-textarea:focus {
-    border-color: #1976D2 !important;
-    background: white !important;
-    color: #333333 !important;
-}
-
-body.theme-light .file-upload-btn {
-    background: #f8f9fa !important;
-    border-color: #e0e0e0 !important;
-    color: #333333 !important;
-}
-
-body.theme-light .file-upload-btn:hover {
-    border-color: #1976D2 !important;
-    background: #e3f2fd !important;
-    color: #1976D2 !important;
-}
-
 body.theme-light .file-name,
 body.theme-light .input-icon,
 body.theme-light .textarea-icon {
     color: #666666 !important;
+}
+#subject {
+    font-size: 14px;
+    border: 1px solid rgba(55, 55, 55, 1);
+    border-radius: 20px;
+    padding: 9px 60px 9px 20px;
+}
+#subject:focus{
+    border: 1px solid rgba(2, 64, 128, 1);
+}
+
+#subject::placeholder {
+    font-size: 14px;
+    font-weight: normal;
+    color: rgba(77, 77, 77, 1);
 }
 
 </style>
@@ -623,7 +570,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const body = document.body;
         const feedbackDescription = document.querySelector('.feedback-description');
         const feedbackDescriptionP = document.querySelector('.feedback-description p');
-        const feedbackForm = document.querySelector('.feedback-form');
         const formLabels = document.querySelectorAll('.form-label');
         const radioOptions = document.querySelectorAll('.radio-option');
         const formInputs = document.querySelectorAll('.form-input, .form-textarea');
@@ -638,11 +584,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 feedbackDescription.style.color = 'white';
             }
             if (feedbackDescriptionP) feedbackDescriptionP.style.color = 'white';
-            if (feedbackForm) {
-                feedbackForm.style.background = 'transparent';
-                feedbackForm.style.border = '2px solid white';
-                feedbackForm.style.color = 'white';
-            }
+            
             formLabels.forEach(label => label.style.color = 'white');
             radioOptions.forEach(option => {
                 option.style.background = 'transparent';
@@ -663,32 +605,11 @@ document.addEventListener('DOMContentLoaded', function() {
             inputIcons.forEach(icon => icon.style.color = 'white');
         } else {
             if (feedbackDescription) {
-                feedbackDescription.style.background = '#f8f9fa';
                 feedbackDescription.style.border = '2px solid #1976D2';
-                feedbackDescription.style.color = '#333333';
             }
-            if (feedbackDescriptionP) feedbackDescriptionP.style.color = '#333333';
-            if (feedbackForm) {
-                feedbackForm.style.background = 'white';
-                feedbackForm.style.border = '2px solid #e0e0e0';
-                feedbackForm.style.color = '#333333';
-            }
-            formLabels.forEach(label => label.style.color = '#333333');
-            radioOptions.forEach(option => {
-                option.style.background = '#f8f9fa';
-                option.style.border = '2px solid #e0e0e0';
-                option.style.color = '#333333';
-            });
             formInputs.forEach(input => {
                 input.style.background = 'white';
-                input.style.borderColor = '#e0e0e0';
-                input.style.color = '#333333';
             });
-            if (fileUploadBtn) {
-                fileUploadBtn.style.background = '#f8f9fa';
-                fileUploadBtn.style.borderColor = '#e0e0e0';
-                fileUploadBtn.style.color = '#333333';
-            }
             if (fileName) fileName.style.color = '#666666';
             inputIcons.forEach(icon => icon.style.color = '#666666');
         }

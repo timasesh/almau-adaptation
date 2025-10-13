@@ -1,9 +1,10 @@
 services:
-
+ 
   web:
     build: .
     container_name: adaptation_app
     command: gunicorn almau_adaptation.wsgi:application --bind 0.0.0.0:8000 --workers=4
+    # command: python manage.py runserver 0.0.0.0:8000
     volumes:
       # - .:/app     
       - static_volume:/app/staticfiles

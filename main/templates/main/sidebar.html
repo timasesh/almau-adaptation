@@ -4,9 +4,7 @@
 
 <div class="sidebar" id="sidebar">
     <div class="sidebar-header">
-        <div class="logo-container">
-            <img src="{% static 'images/login2.png' %}" alt="AlmaU" class="logo" style="width: 200px; height: auto;">
-        </div>
+        
         <button class="sidebar-toggle" id="sidebarToggle" type="button">
             <i class="fas fa-angle-double-left"></i>
         </button>
@@ -18,73 +16,60 @@
         </div>
 
         <ul class="nav-list">
-            <li class="nav-item {% if current_page == 'dashboard' %}active{% endif %}">
-                <a href="{% url 'main:dashboard' %}" class="nav-link {% if current_page == 'dashboard' %}active-nav-link{% endif %}">
-                    <i class="fa-solid fa-house"></i>
-                    <span class="nav-text">{% trans "Главная" %}</span>
+            <div>
+
+                <li class="nav-item {% if current_page == 'dashboard' %}active{% endif %}">
+                    <a href="{% url 'main:dashboard' %}" class="nav-link {% if current_page == 'dashboard' %}active-nav-link{% endif %}">
+                        <i class="fa-solid fa-house"></i>
+                        <span class="nav-text">{% trans "Главная" %}</span>
+                    </a>
+                </li>
+                <li class="nav-item {% if current_page == 'about' %}active{% endif %}">
+                    <a href="{% url 'main:about' %}" class="nav-link {% if current_page == 'about' %}active-nav-link{% endif %}">
+                        <i class="fa-regular fa-building"></i>
+                        <span class="nav-text">{% trans "Об университете" %}</span>
+                    </a>
+                </li>
+                <li class="nav-item {% if current_page == 'lessons' %}active{% endif %}">
+                    <a href="{% url 'main:lessons' %}" class="nav-link {% if current_page == 'lessons' %}active-nav-link{% endif %}">
+                        <i class="fa-regular fa-bookmark"></i>
+                        <span class="nav-text">{% t "Инструкции по работе" %}</span>
+                    </a>
+                </li>
+                <li class="nav-item {% if current_page == 'documents' %}active{% endif %}">
+                    <a href="{% url 'main:documents' %}" class="nav-link {% if current_page == 'documents' %}active-nav-link{% endif %}">
+                        <i class="fa-regular fa-file-lines"></i>
+                        <span class="nav-text">{% trans "Документация" %}</span>
+                    </a>
+                </li>
+                
+                <li class="nav-item {% if current_page == 'tour' %}active{% endif %}">
+                    <a href="{% url 'main:tour' %}" class="nav-link {% if current_page == 'tour' %}active-nav-link{% endif %}">
+                        <i class="fa-solid fa-cube"></i>
+                        <span class="nav-text">{% t "3D тур по университету" %}</span>
+                    </a>
+                </li>
+                
+                <li class="nav-item {% if current_page == 'faq' %}active{% endif %}">
+                    <a href="{% url 'main:faq' %}" class="nav-link {% if current_page == 'faq' %}active-nav-link{% endif %}">
+                        <i class="fa-regular fa-circle-question"></i>
+                        <span class="nav-text">{% trans "Часто задаваемые вопросы" %}</span>
+                    </a>
+                </li>
+                <li class="nav-item {% if current_page == 'feedback' %}active{% endif %}">
+                    <a href="{% url 'main:feedback' %}" class="nav-link {% if current_page == 'feedback' %}active-nav-link{% endif %}">
+                        <i class="fa-regular fa-comment-dots"></i>
+                        <span class="nav-text">{% trans "Обратная связь" %}</span>
+                    </a>
+                </li>
+            </div>
+            <li class="nav-item {% if current_page == 'settings' %}active{% endif %}">
+                <a href="{% url 'main:settings' %}" class="nav-link {% if current_page == 'settings' %}active-nav-link{% endif %}">
+                    <i class="fas fa-cog"></i>
+                    <span class="nav-text">{% trans "Настройки" %}</span>
                 </a>
             </li>
-            <li class="nav-item {% if current_page == 'about' %}active{% endif %}">
-                <a href="{% url 'main:about' %}" class="nav-link {% if current_page == 'about' %}active-nav-link{% endif %}">
-                    <i class="fa-regular fa-building"></i>
-                    <span class="nav-text">{% trans "Об университете" %}</span>
-                </a>
-            </li>
-            <li class="nav-item {% if current_page == 'lessons' %}active{% endif %}">
-                <a href="{% url 'main:lessons' %}" class="nav-link {% if current_page == 'lessons' %}active-nav-link{% endif %}">
-                    <i class="fa-regular fa-bookmark"></i>
-                    <span class="nav-text">{% trans "Инструкции по работе" %}</span>
-                </a>
-            </li>
-            <li class="nav-item {% if current_page == 'documents' %}active{% endif %}">
-                <a href="{% url 'main:documents' %}" class="nav-link {% if current_page == 'documents' %}active-nav-link{% endif %}">
-                    <i class="fa-regular fa-file-lines"></i>
-                    <span class="nav-text">{% trans "Документация" %}</span>
-                </a>
-            </li>
-            
-            <li class="nav-item {% if current_page == 'tour' %}active{% endif %}">
-                <a href="{% url 'main:tour' %}" class="nav-link {% if current_page == 'tour' %}active-nav-link{% endif %}">
-                    <i class="fa-solid fa-cube"></i>
-                    <span class="nav-text">{% trans "3D тур по университету" %}</span>
-                </a>
-            </li>
-            
-            <li class="nav-item {% if current_page == 'faq' %}active{% endif %}">
-                <a href="{% url 'main:faq' %}" class="nav-link {% if current_page == 'faq' %}active-nav-link{% endif %}">
-                    <i class="fa-regular fa-circle-question"></i>
-                    <span class="nav-text">{% trans "Часто задаваемые вопросы" %}</span>
-                </a>
-            </li>
-            <li class="nav-item {% if current_page == 'feedback' %}active{% endif %}">
-                <a href="{% url 'main:feedback' %}" class="nav-link {% if current_page == 'feedback' %}active-nav-link{% endif %}">
-                    <i class="fa-regular fa-comment-dots"></i>
-                    <span class="nav-text">{% trans "Обратная связь" %}</span>
-                </a>
-            </li>
+
         </ul>
     </nav>
-
-     <!-- <form action="/i18n/setlang/" method="post" style="margin: 20px;">
-        {% csrf_token %}
-        <input name="next" type="hidden" value="{{ request.path }}">
-        <select name="language">
-            <option value="ru">Русский</option>
-            <option value="en">English</option>
-            <option value="kk">Қазақша</option>
-        </select>
-        <button type="submit">OK</button>
-    </form>
-
-    <p>Current language: {{ LANGUAGE_CODE }}</p> -->
-    
-    <div class="sidebar-footer">
-        <div class="user-menu">
-            <a href="{% url 'main:settings' %}" class="settings-btn {% if current_page == 'settings' %}active-nav-link{% endif %}">
-                <i class="fas fa-cog"></i>
-                <span class="nav-text">{% trans "Настройки" %}</span>
-            </a>
-            
-        </div>
-    </div>
 </div>

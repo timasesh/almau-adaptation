@@ -10,7 +10,7 @@
                 <div class="document-category">{{ document.category|get_category_name:current_language }}</div>
             </div>
             <div>
-                <a href="{% url 'main:document_detail' document.id %}" class="download-btn">{% trans "Открыть" %}</a>
+                <a href="{% url 'main:document_detail' document.id %}" class="download-btn">{% t "Открыть" %}</a>
             </div>
         </div>
     {% endfor %} 

@@ -7,16 +7,13 @@
 {% block content %}
 <div class="dashboard-container">
     {% include 'main/sidebar.html' %}
-
-    <div class="main-content" id="mainContent" style="position: relative;">
-
+    <div class="main-content" id="mainContent">
         <div class="tour-content">
             <div class="content-header">
                 <div class="greeting">
                     <h1>{% trans "Часто задаваемые вопросы" %}</h1>
                 </div>
             </div>
-    
             <div class="tour-embed-wrapper">
                 <iframe 
                     src="https://pano3d.kz/AlmaU_VR/#media=1&yaw=-8.52&pitch=-14.65&fov=110.00" 
@@ -34,6 +31,7 @@
     .tour-content{
         max-width: 640px;
         margin: 0 auto;
+        padding-bottom: 160px;
     }
 
     .tour-content .greeting h1{
@@ -44,12 +42,6 @@
         margin-bottom: 24px;
     }
 
-    .page-title {
-        margin: 30px 30px 10px;
-        font-size: 26px;
-        font-weight: 700;
-    }
-    
     .tour-embed-wrapper iframe {
         display: block;
         width: 100%;
@@ -59,16 +51,7 @@
         box-shadow: 0 8px 24px rgba(0,0,0,0.08);
         background: #000;
     }
-    @media (max-width: 768px) {
-        .page-title {
-            margin: 20px;
-            font-size: 22px;
-        }
-        
-        .tour-embed-wrapper iframe {
-            height: 420px;
-        }
-    }
+    
 </style>
 {% endblock %}
 
