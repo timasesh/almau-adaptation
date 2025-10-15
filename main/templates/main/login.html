@@ -1,45 +1,31 @@
-<!DOCTYPE html>
 {% load i18n %}
 {% get_current_language as LANGUAGE_CODE %}
-<html lang="{{ LANGUAGE_CODE }}" class="theme-light">
+{% load static %}
+{% load socialaccount %}
+
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Вход - Adaptation AlmaU</title>
-
-    <!-- Favicon -->
-    {% load static %}
     <link rel="icon" type="image/png" href="{% static 'images/logo-almau.png' %}">
-
-    <!-- Принудительно устанавливаем светлую тему до загрузки CSS -->
-    <script>
-    document.documentElement.classList.add('theme-light');
-    document.documentElement.style.backgroundColor = '#ffffff';
-    </script>
 
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    {% load socialaccount %}
-
 </head>
-<body class="theme-light">
+<body>
+
 <style>
-    /* Принудительно применяем светлую тему для страницы логина */
-    html, body {
-        background-color: #ffffff !important;
-        color: #333333 !important;
+    .social-login_button{
+        border-radius: 40px;
+        border: 1px solid #72B2FF;
+        padding: 10px 31px;
+    }
+    .social-login_button:hover {
+        transform: translateY(-2px) scale(1.05);
     }
     
-    html.theme-dark, body.theme-dark {
-        background-color: #ffffff !important;
-        color: #333333 !important;
-    }
-    
-    .theme-dark * {
-        background-color: inherit !important;
-        color: inherit !important;
-    }
-    /* Мобильная версия формы входа */
     .mobile-login-container {
         min-height: 100vh;
         background-image: url("{% static 'images/image.png' %}");
@@ -50,9 +36,6 @@
         overflow: hidden;
     }
     
-
-    
-    /* Языковой переключатель */
     .language-switch {
         position: absolute;
         top: 20px;
@@ -66,24 +49,26 @@
         z-index: 10;
     }
     
-    /* Основной контент */
     .login-content {
+        height: 100dvh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
         position: relative;
         z-index: 2;
-        padding: 150px 20px 40px;
         text-align: center;
         max-width: 400px;
         margin: 0 auto;
     }
     
-    /* Заголовок */
     .login-title {
         margin-bottom: 40px;
         text-align: center;
     }
     
     .mobile-title-img {
-        max-width: 180px;
+        max-width: 250px;
         width: 100%;
         height: auto;
         display: block;
@@ -106,9 +91,6 @@
         line-height: 1.2;
     }
     
-
-    
-    /* Форма входа */
     .login-form {
         display: flex;
         flex-direction: column;
@@ -138,9 +120,6 @@
         color: #999;
     }
     
-
-    
-    /* Сообщения */
     .messages {
         margin-top: 20px;
     }
@@ -171,17 +150,14 @@
         border: 1px solid #ffcc02;
     }
     
-    /* Десктопная версия (скрыта на мобильных) */
     .desktop-login {
         display: none;
     }
     
-    /* Мобильная версия (показана на мобильных) */
     .mobile-login {
         display: block;
     }
     
-    /* Медиа-запросы для переключения версий */
     @media (min-width: 768px) {
         .mobile-login {
             display: none;
@@ -202,7 +178,6 @@
         position: relative;
     }
     
-    /* Принудительные стили для логотипа в десктопной версии */
     .desktop-login .page-logo-container {
         position: fixed !important;
         top: 80px !important;
@@ -241,29 +216,17 @@
     .primary-login-btn:hover { background: #0a4998; }
     .primary-login-btn:active { transform: translateY(1px); }
     
-    /* Стили для социальных кнопок */
     .social-login {
         display: flex;
         justify-content: center;
         gap: 1px;
         margin-bottom: 0px;
-        margin-top: -30px;
     }
     
     .provider-img {
-        width: 160px !important;
-        height: 80px !important;
-        object-fit: contain;
-        transition: all 0.3s ease;
-        cursor: pointer;
-        background: transparent;
-        border: none;
-        border-radius: 0;
-        padding: 0;
-        box-sizing: border-box;
+        width: 160px;
     }
     
-    /* Адаптивные размеры для мобильных устройств */
     @media (max-width: 768px) {
         .social-login {
             display: flex !important;
@@ -275,17 +238,11 @@
         }
         
         .provider-img {
-            width: 160px !important;
-            height: 80px !important;
-            flex-shrink: 0 !important;
+            width: 120px;
         }
     }
     
-    .provider-img:hover {
-        transform: translateY(-2px) scale(1.05);
-    }
     
-    /* Стили для полей ввода - единые для обеих тем */
     .form-input {
         width: 240px;
         height: 36px;
@@ -312,7 +269,6 @@
         font-size: 15px;
     }
     
-    /* Контейнер для поля пароля с иконкой */
     .password-container {
         position: relative;
         width: 240px;
@@ -341,35 +297,24 @@
         outline: none;
     }
     
-    /* Стили для поля пароля */
     .password-input {
         padding-right: 50px !important;
     }
     
-    /* Уменьшаем отступы между полями */
     .form-group {
         margin-bottom: 12px !important;
     }
     
-    /* Уменьшаем отступы у "Забыли пароль?" */
     .forgot-password {
         margin-top: 5px !important;
         margin-bottom: -10px !important;
         text-align: center;
     }
     
-    /* Центрируем форму */
-    .login-form-fields {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-
-    /* Стили для переключателя языка */
     .language-selector {
         position: absolute;
         top: 8px;
-        right: 158px; /* сдвиг влево ~150px */
+        right: 158px; 
         z-index: 1000;
     }
 
@@ -447,7 +392,6 @@
         background: #e0e0e0;
     }
     
-    /* Стили для мобильного переключателя языка */
     .mobile-language-selector {
         position: absolute;
         top: 20px;
@@ -473,7 +417,6 @@
         background: #1565C0;
     }
     
-    /* Принудительно применяем светлую тему для формы логина */
     .login-card {
         background: transparent !important;
         color: #333 !important;
@@ -503,9 +446,6 @@
         text-decoration: underline;
     }
     
-
-    
-    /* Стили для сообщений */
     .messages {
         background: white !important;
         color: #333 !important;
@@ -533,10 +473,6 @@
         margin-top: -21px;
         margin-left: 10px;
     }
-    .provider-img {
-        margin-bottom: -10px;
-    }
-    
 </style>
 <!-- Мобильная версия формы входа -->
 <div class="mobile-login">
@@ -566,39 +502,26 @@
             </div>
         </div>
 
-        <!-- Основной контент -->
         <div class="login-content">
-            <!-- Заголовок -->
             <div class="login-title">
-                <img src="{% static 'images/Adaptation AlmaU_mob.png' %}" alt="Adaptation AlmaU" class="mobile-title-img">
+                <img src="{% static 'images/sidebar-logo.svg' %}" alt="Adaptation AlmaU" class="mobile-title-img">
             </div>
 
-            <!-- Социальные кнопки -->
             <div class="social-login">
                 {% get_providers as socialaccount_providers %}
                 {% for provider in socialaccount_providers %}
-                    {% if provider.id == 'google' %}
-
-                    {% endif %}
                     {% if provider.id == 'microsoft' %}
-                        <a href="{% provider_login_url 'microsoft' %}">
-                            <img src="{% static 'images/microsoft.png' %}" alt="Microsoft" class="provider-img">
+                        <a class="social-login_button" href="{% provider_login_url 'microsoft' %}">
+                            <img src="{% static 'images/microsoft.svg' %}" alt="Microsoft" class="provider-img">
                         </a>
                     {% endif %}
                 {% endfor %}
             </div>
 
-            <!-- Форма входа -->
             <form method="post" action="{% url 'account_login' %}" class="login-form">
                 {% csrf_token %}
-                <input type="email" name="login" placeholder="{% if current_language == 'kk' %}Кіру{% elif current_language == 'en' %}Login{% else %}Логин{% endif %}" class="form-input" required>
-                <input type="password" name="password" placeholder="{% if current_language == 'kk' %}Құпия сөз{% elif current_language == 'en' %}Password{% else %}Пароль{% endif %}" class="form-input" required>
-                <button type="submit" class="primary-login-btn">
-                    {% if current_language == 'en' %}Sign in{% elif current_language == 'kk' %}Кіру{% else %}Войти{% endif %}
-                </button>
             </form>
 
-            <!-- Сообщения -->
             {% if messages %}
                 <div class="messages">
                     {% for message in messages %}
@@ -610,108 +533,68 @@
     </div>
 </div>
 
-<!-- Десктопная версия формы входа -->
 <div class="desktop-login">
     <div class="adaptive-background">
         <div class="page-logo-container">
-            <img src="{% static 'images/logo-almau.png' %}" alt="AlmaU" class="logo">
+            <img src="{% static 'images/logo-almau.svg' %}" alt="AlmaU" class="logo">
         </div>
         <div class="login-container">
-            <!-- Background decorative elements -->
             <div class="bg-decoration bg-decoration-left"></div>
             <div class="bg-decoration bg-decoration-right"></div>
 
             <div class="login-card">
-            <div class="login-header">
-
-                <img src="{% static 'images/login1.png' %}" alt="Adaptation" class="login-title-img" style="width: 370px; margin-top: 70px;">
-
-                <!-- Language selector -->
-                                    <div class="language-selector">
+                <div class="login-header">
+                    <img src="{% static 'images/sidebar-logo.svg' %}" alt="Adaptation" class="login-title-img" style="width: 370px; margin-top: 70px;">
+                    <div class="language-selector">
                         <button class="language-btn" id="languageBtn">
                             <span class="language-text" id="languageText">
                                 {% if current_language == 'ru' %}Ru{% elif current_language == 'en' %}En{% elif current_language == 'kk' %}Kz{% else %}Ru{% endif %}
                             </span>
                         </button>
+
                         <div class="language-dropdown" id="languageDropdown">
-                    <form method="post" action="{% url 'main:set_language' %}" id="languageForm">
-                        {% csrf_token %}
-                        <input type="hidden" name="next" value="{{ request.get_full_path }}">
-                        <button type="button" class="language-option" data-language="ru">
-                            Ru - Русский
-                        </button>
-                        <button type="button" class="language-option" data-language="en">
-                            En - English
-                        </button>
-                        <button type="button" class="language-option" data-language="kk">
-                            Kz - Қазақша
-                        </button>
-                    </form>
-                </div>
-                </div>
-            </div>
-
-            <div class="login-form">
-                <!-- Social login buttons -->
-                <div class="social-login">
-                    {% get_providers as socialaccount_providers %}
-                    {% for provider in socialaccount_providers %}
-                        {% if provider.id == 'google' %}
-
-                        {% endif %}
-                        {% if provider.id == 'microsoft' %}
-                            <a href="{% provider_login_url 'microsoft' %}">
-                                <img src="{% static 'images/microsoft.png' %}" alt="Microsoft" class="provider-img">
-                            </a>
-                        {% endif %}
-                    {% endfor %}
-                </div>
-
-                <!-- Login form -->
-                <form method="post" action="{% url 'account_login' %}" class="login-form-fields">
-                    {% csrf_token %}
-                    <div class="form-group">
-                        <input type="email" name="login" placeholder="{% if current_language == 'kk' %}Кіру{% elif current_language == 'en' %}Login{% else %}Логин{% endif %}" class="form-input" required>
-                    </div>
-                    <div class="form-group">
-                        <div class="password-container">
-                            <input type="password" name="password" placeholder="{% if current_language == 'kk' %}Құпия сөз{% elif current_language == 'en' %}Password{% else %}Пароль{% endif %}" class="form-input password-input" id="passwordInput" required>
-                            <button type="button" class="password-toggle" id="passwordToggle">
-                                <i class="fas fa-eye" id="passwordIcon"></i>
-                            </button>
+                            <form method="post" action="{% url 'main:set_language' %}" id="languageForm">
+                                {% csrf_token %}
+                                <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                                <button type="button" class="language-option" data-language="ru">
+                                    Ru - Русский
+                                </button>
+                                <button type="button" class="language-option" data-language="en">
+                                    En - English
+                                </button>
+                                <button type="button" class="language-option" data-language="kk">
+                                    Kz - Қазақша
+                                </button>
+                            </form>
                         </div>
                     </div>
-                    <div class="forgot-password">
-                        <a href="{% url 'account_reset_password' %}">{% if current_language == 'kk' %}Құпия сөзді ұмыттыңыз ба?{% elif current_language == 'en' %}Forgot password?{% else %}Забыли пароль?{% endif %}</a>
-                    </div>
-                    <button type="submit" class="primary-login-btn">
-                        {% if current_language == 'en' %}Sign in{% elif current_language == 'kk' %}Кіру{% else %}Войти{% endif %}
-                    </button>
-                </form>
+                </div>
 
-                <!-- Messages -->
-                {% if messages %}
-                    <div class="messages">
-                        {% for message in messages %}
-                            <div class="message {{ message.tags }}">{{ message }}</div>
+                <div class="login-form">
+                    <div class="social-login">
+                        {% get_providers as socialaccount_providers %}
+                        {% for provider in socialaccount_providers %}
+                            {% if provider.id == 'microsoft' %}
+                                <a class="social-login_button" href="{% provider_login_url 'microsoft' %}">
+                                    <img src="{% static 'images/microsoft.svg' %}" alt="Microsoft" class="provider-img">
+                                </a>
+                            {% endif %}
                         {% endfor %}
                     </div>
-                {% endif %}
+
+                    {% if messages %}
+                        <div class="messages">
+                            {% for message in messages %}
+                                <div class="message {{ message.tags }}">{{ message }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
             </div>
-        </div>
     </div>
 </div>
 
 <script>
-// Принудительно применяем светлую тему для страницы логина
-(function() {
-    document.documentElement.classList.remove('theme-dark');
-    document.documentElement.classList.add('theme-light');
-    document.body.classList.remove('theme-dark');
-    document.body.classList.add('theme-light');
-    document.documentElement.style.backgroundColor = '#ffffff';
-    document.body.style.backgroundColor = '#ffffff';
-})();
 
 document.addEventListener('DOMContentLoaded', function() {
     // Desktop language selector

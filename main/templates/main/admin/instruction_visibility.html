@@ -1,61 +1,178 @@
 {% extends 'main/admin/base.html' %}
 {% load static custom_tags %}
 
-
 {% block content %}
 <h1>Админская панель - Настройка видимости инструкций</h1>
-<p>Ниже представлена таблица для настройки видимости инструкций для каждой категории сотрудников. Отметьте, какие инструкции должны быть доступны для соответствующего департамента</p>
+<p>Ниже представлена таблица для настройки видимости инструкций для каждой категории сотрудников. Отметьте, какие инструкции должны быть доступны для соответствующего департамента.</p>
 <div class="card">
   <div class="card-body">
     {% for category, instructions in instructions_by_category.items %}
-      <h6 class="mt-4 text-uppercase fw-bold">{{ category }}</h6>
-      <table class="table table-bordered align-middle text-center mb-4">
-        <thead>
-          <tr>
-            <th class="text-start">Инструкция</th>
-            {% for code, label in groups.items %}
-              <th>{{ label }}</th>
-            {% endfor %}
-          </tr>
-        </thead>
-        <tbody>
-          {% for instr in instructions %}
-            <tr>
-            <td class="text-start">{{ instr.title }}</td>
-            {% for code, label in groups.items %}
-                {% with vis=visibility_map|get_item:instr.id %}
-                {% if vis|get_item:code %}
-                    <td><input type="checkbox" class="form-check-input visibility-toggle"
-                            data-instruction="{{ instr.id }}" data-group="{{ code }}" checked></td>
-                {% else %}
-                    <td><input type="checkbox" class="form-check-input visibility-toggle"
-                            data-instruction="{{ instr.id }}" data-group="{{ code }}"></td>
-                {% endif %}
-                {% endwith %}
-            {% endfor %}
-            </tr>
-            {% endfor %}
-        </tbody>
-      </table>
+      <div class="category-block mb-4">
+        <!-- Заголовок категории -->
+        <div class="d-flex justify-content-between align-items-center mt-4">
+          <h6 class="text-uppercase fw-bold category-toggle" style="cursor:pointer;">
+            <i class="fa fa-chevron-down me-1"></i> {{ category }}
+          </h6>
+        </div>
+
+        {% if instructions %}
+        <div class="category-table mt-2" data-category="{{ forloop.counter }}">
+          <div class="table-wrapper">
+            <table class="table table-bordered align-middle text-center mb-4">
+              <thead class="table-dark">
+                <tr>
+                  <th class="text-start">Инструкция</th>
+                  {% for code, label in groups.items %}
+                    <th>{{ label }}</th>
+                  {% endfor %}
+                  <th>Действие</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for instr in instructions %}
+                  <tr>
+                    <td class="text-start">{{ instr.title }}</td>
+                    <td>
+                      <button 
+                        class="btn btn-sm btn-primary select-row-btn" 
+                        data-row="{{ instr.id }}">
+                        Выделить всё
+                      </button>
+                    </td>
+                    {% for code, label in groups.items %}
+                      {% with vis=visibility_map|get_item:instr.id %}
+                        <td>
+                          <input 
+                            type="checkbox" 
+                            class="form-check-input visibility-toggle"
+                            data-instruction="{{ instr.id }}" 
+                            data-group="{{ code }}"
+                            data-category="{{ forloop.parentloop.counter }}"
+                            data-row="{{ instr.id }}"
+                            {% if vis|get_item:code %}checked{% endif %}>
+                        </td>
+                      {% endwith %}
+                    {% endfor %}
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        {% else %}
+          <p class="text-muted fst-italic mt-2">Нет инструкций для этой категории.</p>
+        {% endif %}
+      </div>
     {% endfor %}
   </div>
 </div>
 
-<script>
-document.querySelectorAll('.visibility-toggle').forEach(cb => {
-  cb.addEventListener('change', async (e) => {
-    const checkbox = e.target;
-    const instructionId = checkbox.dataset.instruction;
-    const groupCode = checkbox.dataset.group;
-    const checked = checkbox.checked;
+<style>
+#wrapper {
+  display: flex;
+  width: 100vw;
+  overflow-x: hidden;
+}
+#sidebar-wrapper {
+  position: sticky;
+  width: 250px;
+  flex-shrink: 0;
+  height: 100vh;
+  overflow-y: hidden;
+}
 
+#page-content-wrapper {
+  width: calc(100vw - 250px);
+  overflow-x: auto;
+}
+.table-wrapper {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: 1rem;
+}
+.table-wrapper table {
+  min-width: 900px;
+  border-collapse: collapse;
+  white-space: nowrap;
+}
+.category-toggle {
+  transition: color 0.2s ease;
+}
+.category-toggle:hover {
+  color: #0d6efd;
+}
+.category-table.collapsed {
+  display: none;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+  async function updateCheckbox(instructionId, groupCode, checked) {
     const formData = new FormData();
     formData.append('instruction_id', instructionId);
     formData.append('group_code', groupCode);
     formData.append('checked', checked);
     formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
-
     await fetch('', { method: 'POST', body: formData });
+  }
+
+  document.querySelectorAll('.visibility-toggle').forEach(cb => {
+    cb.addEventListener('change', async (e) => {
+      const checkbox = e.target;
+      const instructionId = checkbox.dataset.instruction;
+      const groupCode = checkbox.dataset.group;
+      const checked = checkbox.checked;
+      await updateCheckbox(instructionId, groupCode, checked);
+
+      // обновляем состояние кнопки у этой строки
+      const rowId = checkbox.dataset.row;
+      updateRowButtonState(rowId);
+    });
+  });
+
+  document.querySelectorAll('.select-row-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const rowId = btn.dataset.row;
+      const checkboxes = document.querySelectorAll(`.visibility-toggle[data-row="${rowId}"]`);
+      const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+
+      checkboxes.forEach(cb => {
+        cb.checked = !allChecked;
+        cb.dispatchEvent(new Event('change'));
+      });
+
+      updateRowButtonState(rowId);
+    });
+  });
+
+  function updateRowButtonState(rowId) {
+    const checkboxes = document.querySelectorAll(`.visibility-toggle[data-row="${rowId}"]`);
+    const btn = document.querySelector(`.select-row-btn[data-row="${rowId}"]`);
+    const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+
+    btn.textContent = allChecked ? 'Снять всё' : 'Выделить всё';
+    btn.classList.toggle('btn-primary', !allChecked);
+    btn.classList.toggle('btn-outline-secondary', allChecked);
+  }
+
+  document.querySelectorAll('.category-toggle').forEach(toggle => {
+    toggle.addEventListener('click', () => {
+      const icon = toggle.querySelector('i');
+      const table = toggle.closest('.category-block').querySelector('.category-table');
+      if (!table) return;
+      table.classList.toggle('collapsed');
+      icon.classList.toggle('fa-chevron-down');
+      icon.classList.toggle('fa-chevron-right');
+    });
+  });
+
+  document.querySelectorAll('.select-row-btn').forEach(btn => {
+    updateRowButtonState(btn.dataset.row);
   });
 });
 </script>

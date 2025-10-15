@@ -1,0 +1,286 @@
+{% extends 'main/base.html' %}
+{% load static translation_tags i18n %}
+
+{% block title %}{% trans "Инструкции по работе" %} - Adaptation AlmaU{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    {% include 'main/sidebar.html' %}
+    <div class="main-content" id="mainContent" style="position: relative;">
+
+        <div class="memo-container">
+            <div class="content-header">
+                <div class="greeting">
+                    <h1>{% t "Инструкции по работе" %}</h1>
+                </div>
+            </div>
+
+            {% if instructions %}
+                <div class="instructions-grid">
+                    {% for instruction in instructions %}
+                        <div class="instruction-card" data-instruction-id="{{ instruction.id }}">
+                            <div class="instruction-header">
+                                <div style="display: flex; justify-content: space-between; align-items:center;">
+                                    <div class="instruction-title">
+                                        {{ instruction|get_instruction_title:current_language }}
+                                    </div>
+                                    {% if instruction.category == 'platonus' %}
+                                        <img src="{% static 'images/platonus.svg' %}" alt="Platonus" class="category-icon">
+                                    {% elif instruction.category == 'helpdesk' %}
+                                        <img src="{% static 'images/helpdesk.svg' %}" alt="HelpDesk" class="category-icon">
+                                    {% elif instruction.category == 'documentolog' %}
+                                        <img src="{% static 'images/documentolog.svg' %}" alt="Documentolog" class="category-icon">
+                                    {% else %}
+                                        <img src="{% static 'images/default.png' %}" alt="Default" class="category-icon">
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="instruction-link-container">
+                                <a href="#" class="instruction-link"
+                                   onclick="openInstructionModal({{ instruction.id }}); return false;">
+                                   {% t "Предпросмотр" %}
+                                </a>
+                            </div>
+
+                            <a class="instruction-btn" href="{% url 'main:instruction_detail' instruction.id %}">
+                                {% t "Смотреть подробнее" %}
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="instruction-grid__container">
+                    <p class="instruction-grid__empty">
+                        {% t "Пока нет доступных инструкций для вашей должности." %}
+                    </p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+.instructions-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin-bottom: 26px;
+}
+.instruction-card {
+    background: #fff;
+    border: 1px solid #72B2FF;
+    border-radius: 30px;
+    padding: 21px 27px;
+    display: flex;
+    flex-direction: column;
+    min-height: 182px;
+}
+.instruction-title {
+    font-weight: 400;
+    font-size: 14px;
+}
+.instruction-link-container {
+    flex: 1;
+    display: flex;
+}
+.instruction-link {
+    align-self: flex-end;
+    color: #024080;
+    text-decoration: underline;
+    font-size: 16px;
+}
+.instruction-btn {
+    margin-top: 27px;
+    align-self: flex-start;
+    background: #024080;
+    color: #fff;
+    border-radius: 20px;
+    padding: 7px 10px;
+    font-size: 12px;
+    text-decoration: none;
+    transition: all .3s ease;
+}
+.instruction-btn:hover {
+    color: #024080;
+    background: white;
+    outline: 1px solid #024080;
+}
+.category-icon {
+    width: 35px;
+    height: 35px;
+    object-fit: contain;
+}
+.instruction-grid__container {
+    display: flex;
+    justify-content: center;
+    margin-top: 63px;
+    margin-bottom: 88px;
+}
+.instruction-grid__empty {
+    text-align: center;
+    width: 400px;
+    font-size: 20px;
+}
+@media (max-width: 991px) {
+    .instructions-grid { grid-template-columns: 1fr; }
+}
+</style>
+
+<script>
+function openInstructionModal(id) {
+  fetch(`/api/instructions/${id}/detail/`)
+    .then(r => r.ok ? r.json() : Promise.reject())
+    .then(data => renderInstructionModal(data))
+    .catch(() => alert('Ошибка загрузки инструкции'));
+}
+</script>
+<script>
+function renderInstructionModal(data) {
+  const lang = document.documentElement.lang || 'ru'; 
+  const t = {
+    ru: {
+      instruction: 'Инструкция',
+      open: 'Открыть подробно',
+      video: 'Видео',
+      videoNotAvailable: 'Видео недоступно',
+      download: 'Скачать в PDF'
+    },
+    kk: {
+      instruction: 'Нұсқаулық',
+      open: 'Толығырақ ашу',
+      video: 'Бейне',
+      videoNotAvailable: 'Бейне қолжетімсіз',
+      download: 'PDF түрінде жүктеу'
+    },
+    en: {
+      instruction: 'Instruction',
+      open: 'Open details',
+      video: 'Video',
+      videoNotAvailable: 'Video unavailable',
+      download: 'Download PDF'
+    }
+  };
+  const L = t[lang] || t.ru;
+
+  const existing = document.getElementById('instructionModal');
+  if (existing) existing.remove();
+
+  const modal = document.createElement('div');
+  modal.id = 'instructionModal';
+  modal.className = 'instruction-modal-overlay';
+  modal.innerHTML = `
+    <div class="instruction-modal">
+      <div class="modal-top-actions">
+        ${data.id ? `<a href="/instructions/${data.id}/" class="modal-open-page" title="${L.open}">
+          <img src="/static/images/n12.svg" alt="open" class="modal-icon-img">
+        </a>` : ''}
+        <button class="modal-close" aria-label="Close" onclick="document.getElementById('instructionModal').remove()">
+          <img src="/static/images/n13.svg" alt="close" class="modal-icon-img">
+        </button>
+      </div>
+
+      <div class="modal-header">
+        <div class="modal-title">${data.title || ''}</div>
+      </div>
+      <div class="modal-desc">${data.description || ''}</div>
+
+      <div class="modal-section-title">${L.instruction}</div>
+      <div class="modal-tabs">
+        <a href="#" class="tab-link" onclick="switchInstructionTab(event, 'video')">${L.video}</a>
+        <a href="#" class="tab-link" onclick="switchInstructionTab(event, 'pdf')">PDF</a>
+      </div>
+
+      <div class="modal-body">
+        <div class="tab-content" id="tab-video" style="display:none;">
+          ${data.video_url
+            ? `<video controls style="width:100%;border-radius:12px;outline:1px solid #E1E6F0;max-height:255px">
+                 <source src="${data.video_url}" type="video/mp4">
+               </video>`
+            : `<p style="color:#666">${L.videoNotAvailable}</p>`}
+        </div>
+
+        <div class="tab-content" id="tab-pdf" style="display:block;">
+          ${data.pdf_url
+            ? `<iframe src="${data.pdf_url}" style="width:100%;height:255px;border:1px solid #E1E6F0;border-radius:12px"></iframe>`
+            : `<ol class="modal-list">
+                 <li>Lorem ipsum dolor sit amet...</li>
+                 <li>Ac enim id urna at augue...</li>
+               </ol>`}
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        ${data.pdf_url ? `<a href="${data.pdf_url}" class="download-btn" download>${L.download}</a>` : ''}
+      </div>
+    </div>`;
+  document.body.appendChild(modal);
+}
+
+function switchInstructionTab(event, tab) {
+  event.preventDefault();
+  document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
+  document.getElementById('tab-' + tab).style.display = 'block';
+}
+</script>
+
+<style>
+.instruction-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+.instruction-modal {
+  background: white;
+  border-radius: 16px;
+  padding: 25px;
+  width: 600px;
+  max-width: 95%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+}
+.modal-top-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+.modal-icon-img {
+  width: 20px;
+  height: 20px;
+}
+.modal-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+.modal-section-title {
+  font-weight: 600;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+.tab-link {
+  margin-right: 15px;
+  color: #024080;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.tab-link:hover {
+  text-decoration: none;
+}
+.download-btn {
+  display: inline-block;
+  background: #024080;
+  color: #fff;
+  border-radius: 10px;
+  padding: 8px 15px;
+  margin-top: 15px;
+  text-decoration: none;
+}
+</style>
+
+{% endblock %}

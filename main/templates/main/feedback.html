@@ -7,22 +7,6 @@
 
 {% block content %}
 <div class="dashboard-container">
-    <script>
-    (function() {
-        const savedTheme = localStorage.getItem('selectedTheme') || 'light';
-        if (savedTheme === 'dark') {
-            document.documentElement.classList.add('theme-dark');
-            document.body.classList.add('theme-dark');
-            document.documentElement.style.backgroundColor = '#1a1a1a';
-            document.body.style.backgroundColor = '#1a1a1a';
-        } else {
-            document.documentElement.classList.add('theme-light');
-            document.body.classList.add('theme-light');
-            document.documentElement.style.backgroundColor = '#ffffff';
-            document.body.style.backgroundColor = '#ffffff';
-        }
-    })();
-    </script>
     {% include 'main/sidebar.html' %}
     
     <div class="main-content" id="mainContent" style="position: relative;">
@@ -141,25 +125,7 @@
     </div>
 </div>
 
-<script>
-// Немедленное применение темы при загрузке страницы
-document.addEventListener('DOMContentLoaded', function() {
-    const savedTheme = localStorage.getItem('selectedTheme') || 'light';
-    
-    // Применяем тему немедленно
-    if (typeof applyTheme === 'function') {
-        applyTheme(savedTheme);
-    }
-    
-    // Показываем страницу после применения темы
-    setTimeout(() => {
-        document.documentElement.classList.add('theme-loaded');
-    }, 50);
-});
-</script>
-
 <style>
-/* Исправляем позиционирование логотипа AlmaUni справа сверху */
 .content-header {
     display: flex;
     justify-content: space-between;
@@ -455,57 +421,6 @@ document.addEventListener('DOMContentLoaded', function() {
     font-size: 20px;
 }
 
-
-body.theme-dark .feedback-form {
-    background: transparent !important;
-    border: 2px solid white !important;
-    color: white !important;
-}
-
-body.theme-dark .form-label {
-    color: white !important;
-}
-
-body.theme-dark .radio-option {
-    background: transparent !important;
-    border: 2px solid white !important;
-    color: white !important;
-}
-
-body.theme-dark .radio-option:hover {
-    border-color: white !important;
-    background: rgba(255, 255, 255, 0.1) !important;
-}
-
-body.theme-dark .radio-option:has(input[type="radio"]:checked) {
-    background: white !important;
-    border-color: white !important;
-    color: #000 !important;
-}
-
-body.theme-dark .file-upload-btn {
-    background: transparent !important;
-    border-color: white !important;
-    color: white !important;
-}
-
-body.theme-dark .file-upload-btn:hover {
-    border-color: white !important;
-    background: rgba(255, 255, 255, 0.1) !important;
-    color: white !important;
-}
-
-body.theme-dark .file-name,
-body.theme-dark .input-icon,
-body.theme-dark .textarea-icon {
-    color: white !important;
-}
-
-body.theme-light .file-name,
-body.theme-light .input-icon,
-body.theme-light .textarea-icon {
-    color: #666666 !important;
-}
 #subject {
     font-size: 14px;
     border: 1px solid rgba(55, 55, 55, 1);
@@ -526,7 +441,6 @@ body.theme-light .textarea-icon {
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Обработка загрузки файла
     const fileInput = document.getElementById('file');
     const fileName = document.getElementById('fileName');
     
@@ -540,7 +454,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Валидация формы
     const form = document.getElementById('feedbackForm');
     if (form) {
         form.addEventListener('submit', function(e) {
@@ -555,7 +468,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 return false;
             }
             
-            // Валидация email
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(email)) {
                 e.preventDefault();
@@ -564,73 +476,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
-    
-    // Функция для принудительного применения цветов формы обратной связи
-    function applyFeedbackColors() {
-        const body = document.body;
-        const feedbackDescription = document.querySelector('.feedback-description');
-        const feedbackDescriptionP = document.querySelector('.feedback-description p');
-        const formLabels = document.querySelectorAll('.form-label');
-        const radioOptions = document.querySelectorAll('.radio-option');
-        const formInputs = document.querySelectorAll('.form-input, .form-textarea');
-        const fileUploadBtn = document.querySelector('.file-upload-btn');
-        const fileName = document.querySelector('.file-name');
-        const inputIcons = document.querySelectorAll('.input-icon, .textarea-icon');
-        
-        if (body.classList.contains('theme-dark')) {
-            if (feedbackDescription) {
-                feedbackDescription.style.background = 'transparent';
-                feedbackDescription.style.border = '2px solid white';
-                feedbackDescription.style.color = 'white';
-            }
-            if (feedbackDescriptionP) feedbackDescriptionP.style.color = 'white';
-            
-            formLabels.forEach(label => label.style.color = 'white');
-            radioOptions.forEach(option => {
-                option.style.background = 'transparent';
-                option.style.border = '2px solid white';
-                option.style.color = 'white';
-            });
-            formInputs.forEach(input => {
-                input.style.background = 'transparent';
-                input.style.borderColor = 'white';
-                input.style.color = 'white';
-            });
-            if (fileUploadBtn) {
-                fileUploadBtn.style.background = 'transparent';
-                fileUploadBtn.style.borderColor = 'white';
-                fileUploadBtn.style.color = 'white';
-            }
-            if (fileName) fileName.style.color = 'white';
-            inputIcons.forEach(icon => icon.style.color = 'white');
-        } else {
-            if (feedbackDescription) {
-                feedbackDescription.style.border = '2px solid #1976D2';
-            }
-            formInputs.forEach(input => {
-                input.style.background = 'white';
-            });
-            if (fileName) fileName.style.color = '#666666';
-            inputIcons.forEach(icon => icon.style.color = '#666666');
-        }
-    }
-    
-    // Применяем цвета сразу при загрузке
-    applyFeedbackColors();
-    
-    // Применяем цвета при изменении темы
-    const observer = new MutationObserver(function(mutations) {
-        mutations.forEach(function(mutation) {
-            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-                setTimeout(applyFeedbackColors, 100);
-            }
-        });
-    });
-    
-    observer.observe(document.body, {
-        attributes: true,
-        attributeFilter: ['class']
-    });
 });
 </script>
 {% endblock %}

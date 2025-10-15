@@ -8,22 +8,6 @@
 
 {% block content %}
 <div class="dashboard-container">
-    <script>
-    (function() {
-        const savedTheme = localStorage.getItem('selectedTheme') || 'light';
-        if (savedTheme === 'dark') {
-            document.documentElement.classList.add('theme-dark');
-            document.body.classList.add('theme-dark');
-            document.documentElement.style.backgroundColor = '#1a1a1a';
-            document.body.style.backgroundColor = '#1a1a1a';
-        } else {
-            document.documentElement.classList.add('theme-light');
-            document.body.classList.add('theme-light');
-            document.documentElement.style.backgroundColor = '#ffffff';
-            document.body.style.backgroundColor = '#ffffff';
-        }
-    })();
-    </script>
     {% include 'main/sidebar.html' %}
     
     <div class="main-content" id="mainContent">
@@ -78,20 +62,6 @@
         </div>
     </div>
 </div>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const savedTheme = localStorage.getItem('selectedTheme') || 'light';
-    
-    if (typeof applyTheme === 'function') {
-        applyTheme(savedTheme);
-    }
-    
-    setTimeout(() => {
-        document.documentElement.classList.add('theme-loaded');
-    }, 50);
-});
-</script>
 
 <style>
 
@@ -397,31 +367,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 }
 
-body.theme-dark .faq-description h2 {
-    color: white !important;
-}
-
-body.theme-dark .faq-item {
-    border: 2px solid white !important;
-    background: transparent !important;
-}
-
-body.theme-dark .faq-question,
-body.theme-dark .faq-question-text,
-body.theme-dark .faq-answer,
-body.theme-dark .faq-answer-text {
-    color: white !important;
-    background: transparent !important;
-}
-
-body.theme-dark .faq-expand-icon {
-    color: white !important;
-}
-
-
-body.theme-light .faq-expand-icon {
-    color: #666666 !important;
-}
 
 @media (max-width:450px){
     .search-btn{
@@ -597,59 +542,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     initializeFAQHandlers();
-    
-    function applyFAQColors() {
-        const body = document.body;
-        const faqDescription = document.querySelector('.faq-description h2');
-        const faqQuestions = document.querySelectorAll('.faq-question, .faq-question-text');
-        const faqAnswers = document.querySelectorAll('.faq-answer, .faq-answer-text');
-        const faqExpandIcons = document.querySelectorAll('.faq-expand-icon');
-        
-        if (body.classList.contains('theme-dark')) {
-            if (faqDescription) faqDescription.style.color = 'white';
-            faqQuestions.forEach(q => {
-                q.style.color = 'white';
-                q.style.background = 'transparent';
-            });
-            faqAnswers.forEach(a => {
-                a.style.color = 'white';
-                a.style.background = 'transparent';
-            });
-            faqExpandIcons.forEach(icon => icon.style.color = 'white');
-        } else {
-            if (faqDescription) faqDescription.style.color = '#000';
-            faqQuestions.forEach(q => {
-                q.style.color = '#000';
-                q.style.background = 'white';
-            });
-            faqAnswers.forEach(a => {
-                a.style.color = 'black';
-                a.style.background = 'white';
-            });
-            faqExpandIcons.forEach(icon => icon.style.color = '#666666');
-        }
-    }
-    
-    applyFAQColors();
-    
-    const observer = new MutationObserver(function(mutations) {
-        mutations.forEach(function(mutation) {
-            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-                setTimeout(applyFAQColors, 100);
-            }
-        });
-    });
-    
-    observer.observe(document.body, {
-        attributes: true,
-        attributeFilter: ['class']
-    });
-    
-    const originalPerformSearch = performSearch;
-    performSearch = function() {
-        originalPerformSearch.call(this);
-        setTimeout(applyFAQColors, 200);
-    };
 });
 </script>
 {% endblock %}

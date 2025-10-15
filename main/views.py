@@ -1,174 +1,34 @@
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import logout
 from django.contrib.auth.models import User
 from django.contrib import messages
-from django.http import JsonResponse
-from django.utils.translation import gettext as _, activate
-from django.utils import timezone
+from django.http import JsonResponse, Http404, FileResponse
+from django.utils.translation import gettext as _
+from django.utils import timezone, translation
 from django.template.loader import render_to_string
 from django.db.models import Q
 from django.views.generic import DetailView, ListView
-
-# Import models
 from .models import (
     History, Mission, Values, ContactInfo, 
     FAQCategory, FAQ, Process, Instruction, 
-    Teacher, Feedback, Document, DocumentCategory, Leader, Lesson, LessonCompletion, LessonProgress, LessonCategory, Editor, Service, Profile
+    Teacher, Feedback, Document, DocumentCategory, Leader, Lesson, LessonProgress, LessonCategory, Editor, Service, Profile, Position
 )
-
-# Import forms
 from .forms import EditorLoginForm
+from django.db import models
+from django.core.paginator import Paginator
+from django.urls import reverse
+import os
+import json
+from .context_processors import TRANSLATIONS
 
-# Простые переводы для тестирования
-TRANSLATIONS = {
-    'en': {
-        'Главная': 'Home',
-        'Об университете': 'About the university',
-        'Документация': 'Documentation',
-        'Уроки': 'Lessons',
-        'Контакты и карта': 'Contacts and map',
-        'Обратная связь': 'Feedback',
-        'Часто задаваемые вопросы': 'Frequently asked questions',
-        'Настройки': 'Settings',
-        'Выход': 'Exit',
-        'Доброе утро': 'Good morning',
-        'Добрый день': 'Good afternoon',
-        'Добрый вечер': 'Good evening',
-        'Логин': 'Login',
-        'Пароль': 'Password',
-        'Забыли пароль?': 'Forgot password?',
-        'Продолжить': 'Continue',
-        'Язык успешно изменен': 'Language successfully changed',
-        'Пользователь': 'User',
-        '1. Кому направить?': '1. Who to address?',
-        '2. Тип обращения': '2. Type of request',
-        '3. Тема обращения': '3. Subject',
-        'Введите тему своего обращения': 'Enter the subject of your request',
-        '4. Сообщение': '4. Message',
-        'Опишите ваше обращение как можно подробнее...': 'Describe your request in as much detail as possible...',
-        '5. Прикрепите файл': '5. Attach file',
-        'Загрузить файл': 'Upload file',
-        '6. Ваши контакты': '6. Your contacts',
-        'Почта': 'Email',
-        'Номер телефона': 'Phone number',
-        'Отправить': 'Send',
-        'Процесс': 'Process',
-        'Инструкция': 'Instruction',
-        'Ничего не найдено': 'Nothing found',
-        'Попробуйте изменить критерии поиска или выбрать другую категорию.': 'Try changing your search criteria or selecting a different category.',
-        'В данный момент уроки отсутствуют': 'No lessons are currently available',
-        'Если у вас есть предложения, замечания по работе сайта или вопросы — отправьте их через форму ниже. Мы ответим как можно быстрее.': 'If you have suggestions, comments about the site or questions - send them through the form below. We will respond as quickly as possible.',
-        'Изучайте материалы в удобном формате': 'Study materials in a convenient format',
-        'Начать поиск': 'Start search',
-        'Начинающий': 'Beginner',
-        'Средний': 'Intermediate',
-        'Продвинутый': 'Advanced',
-        'Скачать PDF': 'Download PDF',
-        'Документы не найдены': 'No documents found',
-        'Попробуйте изменить критерии поиска': 'Try changing your search criteria',
-        'Уроки не найдены': 'No lessons found',
-        'Попробуйте изменить критерии поиска или выбрать другой уровень сложности.': 'Try changing your search criteria or selecting a different difficulty level.',
-        'Открыть': 'Open',
-        'Скрыть': 'Hide',
-        'Видео урока': 'Lesson Video',
-        'Презентация урока': 'Lesson Presentation',
-        'Ваш браузер не поддерживает видео': 'Your browser does not support video',
-        'Ваш браузер не поддерживает PDF': 'Your browser does not support PDF',
-        'В данный момент документы отсутствуют': 'No documents are currently available',
-        'Завершить урок': 'Complete Lesson',
-        'Завершен': 'Completed',
-        'Изучите материал для завершения': 'Study the material to complete',
-        'Задайте свой вопрос': 'Ask your question',
-        'Поиск по вопросам': 'Search questions',
-        'Категории': 'Categories',
-        'HR': 'HR',
-        'IT поддержка': 'IT Support',
-        'Предложение': 'Suggestion',
-        'Жалоба': 'Complaint',
-        'Вопрос': 'Question',
-        'Проблема с сайтом': 'Website Issue',
-        'Пожалуйста, заполните все обязательные поля.': 'Please fill in all required fields.',
-        'Ваше обращение успешно отправлено! Мы ответим как можно быстрее.': 'Your request has been sent successfully! We will respond as soon as possible.',
-    },
-    'kk': {
-        'Главная': 'Басты бет',
-        'Об университете': 'Университет туралы',
-        'Документация': 'Құжаттама',
-        'Уроки': 'Сабақтар',
-        'Контакты и карта': 'Карта және контактілер',
-        'Обратная связь': 'Кері байланыс',
-        'Часто задаваемые вопросы': 'Жиі қойылатын сұрақтар',
-        'Настройки': 'Настройки',
-        'Выход': 'Шығу',
-        'Доброе утро': 'Қайырлы таң',
-        'Добрый день': 'Қайырлы күн',
-        'Добрый вечер': 'Қайырлы кеш',
-        'Логин': 'Логин',
-        'Пароль': 'Құпия сөз',
-        'Забыли пароль?': 'Құпия сөзді ұмыттыңыз ба?',
-        'Продолжить': 'Жалғастыру',
-        'Язык успешно изменен': 'Тіл сәтті өзгертілді',
-        'Пользователь': 'Пайдаланушы',
-        '1. Кому направить?': '1. Кімге жіберу керек?',
-        '2. Тип обращения': '2. Өтініш түрі',
-        '3. Тема обращения': '3. Тақырыбы',
-        'Введите тему своего обращения': 'Өтінішіңіздің тақырыбын енгізіңіз',
-        '4. Сообщение': '4. Хабарлама',
-        'Опишите ваше обращение как можно подробнее...': 'Өтінішіңізді мүмкіндігінше толық сипаттаңыз...',
-        '5. Прикрепите файл': '5. Файл тіркеңіз',
-        'Загрузить файл': 'Файл жүктеу',
-        '6. Ваши контакты': '6. Сіздің байланыстарыңыз',
-        'Почта': 'Электрондық пошта',
-        'Номер телефона': 'Телефон нөірі',
-        'Отправить': 'Жіберу',
-        'Процесс': 'Процесс',
-        'Инструкция': 'Нұсқаулық',
-        'Ничего не найдено': 'Ештеңе табылмады',
-        'Попробуйте изменить критерии поиска или выбрать другую категорию.': 'Іздеу критерийлерін өзгертіп көріңіз немесе басқа санатты таңдаңыз.',
-        'В данный момент уроки отсутствуют': 'Қазіргі уақытта сабақтар жоқ',
-        'Если у вас есть предложения, замечания по работе сайта или вопросы — отправьте их через форму ниже. Мы ответим как можно быстрее.': 'Егер сіздің ұсыныстарыңыз, сайттың жұмысы туралы ескертпелеріңіз немесе сұрақтарыңыз болса - оларды төмендегі форма арқылы жіберіңіз. Біз барынша тез жауап береміз.',
-        'Изучайте материалы в удобном формате': 'Материалдарды ыңғайлы форматта оқыңыз',
-        'Начать поиск': 'Іздеуді бастау',
-        'Начинающий': 'Бастаушы',
-        'Средний': 'Орташа',
-        'Продвинутый': 'Жоғары',
-        'Скачать PDF': 'PDF жүктеу',
-        'Документы не найдены': 'Құжаттар табылмады',
-        'Попробуйте изменить критерии поиска': 'Іздеу критерийлерін өзгертіп көріңіз',
-        'Уроки не найдены': 'Сабақтар табылмады',
-        'Попробуйте изменить критерии поиска или выбрать другой уровень сложности.': 'Іздеу критерийлерін өзгертіп көріңіз немесе басқа қиындық деңгейін таңдаңыз.',
-        'Открыть': 'Ашу',
-        'Скрыть': 'Жасыру',
-        'Видео урока': 'Сабақтың бейнесі',
-        'Презентация урока': 'Сабақтың презентациясы',
-        'Ваш браузер не поддерживает видео': 'Сіздің браузеріңіз бейнені қолдамайды',
-        'Ваш браузер не поддерживает PDF': 'Сіздің браузеріңіз PDF қолдамайды',
-        'В данный момент документы отсутствуют': 'Қазіргі уақытта құжаттар жоқ',
-        'Завершить урок': 'Сабақты аяқтау',
-        'Завершен': 'Аяқталды',
-        'Изучите материал для завершения': 'Аяқтау үшін материалды зерттеңіз',
-        'Задайте свой вопрос': 'Сұрағыңызды қойыңыз',
-        'Поиск по вопросам': 'Сұрақтарды іздеу',
-        'Категории': 'Санаттар',
-        'HR': 'HR',
-        'IT поддержка': 'IT қолдауы',
-        'Предложение': 'Ұсыныс',
-        'Жалоба': 'Шағым',
-        'Вопрос': 'Сұрақ',
-        'Проблема с сайтом': 'Сайт мәселесі',
-        'Пожалуйста, заполните все обязательные поля.': 'Барлық міндетті өрістерді толтырыңыз.',
-        'Ваше обращение успешно отправлено! Мы ответим как можно быстрее.': 'Сіздің өтінішіңіз сәтті жіберілді! Біз барынша тез жауап береміз.',
-    }
-}
 
 def get_translation(text, language='ru'):
     """Простая функция перевода"""
     if language == 'ru' or language not in TRANSLATIONS:
         return text
     return TRANSLATIONS.get(language, {}).get(text, text)
-from .models import Instruction, Process, Feedback, FAQ, FAQCategory
+
 
 def login_view(request):
     """Login page view"""
@@ -176,30 +36,27 @@ def login_view(request):
         return redirect('main:dashboard')
     return render(request, 'main/login.html')
 
+
 @login_required
 def dashboard_view(request):
     """Main dashboard view"""
-    # Проверяем, является ли пользователь преподавателем
     teacher = None
     try:
-        from .models import Teacher
         teacher = Teacher.objects.get(user=request.user)
     except Teacher.DoesNotExist:
         pass
     
-    # Получаем текущий язык из сессии
     current_language = request.session.get('_language') or request.session.get('django_language', 'ru')
     
-    # Определяем приветствие в зависимости от времени
     now = timezone.now()
     hour = now.hour
     
     if 5 <= hour < 12:
-        greeting = get_translation("Доброе утро", current_language)
+        greeting = get_translation("Привет", current_language)
     elif 12 <= hour < 18:
-        greeting = get_translation("Добрый день", current_language)
+        greeting = get_translation("Привет", current_language)
     else:
-        greeting = get_translation("Добрый вечер", current_language)
+        greeting = get_translation("Привет", current_language)
     
     user_name = teacher.full_name if teacher else (request.user.first_name or request.user.email.split('@')[0] if request.user.email else get_translation('Пользователь', current_language))
     
@@ -211,6 +68,7 @@ def dashboard_view(request):
         'current_page': 'dashboard'
     }
     return render(request, 'main/dashboard.html', context)
+
 
 @login_required
 def lessons_view(request):
@@ -262,14 +120,16 @@ def lessons_view(request):
             models.Q(allowed_positions__group=position_group)  # или группа
         ).distinct()
     else:
-        # Если без должности — показываем только общие
         instructions_qs = instructions_qs.filter(allowed_positions=None)
-
 
     instructions = list(instructions_qs.order_by('-created_at'))
 
-    # ---- Сервисы ----
     services = Service.objects.all()
+
+    lang = (translation.get_language() 
+            or request.session.get('django_language', 'ru') 
+            or 'ru')
+    lang = lang.split('-')[0]  # 'ru-RU' -> 'ru'
 
     return render(request, 'main/lessons.html', {
         'lessons': lessons,
@@ -279,6 +139,7 @@ def lessons_view(request):
         'current_language': request.session.get('django_language', 'ru'),
         'current_page': 'lessons',
         'instructions': instructions,
+        'lang': lang,
         'services': services,
         'position_name': position_name,
     })
@@ -380,7 +241,6 @@ def update_video_progress_view(request, lesson_id):
     """API endpoint для обновления прогресса видео"""
     if request.method == 'POST':
         try:
-            import json
             data = json.loads(request.body)
             current_time = data.get('current_time', 0)
             total_duration = data.get('total_duration', 0)
@@ -418,7 +278,6 @@ def update_pdf_progress_view(request, lesson_id):
     """API endpoint для обновления прогресса PDF"""
     if request.method == 'POST':
         try:
-            import json
             data = json.loads(request.body)
             current_page = data.get('current_page', 1)
             total_pages = data.get('total_pages', 1)
@@ -455,7 +314,6 @@ def update_slides_progress_view(request, lesson_id):
     """API endpoint для обновления прогресса слайдов"""
     if request.method == 'POST':
         try:
-            import json
             data = json.loads(request.body)
             current_slide = data.get('current_slide', 1)
             total_slides = data.get('total_slides', 1)
@@ -743,6 +601,39 @@ def employee_progress_view(request):
     return render(request, 'main/admin/employee_progress.html', context)
 
 @login_required
+def my_instructions_view(request):
+    """Страница со всеми инструкциями, доступными пользователю"""
+    from django.utils import translation
+    from django.db import models
+
+    lang = (translation.get_language() or request.session.get('django_language', 'ru')).split('-')[0]
+
+    profile = Profile.objects.filter(user=request.user).select_related('position').first()
+    position = profile.position if profile else None
+    position_group = position.group if position else None
+
+    # фильтруем инструкции по доступу
+    qs = Instruction.objects.filter(is_active=True)
+    if position:
+        qs = qs.filter(
+            models.Q(allowed_positions=None) |
+            models.Q(allowed_positions=position) |
+            models.Q(allowed_positions__group=position_group)
+        ).distinct()
+    else:
+        qs = qs.filter(allowed_positions=None)
+
+    instructions = qs.order_by('-created_at')
+
+    return render(request, 'main/my_instructions.html', {
+        'instructions': instructions,
+        'current_language': lang,
+        'current_page': 'my_instructions',
+    })
+
+
+
+@login_required
 def lesson_progress_detail_view(request, lesson_id):
     """Детальная страница прогресса по конкретному уроку"""
     if not request.user.is_staff:
@@ -934,21 +825,18 @@ def about_view(request):
     # Проверяем, является ли пользователь преподавателем
     teacher = None
     try:
-        from .models import Teacher
         teacher = Teacher.objects.get(user=request.user)
     except Teacher.DoesNotExist:
         pass
     
     # Получаем текущий язык (из активной локали)
     try:
-        from django.utils import translation
         current_language = translation.get_language() or 'ru'
     except Exception:
         current_language = getattr(request, 'LANGUAGE_CODE', 'ru') or 'ru'
     
     # Получаем объекты для страницы "Об университете"
     try:
-        from .models import History, Mission, Values, Leader
         history_obj = History.objects.first()
         mission_obj = Mission.objects.first()
         values_obj = Values.objects.first()
@@ -986,7 +874,6 @@ def map_view(request):
     # Проверяем, является ли пользователь преподавателем
     teacher = None
     try:
-        from .models import Teacher
         teacher = Teacher.objects.get(user=request.user)
     except Teacher.DoesNotExist:
         pass
@@ -996,7 +883,6 @@ def map_view(request):
     
     # Получаем переводимые данные контактов (первый объект)
     try:
-        from .models import ContactInfo
         contact_info = ContactInfo.objects.first()
     except Exception:
         contact_info = None
@@ -1038,8 +924,7 @@ def tour_view(request):
 @login_required
 def documents_view(request):
     """Documents page view with search and filtering"""
-    from .models import Document, DocumentCategory
-    from django.db.models import Q
+    
     
     # Получаем параметры из запроса
     search_query = request.GET.get('search', '')
@@ -1098,7 +983,6 @@ def documents_view(request):
     # Проверяем, является ли пользователь преподавателем
     teacher = None
     try:
-        from .models import Teacher
         teacher = Teacher.objects.get(user=request.user)
     except Teacher.DoesNotExist:
         pass
@@ -1120,9 +1004,7 @@ def documents_view(request):
 @login_required
 def download_document(request, document_id):
     """Download document and increment counter"""
-    from .models import Document
-    from django.http import Http404, HttpResponse, FileResponse
-    import os
+    
     
     try:
         document = Document.objects.get(id=document_id, is_active=True)
@@ -1155,9 +1037,7 @@ def download_document(request, document_id):
 @login_required
 def documents_api_search(request):
     """API endpoint для поиска документов без перезагрузки страницы"""
-    from .models import Document
-    from django.http import JsonResponse
-    from django.template.loader import render_to_string
+    
 
     try:
         # Параметры
@@ -1247,7 +1127,6 @@ def feedback_view(request):
     # Получаем информацию о пользователе
     teacher = None
     try:
-        from .models import Teacher
         teacher = Teacher.objects.get(user=request.user)
     except Teacher.DoesNotExist:
         pass
@@ -1295,7 +1174,6 @@ def feedback_view(request):
 @login_required
 def faq_view(request):
     """Страница часто задаваемых вопросов с поиском и фильтрацией"""
-    from django.db.models import Q
     
     # Получаем параметры из запроса
     search_query = request.GET.get('search', '')
@@ -1353,7 +1231,6 @@ def faq_view(request):
     # Получаем информацию о пользователе
     teacher = None
     try:
-        from .models import Teacher
         teacher = Teacher.objects.get(user=request.user)
     except Teacher.DoesNotExist:
         pass
@@ -1392,8 +1269,6 @@ def faq_view(request):
 @login_required
 def faq_api_search(request):
     """API endpoint для поиска FAQ без перезагрузки страницы"""
-    from django.template.loader import render_to_string
-    from django.db.models import Q
     
     # Получаем параметры из запроса
     search_query = request.GET.get('search', '')
@@ -1533,26 +1408,21 @@ def processes_instructions_api_search(request):
 @login_required
 def settings_view(request):
     """Страница настроек"""
-    from django.utils import translation
     
     if request.method == 'POST':
         language = request.POST.get('language')
         if language in ['ru', 'en', 'kk']:
-            # Активируем язык для текущего запроса
             translation.activate(language)
-            # Сохраняем в сессии (используем стандартный ключ Django)
             request.session['django_language'] = language
-            request.session['_language'] = language  # Стандартный ключ Django для языка
+            request.session['_language'] = language  
             success_message = get_translation('Язык успешно изменен', language)
             messages.success(request, success_message)
             return redirect('main:settings')
     
     current_language = request.session.get('_language') or request.session.get('django_language', 'ru')
-    current_theme = request.session.get('selected_theme', 'light')
     
     context = {
         'current_language': current_language,
-        'current_theme': current_theme,
         'languages': [
             ('ru', 'Русский'),
             ('en', 'English'),
@@ -1568,15 +1438,12 @@ def set_language_view(request):
     if request.method == 'POST':
         language = request.POST.get('language')
         if language in ['ru', 'en', 'kk']:
-            # Сохраняем в сессии
             request.session['django_language'] = language
-            request.session['_language'] = language  # Стандартный ключ Django для языка
+            request.session['_language'] = language  
             
-            # Определяем куда перенаправить
             next_url = request.POST.get('next') or request.META.get('HTTP_REFERER') or '/'
             return redirect(next_url)
     
-    # Если что-то пошло не так, перенаправляем на главную
     return redirect('main:dashboard')
 
 
@@ -1664,7 +1531,6 @@ def admin_about_view(request):
             
         # Обработка двух руководителей (упрощенная форма)
         if 'leaders' in request.POST:
-            from .models import Leader
             # Загружаем существующих (первые два по порядку)
             leaders = list(Leader.objects.all().order_by('order')[:2])
             # Лидер 1
@@ -1690,7 +1556,6 @@ def admin_about_view(request):
         return redirect('main:admin_about')
     
     # Для предпросмотра текущих лидеров (до 2 шт.)
-    from .models import Leader
     leaders_preview = list(Leader.objects.all().order_by('order')[:2])
 
     context = {
@@ -1703,11 +1568,7 @@ def admin_about_view(request):
     }
     return render(request, 'main/admin/about.html', context)
 
-from django.shortcuts import render, redirect
-from django.contrib import messages
-from django.contrib.auth.decorators import login_required
-from django.db import models
-from .models import Instruction, Position
+
 
 @login_required
 def admin_memo_view(request):
@@ -1773,9 +1634,6 @@ def admin_memo_view(request):
 def admin_instruction_visibility_view(request):
     if not request.user.is_staff:
         return redirect('main:admin_login')
-
-    from django.http import JsonResponse
-    from .models import Instruction, Position
 
     groups = {
         'buh': 'Бухгалтерия',
@@ -1846,8 +1704,6 @@ def admin_roles_view(request):
     return render(request, 'main/admin/roles_lazy.html', context)
 
 
-from django.core.paginator import Paginator
-from django.http import JsonResponse
 
 @login_required
 def admin_roles_data(request):
@@ -3162,43 +3018,6 @@ def admin_faq_delete_view(request, faq_id):
     
     return redirect('main:admin_faq')
 
-@login_required
-def set_theme_view(request):
-    """Установка темы интерфейса"""
-    if request.method == 'POST':
-        try:
-            import json
-            data = json.loads(request.body)
-            theme = data.get('theme', 'light')
-            
-            # Сохраняем тему в сессии
-            request.session['selected_theme'] = theme
-            
-            return JsonResponse({
-                'success': True,
-                'theme': theme
-            })
-        except (json.JSONDecodeError, KeyError):
-            return JsonResponse({
-                'success': False,
-                'error': 'Неверные данные'
-            })
-    
-    return JsonResponse({
-        'success': False,
-        'error': 'Метод не поддерживается'
-    })
-
-@login_required
-def test_theme_view(request):
-    """Тестовая страница для проверки темной темы"""
-    return render(request, 'main/test_theme.html')
-
-@login_required
-def test_simple_view(request):
-    """Простая тестовая страница для проверки темной темы"""
-    return render(request, 'main/test_simple.html')
-
 # ===== EDITOR VIEWS =====
 
 def editor_login_view(request):
@@ -3422,7 +3241,6 @@ def editor_lessons_view(request):
             except Lesson.DoesNotExist:
                 messages.error(request, 'Урок не найден.')
             try:
-                from django.urls import reverse
                 return redirect(f"{reverse('main:editor_dashboard')}?tab=lessons")
             except Exception:
                 return redirect('main:editor_dashboard')
@@ -3481,7 +3299,6 @@ def editor_create_lesson_view(request):
             lesson.save()
             messages.success(request, 'Урок успешно создан!')
             try:
-                from django.urls import reverse
                 return redirect(f"{reverse('main:editor_dashboard')}?tab=lessons")
             except Exception:
                 return redirect('main:editor_dashboard')
@@ -3513,7 +3330,6 @@ def editor_edit_lesson_view(request, lesson_id):
     except Lesson.DoesNotExist:
         messages.error(request, 'Урок не найден.')
         try:
-            from django.urls import reverse
             return redirect(f"{reverse('main:editor_dashboard')}?tab=lessons")
         except Exception:
             return redirect('main:editor_dashboard')
@@ -3586,7 +3402,6 @@ def editor_documents_view(request):
             except Document.DoesNotExist:
                 messages.error(request, 'Документ не найден.')
             try:
-                from django.urls import reverse
                 return redirect(f"{reverse('main:editor_dashboard')}?tab=documents")
             except Exception:
                 return redirect('main:editor_dashboard')
@@ -3642,7 +3457,6 @@ def editor_create_document_view(request):
             )
             messages.success(request, 'Документ успешно создан!')
             try:
-                from django.urls import reverse
                 return redirect(f"{reverse('main:editor_dashboard')}?tab=documents")
             except Exception:
                 return redirect('main:editor_dashboard')
@@ -3757,7 +3571,6 @@ def editor_edit_document_view(request, document_id):
             document.save()
             messages.success(request, 'Документ успешно обновлен!')
             try:
-                from django.urls import reverse
                 return redirect(f"{reverse('main:editor_dashboard')}?tab=documents")
             except Exception:
                 return redirect('main:editor_documents')
@@ -3782,11 +3595,9 @@ class InstructionListView(ListView):
         query = self.request.GET.get("q", "")
         qs = Instruction.objects.all()
 
-        # Фильтрация по должности
         if hasattr(user, "profile") and user.profile.position:
             qs = qs.filter(allowed_positions=user.profile.position)
 
-        # Поиск по названию, описанию, контенту
         if query:
             qs = qs.filter(
                 Q(title__icontains=query) |

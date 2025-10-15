@@ -15,6 +15,7 @@ urlpatterns = [
     path('download/<int:document_id>/', views.download_document, name='download_document'),
     path('documents/<int:document_id>/', views.document_detail_view, name='document_detail'),
     path('logout/', views.logout_view, name='logout'),
+    path('my-instructions/', views.my_instructions_view, name='my_instructions'),
     path('lessons/', views.lessons_view, name='lessons'),
     path('lessons/<int:lesson_id>/complete/', views.complete_lesson_view, name='complete_lesson'),
     path('lessons/<int:lesson_id>/progress/', views.get_lesson_progress_view, name='get_lesson_progress'),
@@ -65,21 +66,11 @@ urlpatterns = [
     path('admin-panel/documents/<int:document_id>/edit/', views.admin_document_edit_view, name='edit_document'),
     path('admin-panel/documents/<int:document_id>/delete/', views.admin_document_delete_view, name='delete_document'),
     path('admin-panel/document-categories/add/', views.admin_document_category_add_view, name='admin_document_category_add'),
+    path('admin-panel/editors/', views.admin_editors_view, name='admin_editors'),
     
     # FAQ
     path('admin-panel/faq/<int:faq_id>/edit/', views.admin_faq_edit_view, name='edit_faq'),
     path('admin-panel/faq/<int:faq_id>/delete/', views.admin_faq_delete_view, name='delete_faq'),
-    
-    # Настройки темы
-    path('set-theme/', views.set_theme_view, name='set_theme'),
-    
-    # Test theme page
-    path('test-theme/', views.test_theme_view, name='test_theme'),
-    
-    # Simple test theme page
-    path('test-simple/', views.test_simple_view, name='test_simple'),
-    
-    # Удаляем тестовые URL для входа в админ панель
     
     # Editor URLs
     path('editor/', views.editor_login_view, name='editor_login'),
@@ -95,7 +86,5 @@ urlpatterns = [
     path('editor/progress/', views.editor_progress_view, name='editor_progress'),
     path('editor/progress/lesson/<int:lesson_id>/', views.editor_lesson_progress_detail_view, name='editor_lesson_progress_detail'),
     path('accounts/', include('allauth.urls')),
-    # Admin Panel - Editors Management
-    path('admin-panel/editors/', views.admin_editors_view, name='admin_editors'),
     
 ]

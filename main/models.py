@@ -48,6 +48,36 @@ class Profile(models.Model):
     
     def __str__(self):
         return self.user.username
+    
+    
+class InstructionCategory(models.Model):
+    code = models.CharField(
+        max_length=50,
+        unique=True,
+        verbose_name="Код категории"
+    )
+    name = models.CharField(
+        max_length=100,
+        verbose_name="Название категории"
+    )
+    logo = models.ImageField(
+        upload_to='instructions/category_logos/',
+        blank=True,
+        null=True,
+        verbose_name="Логотип"
+    )
+    description = models.TextField(
+        blank=True,
+        verbose_name="Описание категории"
+    )
+
+    class Meta:
+        verbose_name = "Категория инструкции"
+        verbose_name_plural = "Категории инструкций"
+        ordering = ['name']
+
+    def __str__(self):
+        return self.name
 
 
 class Instruction(models.Model):
@@ -81,7 +111,6 @@ class Instruction(models.Model):
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
     is_active = models.BooleanField(default=True, verbose_name="Активна")
 
-    # Дополнительно: файлы для предпросмотра
     video = models.FileField(
         upload_to='instructions/videos/',
         blank=True,
@@ -89,7 +118,6 @@ class Instruction(models.Model):
         verbose_name="Видео",
         help_text="Опционально. Поддерживаемые форматы: MP4, AVI, MOV, WMV"
     )
-    # Отдельные PDF по языкам
     pdf_file = models.FileField(
         upload_to='instructions/pdfs/',
         blank=True,

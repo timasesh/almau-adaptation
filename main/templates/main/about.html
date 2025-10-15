@@ -8,24 +8,8 @@
 {% block content %}
 
 <div class="dashboard-container">
-    <script>
-    (function() {
-        const savedTheme = localStorage.getItem('selectedTheme') || 'light';
-        if (savedTheme === 'dark') {
-            document.documentElement.classList.add('theme-dark');
-            document.body.classList.add('theme-dark');
-            document.documentElement.style.backgroundColor = '#1a1a1a';
-            document.body.style.backgroundColor = '#1a1a1a';
-        } else {
-            document.documentElement.classList.add('theme-light');
-            document.body.classList.add('theme-light');
-            document.documentElement.style.backgroundColor = '#ffffff';
-            document.body.style.backgroundColor = '#ffffff';
-        }
-    })();
-    </script>
     {% include 'main/sidebar.html' %}
-    
+
     <div class="main-content" id="mainContent" style="position: relative;">
         <div class="about-content">
             <div class="content-header">
@@ -146,8 +130,8 @@
 
 .history-text {
     flex: 1;
-    word-wrap: break-word; /* Перенос длинных слов */
-    overflow-wrap: break-word; /* Современный способ переноса */
+    word-wrap: break-word;
+    overflow-wrap: break-word; 
     margin:0 auto;
 }
 
@@ -155,9 +139,9 @@
     font-size: 16px;
     color: #000000;
     text-align: center;
-    word-wrap: break-word; /* Перенос длинных слов */
-    overflow-wrap: break-word; /* Современный способ переноса */
-    max-width: 100%; /* Текст не может быть шире контейнера */
+    word-wrap: break-word; 
+    overflow-wrap: break-word; 
+    max-width: 100%; 
 }
 
 .history-image {
@@ -172,7 +156,6 @@
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
-/* Миссия и Ценности */
 .mission-values {
     display: flex;
     gap: 40px;
@@ -180,7 +163,6 @@
     justify-content: center;
 }
 
-/* Мобильная версия для миссии и ценностей */
 @media (max-width: 768px) {
     .mission-values {
         flex-direction: column;
@@ -222,24 +204,6 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-}
-
-/* Иконки для светлой и темной темы */
-.light-theme-icon {
-    display: block;
-}
-
-.dark-theme-icon {
-    display: none;
-}
-
-/* Темная тема */
-[data-theme="dark"] .light-theme-icon {
-    display: none;
-}
-
-[data-theme="dark"] .dark-theme-icon {
-    display: block;
 }
 
 .mission-card h3, .values-card h3 {
@@ -328,59 +292,5 @@
         gap: 40px;
     }
 }
-
-
-body.theme-dark .about-content .history-section h2,
-body.theme-dark .about-content .leadership-section h2,
-body.theme-dark .about-content .leader-card h3,
-body.theme-dark .about-content .leader-name {
-    color: white !important;
-}
-
-body.theme-light .about-content .history-section h2,
-body.theme-light .about-content .leadership-section h2,
-body.theme-light .about-content .leader-card h3 {
-    color: black;
-}
-
-body.theme-light .about-content .leader-card h3 {
-    color: black;
-}
 </style>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    function applyThemeColors() {
-        const body = document.body;
-        const historyH2 = document.querySelector('.history-section h2');
-        const leadershipH2 = document.querySelector('.leadership-section h2');
-        const leaderH3s = document.querySelectorAll('.leader-card h3');
-        
-        if (body.classList.contains('theme-dark')) {
-            if (historyH2) historyH2.style.color = 'white';
-            if (leadershipH2) leadershipH2.style.color = 'white';
-            leaderH3s.forEach(h3 => h3.style.color = 'white');
-        } else {
-            if (historyH2) historyH2.style.color = '#000000';
-            if (leadershipH2) leadershipH2.style.color = '#000000';
-            leaderH3s.forEach(h3 => h3.style.color = '#000000');
-        }
-    }
-    
-    applyThemeColors();
-    
-    const observer = new MutationObserver(function(mutations) {
-        mutations.forEach(function(mutation) {
-            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-                setTimeout(applyThemeColors, 100);
-            }
-        });
-    });
-    
-    observer.observe(document.body, {
-        attributes: true,
-        attributeFilter: ['class']
-    });
-});
-</script>
 {% endblock %}
