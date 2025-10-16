@@ -112,10 +112,10 @@ def lessons_view(request):
     if position:
         instructions_qs = instructions_qs.filter(
             models.Q(allowed_positions=position) |
-            models.Q(allowed_positions__group=position_group)  
+            models.Q(allowed_positions__group=position_group)
         ).distinct()
     else:
-        instructions_qs = instructions_qs.filter(allowed_positions=None)
+        instructions_qs = Instruction.objects.none()
 
     # Только 2 последние инструкции
     instructions = list(instructions_qs.order_by('-created_at')[:2])
@@ -620,7 +620,8 @@ def my_instructions_view(request):
             models.Q(allowed_positions__group=position_group)
         ).distinct()
     else:
-        qs = qs.filter(allowed_positions=None)
+        qs = Instruction.objects.none()
+
 
     instructions = qs.order_by('-created_at')
 
