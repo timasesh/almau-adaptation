@@ -111,7 +111,6 @@ def lessons_view(request):
 
     if position:
         instructions_qs = instructions_qs.filter(
-            models.Q(allowed_positions=None) |  
             models.Q(allowed_positions=position) |
             models.Q(allowed_positions__group=position_group)  
         ).distinct()
@@ -617,7 +616,6 @@ def my_instructions_view(request):
     qs = Instruction.objects.filter(is_active=True)
     if position:
         qs = qs.filter(
-            models.Q(allowed_positions=None) |
             models.Q(allowed_positions=position) |
             models.Q(allowed_positions__group=position_group)
         ).distinct()
