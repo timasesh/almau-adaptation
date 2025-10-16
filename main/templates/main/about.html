@@ -21,13 +21,15 @@
             <div class="history-section">
 
                 <h2 class="section-title">{% trans "История" %}</h2>
+                
                 <div class="history-text">
                     {% if history_text %}
-                        <p class="history-paragraph">{{ history_text|linebreaks }}</p>
-                    {% else %}
-                        <p >{% trans "Lorem ipsum dolor sit amet consectetur. Velit erat pretium turpis scelerisque lobortis neque. Placerat suscipit fermentum sed ultrices sit nulla sed. Dignissim tempor egestas curabitur mauris et bibendum." %}</p>
+                        {{ history_text|safe }}
                     {% endif %}
                 </div>
+
+
+
                 <div class="history-images"">
                     {% if history_obj and history_obj.image %}
                         <img src="{{ history_obj.image.url }}" alt="История 1">

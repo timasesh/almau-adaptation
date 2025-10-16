@@ -1,5 +1,9 @@
 {% extends 'main/admin/base.html' %}
 {% load static custom_tags %}
+{% load i18n %}
+{% load translation_tags %}
+
+{% block title %}Админская панель - Настройка видимости инструкций{% endblock %}
 
 {% block content %}
 <h1>Админская панель - Настройка видимости инструкций</h1>
@@ -8,7 +12,6 @@
   <div class="card-body">
     {% for category, instructions in instructions_by_category.items %}
       <div class="category-block mb-4">
-        <!-- Заголовок категории -->
         <div class="d-flex justify-content-between align-items-center mt-4">
           <h6 class="text-uppercase fw-bold category-toggle" style="cursor:pointer;">
             <i class="fa fa-chevron-down me-1"></i> {{ category }}
@@ -19,15 +22,17 @@
         <div class="category-table mt-2" data-category="{{ forloop.counter }}">
           <div class="table-wrapper">
             <table class="table table-bordered align-middle text-center mb-4">
+              
               <thead class="table-dark">
                 <tr>
-                  <th class="text-start">Инструкция</th>
+                  <th>Действие</th>
+                  <th class="text-start">{% t 'Инструкция' %}</th>
                   {% for code, label in groups.items %}
                     <th>{{ label }}</th>
                   {% endfor %}
-                  <th>Действие</th>
                 </tr>
               </thead>
+
               <tbody>
                 {% for instr in instructions %}
                   <tr>
@@ -74,11 +79,8 @@
   overflow-x: hidden;
 }
 #sidebar-wrapper {
-  position: sticky;
   width: 250px;
   flex-shrink: 0;
-  height: 100vh;
-  overflow-y: hidden;
 }
 
 #page-content-wrapper {

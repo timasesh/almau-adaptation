@@ -24,7 +24,7 @@
 
                 <div class="section-title__container">
                     <h3 class="section-title">{% t "Инструкции" %}</h3>
-                    {% if instructions|length > 1 %}
+                    {% if total_instructions_count > 2 %}
                         <p>
                             <a href="{% url 'main:my_instructions' %}">{% t "Смотреть все" %}</a>
                         </p>
@@ -33,7 +33,7 @@
 
                 {% if instructions %}
                     <div class="instructions-grid">
-                            {% for instruction in instructions %}
+                        {% for instruction in instructions %}
                         <div class="instruction-card" data-instruction-id="{{ instruction.id }}">
                             <div class="instruction-header">
                             

@@ -17,10 +17,19 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
-    
+    <style>
+        body {
+            background: url("{% static 'images/back.svg' %}") no-repeat center center fixed !important;
+            background-size: cover !important;
+            background-attachment: fixed !important; 
+            background-position: center center !important;
+            background-repeat: no-repeat !important;
+            height: 100vh; 
+            margin: 0;
+        }
+    </style>
 </head>
 <body>
-   
     <div class="page-logo">
         <a href="https://almauni.almau.edu.kz/"  target="_blank">
             <img src="{% static 'images/almauni.svg' %}" alt="AlmaUni" >

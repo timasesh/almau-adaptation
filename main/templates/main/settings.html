@@ -42,11 +42,11 @@
                             {% for lang_code, lang_name in languages %}
                                 <div class="language-option">
                                     <input type="radio" 
-                                           id="lang_{{ lang_code }}" 
-                                           name="language" 
-                                           value="{{ lang_code }}"
-                                           {% if current_language == lang_code %}checked{% endif %}
-                                           onchange="this.form.submit();">
+                                        id="lang_{{ lang_code }}" 
+                                        name="language" 
+                                        value="{{ lang_code }}"
+                                        {% if current_language == lang_code %}checked{% endif %}
+                                        onchange="this.form.submit();">
                                     <label for="lang_{{ lang_code }}" class="language-label">
                                         <div class="language-info">
                                             <span class="language-name">{{ lang_name }}</span>
@@ -58,6 +58,7 @@
                                     </label>
                                 </div>
                             {% endfor %}
+
                         </div>
                     </form>
                 </div>

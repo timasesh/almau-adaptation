@@ -29,9 +29,9 @@ urlpatterns = [
     path('tour/', views.tour_view, name='tour'),
     path('map/', views.map_view, name='map'),
     path('feedback/', views.feedback_view, name='feedback'),
-    path('faq/', views.faq_view, name='faq'),
-    path('api/faq/search/', views.faq_api_search, name='faq_api_search'),
-    path('api/faq/<int:faq_id>/views/', views.faq_increment_views, name='faq_increment_views'),
+    # path('faq/', views.faq_view, name='faq'),
+    # path('api/faq/search/', views.faq_api_search, name='faq_api_search'),
+    # path('api/faq/<int:faq_id>/views/', views.faq_increment_views, name='faq_increment_views'),
     path('api/instructions/<int:instruction_id>/detail/', views.instruction_detail_api, name='instruction_detail_api'),
     path('instructions/<int:instruction_id>/', views.instruction_detail_view, name='instruction_detail'),
 

@@ -94,7 +94,6 @@ def lessons_view(request):
             or search_query in getattr(l, 'description_kk', '').lower()
         ]
 
-    # ---- Прогресс уроков ----
     lesson_progress = {}
     for lesson in lessons:
         if lesson.pk is None:
@@ -103,33 +102,34 @@ def lessons_view(request):
         lesson.can_complete = lesson.can_be_completed_by_user(request.user)
         lesson_progress[lesson.id] = lesson.get_or_create_progress(request.user)
 
-    # ---- Получаем профиль и позицию пользователя ----
     profile = Profile.objects.filter(user=request.user).select_related('position').first()
     position = profile.position if profile else None
     position_group = position.group if position else None
     position_name = position.name if position else "Без должности"
 
-    # ---- Фильтруем инструкции по доступу ----
     instructions_qs = Instruction.objects.filter(is_active=True)
 
-    # Если у пользователя есть должность — показываем инструкции для всех + для его позиции/группы
     if position:
         instructions_qs = instructions_qs.filter(
-            models.Q(allowed_positions=None) |  # без ограничений — видят все
-            models.Q(allowed_positions=position) |  # конкретная должность
-            models.Q(allowed_positions__group=position_group)  # или группа
+            models.Q(allowed_positions=None) |  
+            models.Q(allowed_positions=position) |
+            models.Q(allowed_positions__group=position_group)  
         ).distinct()
     else:
         instructions_qs = instructions_qs.filter(allowed_positions=None)
 
-    instructions = list(instructions_qs.order_by('-created_at'))
+    # Только 2 последние инструкции
+    instructions = list(instructions_qs.order_by('-created_at')[:2])
+    
+    # количество всех инструкций
+    total_instructions_count = instructions_qs.count()
 
     services = Service.objects.all()
 
     lang = (translation.get_language() 
             or request.session.get('django_language', 'ru') 
             or 'ru')
-    lang = lang.split('-')[0]  # 'ru-RU' -> 'ru'
+    lang = lang.split('-')[0]  
 
     return render(request, 'main/lessons.html', {
         'lessons': lessons,
@@ -142,6 +142,7 @@ def lessons_view(request):
         'lang': lang,
         'services': services,
         'position_name': position_name,
+        'total_instructions_count': total_instructions_count,
     })
 
 def instruction_detail_api(request, instruction_id):
@@ -1405,25 +1406,47 @@ def processes_instructions_api_search(request):
     })
 
 
+from django.utils import translation
+from django.contrib import messages
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+
 @login_required
 def settings_view(request):
     """Страница настроек"""
-    
+
+    DEFAULT_LANGUAGE = 'ru'  # стандартный язык, если ничего не выбрано
+
     if request.method == 'POST':
         language = request.POST.get('language')
-        if language in ['ru', 'en', 'kk']:
+
+        if language == 'default':
+            # Сбрасываем язык к стандартному
+            request.session.pop('django_language', None)
+            request.session.pop('_language', None)
+            translation.activate(DEFAULT_LANGUAGE)
+            success_message = 'Язык сброшен на стандартный'
+            messages.success(request, success_message)
+            return redirect('main:settings')
+
+        elif language in ['ru', 'en', 'kk']:
             translation.activate(language)
             request.session['django_language'] = language
             request.session['_language'] = language  
-            success_message = get_translation('Язык успешно изменен', language)
+            success_message = {
+                'ru': 'Язык успешно изменён',
+                'en': 'Language successfully changed',
+                'kk': 'Тіл сәтті өзгертілді',
+            }.get(language, 'Language changed')
             messages.success(request, success_message)
             return redirect('main:settings')
-    
-    current_language = request.session.get('_language') or request.session.get('django_language', 'ru')
-    
+
+    current_language = request.session.get('_language') or request.session.get('django_language', 'default')
+
     context = {
         'current_language': current_language,
         'languages': [
+            ('default', 'Системный (по умолчанию)'),
             ('ru', 'Русский'),
             ('en', 'English'),
             ('kk', 'Қазақша'),

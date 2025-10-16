@@ -66,7 +66,7 @@ TRANSLATIONS = {
         'Отправить': 'Send',
         'Инструкции по работе': 'Work instructions',
         'Доступные сервисы': 'Available services',
-        
+        'Видео': 'Video',
         # Процессы и инструкции
         'Поиск процессов и инструкций': 'Search processes and instructions',
         'Все': 'All',
@@ -118,6 +118,8 @@ TRANSLATIONS = {
         'Как связаться с преподавателем?': 'How to contact a teacher?',
         'Где получить справку об обучении?': 'Where to get a study certificate?',
         'Открыть': 'Open',
+        'Предложение': 'Suggestion',
+        'Вопрос': 'Question',
         
         # Дополнительные тексты
         'Кампус': 'Campus',
@@ -159,6 +161,11 @@ TRANSLATIONS = {
         'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum': 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum',
     },
     'kk': {
+        'Предложение': 'Ұсыныс',
+        'Вопрос': 'Сұрақ',
+        'Видео': 'Бейне',
+        'Смотреть подробнее': 'Толығырақ қарау',
+        'Доступные сервисы': 'Қол жетімді қызметтер',
         'Все инструкции': 'Барлық нұсқаулар',
         'Привет': 'Сәлем',
         'Предпросмотр': 'Алдын ала қарау',

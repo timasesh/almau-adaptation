@@ -1,5 +1,6 @@
 {% extends 'main/base.html' %}
 {% load static i18n %}
+{% load translation_tags %}
 
 {% block title %}{{ title }} - Adaptation AlmaU{% endblock %}
 
@@ -26,9 +27,9 @@
                 </div>
             </div>
 
-            <h3 class="section-title">{% trans 'Инструкция' %}</h3>
+            <h3 class="section-title">{% t 'Инструкция' %}</h3>
             <div class="tabs" style="margin-bottom:8px;display:flex;gap:20px;">
-                <a href="#" class="tab-link" onclick="switchInstructionTab(event, 'video')" style="color:#024080;text-decoration:underline;font-weight:600;">{% trans 'Видео' %}</a>
+                <a href="#" class="tab-link" onclick="switchInstructionTab(event, 'video')" style="color:#024080;text-decoration:underline;font-weight:600;">{% t 'Видео' %}</a>
                 <a href="#" class="tab-link" onclick="switchInstructionTab(event, 'pdf')" style="color:#024080;text-decoration:underline;font-weight:600;">PDF</a>
             </div>
             <div class="content-box">

@@ -122,9 +122,9 @@
                                         </td>
                                         <td>
                                             {% if feedback.feedback_type == 'suggestion' %}
-                                                <span class="badge bg-success">Предложение</span>
+                                                <span class="badge bg-success">{% t 'Предложение' %}</span>
                                             {% elif feedback.feedback_type == 'question' %}
-                                                <span class="badge bg-info">Вопрос</span>
+                                                <span class="badge bg-info">{% t 'Вопрос' %}</span>
                                             {% else %}
                                                 <span class="badge bg-secondary">{{ feedback.get_feedback_type_display }}</span>
                                             {% endif %}

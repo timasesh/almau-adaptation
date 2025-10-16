@@ -50,12 +50,6 @@
                     </a>
                 </li>
                 
-                <li class="nav-item {% if current_page == 'faq' %}active{% endif %}">
-                    <a href="{% url 'main:faq' %}" class="nav-link {% if current_page == 'faq' %}active-nav-link{% endif %}">
-                        <i class="fa-regular fa-circle-question"></i>
-                        <span class="nav-text">{% trans "Часто задаваемые вопросы" %}</span>
-                    </a>
-                </li>
                 <li class="nav-item {% if current_page == 'feedback' %}active{% endif %}">
                     <a href="{% url 'main:feedback' %}" class="nav-link {% if current_page == 'feedback' %}active-nav-link{% endif %}">
                         <i class="fa-regular fa-comment-dots"></i>
